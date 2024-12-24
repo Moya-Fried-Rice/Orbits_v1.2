@@ -3,7 +3,7 @@
 @section('content')
 
         <div class="h-20">
-            
+            test
         </div>
     
 @endsection
