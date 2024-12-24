@@ -2,10 +2,10 @@
 
 @section('content')
 
-
-<div class="container mx-auto p-4">
-test
-</div>
+        <div class="h-20">
+            
+        </div>
+    
 @endsection
 
 @section('scripts')
