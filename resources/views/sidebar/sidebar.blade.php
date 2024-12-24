@@ -94,52 +94,118 @@
 
 <div class="border-r border-[#D4D4D4] bg-white text-[#666] font-semibold overflow-y-auto">
     <!-- Dashboard -->
-    <div class="flex items-center justify-content group m-2">
-        <img src="{{ asset('assets/icons/home.svg') }}" alt="Dashboard Icon" class="min-w-10 min-h-10 flex items-center p-2 justify-center rounded hover:bg-[#E6E6E6] transition-colors duration-300">
-        <span class="group-hover:translate-x-1 group-hover:text-[#631111] whitespace-nowrap overflow-hidden" style="transition: width 0.3s cubic-bezier(.67,.61,.28,1.27), transform 0.1s ease, color 0.1s ease;" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
+    <a href="#" class="flex items-center justify-content group m-2 hover:bg-[#E6E6E6] rounded transition-background duration-100">
+        <img src="{{ asset('assets/icons/home.svg') }}" alt="Dashboard Icon" class="min-w-10 min-h-10 flex items-center p-2 justify-center rounded transition-colors duration-300">
+        <span class="whitespace-nowrap overflow-hidden" style="transition: width 0.3s cubic-bezier(.67,.61,.28,1.27), transform 0.1s ease, color 0.1s ease;" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
             Dashboard
         </span>
-    </div>
+    </a>
                 
     <!-- Data Management -->
-    <div class="flex items-center justify-content group m-2">
+    <a href="#" @click="showData = !showData" class="flex items-center justify-content group m-2 hover:bg-[#E6E6E6] rounded transition-background duration-100">
         <img src="{{ asset('assets/icons/data.svg') }}" alt="Data Management Icon" class="min-w-10 min-h-10 flex items-center p-2 justify-center rounded hover:bg-[#E6E6E6] transition-colors duration-300">
-        <span class="group-hover:translate-x-1 group-hover:text-[#631111] whitespace-nowrap overflow-hidden" style="transition: width 0.3s cubic-bezier(.67,.61,.28,1.27), transform 0.1s ease, color 0.1s ease;" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
+        <span class="whitespace-nowrap overflow-hidden" style="transition: width 0.3s cubic-bezier(.67,.61,.28,1.27), transform 0.1s ease, color 0.1s ease;" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
             Data Management
         </span>
-        <i x-show="showSidebar" class="fas fa-caret-right mr-2"></i>
+        <i x-show="showSidebar" class="fas fa-caret-right mr-2 transition-transform duration-200" :class="{'transform rotate-90': showData, 'transform rotate-0': !showData}"></i>
+    </a>
+    <div x-show="showData" class="bg-[#F8F8F8] overflow-hidden transition-all duration-500">
+        <!-- Nested Links -->
+        <a href="#" class="flex items-center justify-content group m-2 hover:bg-[#E6E6E6] rounded transition-background duration-100">
+            <img src="{{ asset('assets/icons/faculty.svg') }}" alt="Faculty Icon" class="min-w-10 min-h-10 flex items-center p-2 justify-center rounded hover:bg-[#E6E6E6] transition-colors duration-300">
+            <span class="whitespace-nowrap overflow-hidden" style="transition: width 0.3s cubic-bezier(.67,.61,.28,1.27), transform 0.1s ease, color 0.1s ease;" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
+                Faculty
+            </span>
+        </a>
+        <a href="#" class="flex items-center justify-content group m-2 hover:bg-[#E6E6E6] rounded transition-background duration-100">
+            <img src="{{ asset('assets/icons/student.svg') }}" alt="Students Icon" class="min-w-10 min-h-10 flex items-center p-2 justify-center rounded hover:bg-[#E6E6E6] transition-colors duration-300">
+            <span class="whitespace-nowrap overflow-hidden" style="transition: width 0.3s cubic-bezier(.67,.61,.28,1.27), transform 0.1s ease, color 0.1s ease;" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
+                Students
+            </span>
+        </a>
+        <a href="#" class="flex items-center justify-content group m-2 hover:bg-[#E6E6E6] rounded transition-background duration-100">
+            <img src="{{ asset('assets/icons/course.svg') }}" alt="Courses Icon" class="min-w-10 min-h-10 flex items-center p-2 justify-center rounded hover:bg-[#E6E6E6] transition-colors duration-300">
+            <span class="whitespace-nowrap overflow-hidden" style="transition: width 0.3s cubic-bezier(.67,.61,.28,1.27), transform 0.1s ease, color 0.1s ease;" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
+                Courses
+            </span>
+        </a>
+        <a href="#" class="flex items-center justify-content group m-2 hover:bg-[#E6E6E6] rounded transition-background duration-100">
+            <img src="{{ asset('assets/icons/program.svg') }}" alt="Programs Icon" class="min-w-10 min-h-10 flex items-center p-2 justify-center rounded hover:bg-[#E6E6E6] transition-colors duration-300">
+            <span class="whitespace-nowrap overflow-hidden" style="transition: width 0.3s cubic-bezier(.67,.61,.28,1.27), transform 0.1s ease, color 0.1s ease;" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
+                Programs
+            </span>
+        </a>
+        <a href="#" class="flex items-center justify-content group m-2 hover:bg-[#E6E6E6] rounded transition-background duration-100">
+            <img src="{{ asset('assets/icons/department.svg') }}" alt="Departments Icon" class="min-w-10 min-h-10 flex items-center p-2 justify-center rounded hover:bg-[#E6E6E6] transition-colors duration-300">
+            <span class="whitespace-nowrap overflow-hidden" style="transition: width 0.3s cubic-bezier(.67,.61,.28,1.27), transform 0.1s ease, color 0.1s ease;" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
+                Departments
+            </span>
+        </a>
+        <a href="#" class="flex items-center justify-content group m-2 hover:bg-[#E6E6E6] rounded transition-background duration-100">
+            <img src="{{ asset('assets/icons/survey.svg') }}" alt="Survey Icon" class="min-w-10 min-h-10 flex items-center p-2 justify-center rounded hover:bg-[#E6E6E6] transition-colors duration-300">
+            <span class="whitespace-nowrap overflow-hidden" style="transition: width 0.3s cubic-bezier(.67,.61,.28,1.27), transform 0.1s ease, color 0.1s ease;" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
+                Survey
+            </span>
+        </a>
+        <a href="#" class="flex items-center justify-content group m-2 hover:bg-[#E6E6E6] rounded transition-background duration-100">
+            <img src="{{ asset('assets/icons/section.svg') }}" alt="Sections Icon" class="min-w-10 min-h-10 flex items-center p-2 justify-center rounded hover:bg-[#E6E6E6] transition-colors duration-300">
+            <span class="whitespace-nowrap overflow-hidden" style="transition: width 0.3s cubic-bezier(.67,.61,.28,1.27), transform 0.1s ease, color 0.1s ease;" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
+                Sections
+            </span>
+        </a>
+        <a href="#" class="flex items-center justify-content group m-2 hover:bg-[#E6E6E6] rounded transition-background duration-100">
+            <img src="{{ asset('assets/icons/account.svg') }}" alt="Accounts Icon" class="min-w-10 min-h-10 flex items-center p-2 justify-center rounded hover:bg-[#E6E6E6] transition-colors duration-300">
+            <span class="whitespace-nowrap overflow-hidden" style="transition: width 0.3s cubic-bezier(.67,.61,.28,1.27), transform 0.1s ease, color 0.1s ease;" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
+                Accounts
+            </span>
+        </a>
     </div>
     
     <!-- Evaluation -->
-    <div class="flex items-center justify-content group m-2">
+    <a href="#" class="flex items-center justify-content group m-2 hover:bg-[#E6E6E6] rounded transition-background duration-100">
         <img src="{{ asset('assets/icons/evaluation.svg') }}" alt="Evaluation Icon" class="min-w-10 min-h-10 flex items-center p-2 justify-center rounded hover:bg-[#E6E6E6] transition-colors duration-300">
-        <span class="group-hover:translate-x-1 group-hover:text-[#631111] whitespace-nowrap overflow-hidden" style="transition: width 0.3s cubic-bezier(.67,.61,.28,1.27), transform 0.1s ease, color 0.1s ease;" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
+        <span class="whitespace-nowrap overflow-hidden" style="transition: width 0.3s cubic-bezier(.67,.61,.28,1.27), transform 0.1s ease, color 0.1s ease;" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
             Evaluation
         </span>
-    </div>
+    </a>
     
     <!-- Reports -->
-    <div class="flex items-center justify-content group m-2">
+    <a href="#" @click="showReport = !showReport" class="flex items-center justify-content group m-2 hover:bg-[#E6E6E6] rounded transition-background duration-100">
         <img src="{{ asset('assets/icons/report.svg') }}" alt="Reports Icon" class="min-w-10 min-h-10 flex items-center p-2 justify-center rounded hover:bg-[#E6E6E6] transition-colors duration-300">
-        <span class="group-hover:translate-x-1 group-hover:text-[#631111] whitespace-nowrap overflow-hidden" style="transition: width 0.3s cubic-bezier(.67,.61,.28,1.27), transform 0.1s ease, color 0.1s ease;" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
+        <span class="whitespace-nowrap overflow-hidden" style="transition: width 0.3s cubic-bezier(.67,.61,.28,1.27), transform 0.1s ease, color 0.1s ease;" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
             Reports
         </span>
-        <i x-show="showSidebar" class="fas fa-caret-right mr-2"></i>
+        <i x-show="showSidebar" class="fas fa-caret-right mr-2 transition-transform duration-200" :class="{'transform rotate-90': showReport, 'transform rotate-0': !showReport}"></i>
+    </a>
+    <div x-show="showReport" class="bg-[#F8F8F8] overflow-hidden transition-all duration-500">
+        <!-- Nested Links -->
+        <a href="#" class="flex items-center justify-content group m-2 hover:bg-[#E6E6E6] rounded transition-background duration-100">
+            <img src="{{ asset('assets/icons/result.svg') }}" alt="Results Icon" class="min-w-10 min-h-10 flex items-center p-2 justify-center rounded hover:bg-[#E6E6E6] transition-colors duration-300">
+            <span class="whitespace-nowrap overflow-hidden" style="transition: width 0.3s cubic-bezier(.67,.61,.28,1.27), transform 0.1s ease, color 0.1s ease;" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
+                Results
+            </span>
+        </a>
+        <a href="#" class="flex items-center justify-content group m-2 hover:bg-[#E6E6E6] rounded transition-background duration-100">
+            <img src="{{ asset('assets/icons/ranking.svg') }}" alt="Faculty Ranking Icon" class="min-w-10 min-h-10 flex items-center p-2 justify-center rounded hover:bg-[#E6E6E6] transition-colors duration-300">
+            <span class="whitespace-nowrap overflow-hidden" style="transition: width 0.3s cubic-bezier(.67,.61,.28,1.27), transform 0.1s ease, color 0.1s ease;" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
+                Faculty Ranking
+            </span>
+        </a>
     </div>
     
     <!-- Progress -->
-    <div class="flex items-center justify-content group m-2">
+    <a href="#" class="flex items-center justify-content group m-2 hover:bg-[#E6E6E6] rounded transition-background duration-100">
         <img src="{{ asset('assets/icons/monitor.svg') }}" alt="Progress Icon" class="min-w-10 min-h-10 flex items-center p-2 justify-center rounded hover:bg-[#E6E6E6] transition-colors duration-300">
-        <span class="group-hover:translate-x-1 group-hover:text-[#631111] whitespace-nowrap overflow-hidden" style="transition: width 0.3s cubic-bezier(.67,.61,.28,1.27), transform 0.1s ease, color 0.1s ease;" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
+        <span class="whitespace-nowrap overflow-hidden" style="transition: width 0.3s cubic-bezier(.67,.61,.28,1.27), transform 0.1s ease, color 0.1s ease;" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
             Progress
         </span>
-    </div>
+    </a>
     
     <!-- Sign-out -->
-    <div class="flex items-center justify-content group m-2">
+    <a href="#" class="flex items-center justify-content group m-2 hover:bg-[#E6E6E6] rounded transition-background duration-100">
         <img src="{{ asset('assets/icons/logout.svg') }}" alt="Sign-out Icon" class="min-w-10 min-h-10 flex items-center p-2 justify-center rounded hover:bg-[#E6E6E6] transition-colors duration-300">
-        <span class="group-hover:translate-x-1 group-hover:text-[#631111] whitespace-nowrap overflow-hidden" style="transition: width 0.3s cubic-bezier(.67,.61,.28,1.27), transform 0.1s ease, color 0.1s ease;" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
+        <span class="whitespace-nowrap overflow-hidden" style="transition: width 0.3s cubic-bezier(.67,.61,.28,1.27), transform 0.1s ease, color 0.1s ease;" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
             Sign-out
         </span>
-    </div>
+    </a>
 </div>
