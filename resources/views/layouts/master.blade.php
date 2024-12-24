@@ -7,11 +7,12 @@
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-100 m-0 p-0">
+        @include('navbar.navbar')
         <div class="flex h-screen">
                 @include('sidebar.sidebar')
                 <!-- Main content -->
-                <div class="flex-1 p-4 overflow-auto bg-red-50">
+                <div class="flex-1 p-4 overflow-auto">
                         @yield('content')
                 </div>
         </div>
