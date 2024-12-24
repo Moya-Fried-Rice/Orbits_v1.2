@@ -8,7 +8,7 @@
     @vite('resources/js/app.js')
 </head>
 <body class="bg-gray-100 m-0 p-0">
-    <div x-data="{ showSidebar: true }" class="flex flex-col h-screen">
+    <div x-data="{ showSidebar: true, showData: false, showReport: false }" class="flex flex-col h-screen">
         <div class="flex flex-col h-full">
 
             <!-- Navigation content (Navbar) -->
