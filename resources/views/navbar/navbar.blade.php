@@ -27,7 +27,7 @@
 </div>
 
 <div class="flex bg-white border-b border-[#D4D4D4] text-[#666] font-semibold">
-    <button x-on:click="showSidebar = !showSidebar" class="flex items-center p-2 m-2 justify-center rounded hover:bg-[#E6E6E6] transition-colors duration-100">
+    <button x-on:click="showSidebar = !showSidebar" class="m-2 flex items-center p-2 justify-center rounded hover:bg-[#E6E6E6] transition-colors duration-100">
         <img src="{{ asset('assets/icons/menu.svg') }}" alt="Menu Icon" class="w-6 h-6 transition-transform duration-300" :class="{'transform rotate-90': showSidebar, 'transform rotate-0': !showSidebar}" style="transition-timing-function: cubic-bezier(.67,.61,.28,1.27);">
     </button>
 </div>
