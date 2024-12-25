@@ -19,13 +19,12 @@
             @include('sidebar.sidebar')
 
             <!-- Main content (flex-1 ensures it takes the remaining space) -->
-            <div class="flex-1 overflow-auto">
-                <div class="w-full h-full p-5">
-                    <div class="w-full h-full rounded bg-white text-[#666] font-semibold overflow-y-auto">
-                        @yield('content')
-                    </div>
+            <div class="w-full h-full p-5 flex-1 overflow-auto">
+                <div class="w-full h-full rounded bg-white text-[#666] font-semibold overflow-y-auto">
+                    @yield('content')
                 </div>
             </div>
+
         </div>
 
     </div>

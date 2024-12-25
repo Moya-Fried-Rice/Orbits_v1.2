@@ -1,14 +1,15 @@
 <div class="font-TT border-r border-[#D4D4D4] bg-white text-[#666] overflow-y-auto">
 
     <!-- Dashboard -->
-    <a href="{{ route('dashboard') }}" class="nav-btn group nav-btn-hover">
-        <img src="{{ asset('assets/icons/home.svg') }}" alt="Dashboard Icon" class="icon">
-        <span class="nav-text" 
-              x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
-            Dashboard
-        </span>
-    </a>
-                
+    <div class="relative">
+        <a href="{{ route('dashboard') }}" class="nav-btn group nav-btn-hover">
+            <img src="{{ asset('assets/icons/home.svg') }}" alt="Dashboard Icon" class="icon">
+            <span class="nav-text" 
+                x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
+                Dashboard
+            </span>
+        </a>
+    </div>      
     <!-- Data Management -->
     <div>
         <a href="#" @click="showData = !showData" class="nav-btn group nav-btn-hover" style="margin-bottom: 0;">
@@ -17,7 +18,7 @@
                   x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
                 Data Management
             </span>
-            <i x-show="showSidebar" class="fas fa-caret-right mr-2 transition-transform duration-200" :class="{'transform rotate-90': showData, 'transform rotate-0': !showData}"></i>
+            <i x-show="showSidebar" class="fas fa-chevron-right mr-2 transition-transform duration-100" :class="{'transform rotate-90': showData, 'transform rotate-0': !showData}"></i>
         </a>
     </div>
     <div x-show="showData" 
@@ -65,7 +66,7 @@
               x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
             Reports
         </span>
-        <i x-show="showSidebar" class="fas fa-caret-right mr-2 transition-transform duration-200" :class="{'transform rotate-90': showReport, 'transform rotate-0': !showReport}"></i>
+        <i x-show="showSidebar" class="fas fa-chevron-right mr-2 transition-transform duration-100" :class="{'transform rotate-90': showReport, 'transform rotate-0': !showReport}"></i>
     </a>
     <div x-show="showReport" 
     x-transition:enter="transition-all cubic-bezier(.74,.52,.25,1) duration-500" 
