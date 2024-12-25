@@ -2,10 +2,10 @@
     <div class="font-TT border-r border-[#D4D4D4] bg-white text-[#666] overflow-y-auto h-full">
         
         <!-- Dashboard -->
-        <x-nav-link href="{{ route('dashboard') }}" class="nav-btn group nav-btn-hover">
+        <a href="{{ route('dashboard') }}" class="nav-btn group nav-btn-hover">
             <img src="{{ asset('assets/icons/home.svg') }}" alt="Dashboard Icon" class="icon">
             <span class="nav-text" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">Dashboard</span>
-        </x-nav-link>
+        </a>
         
         <!-- Data Management -->
         <a href="#" @click="showData = !showData" class="nav-btn group nav-btn-hover" style="margin-bottom: 0;">
