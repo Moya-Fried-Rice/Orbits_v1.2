@@ -26,11 +26,10 @@
     </div>
 </div>
 
-<div class="flex bg-white border-b border-[#D4D4D4] text-[#666] font-semibold">
+<div class="flex bg-white border-b border-[#D4D4D4] text-[#666] font-semibold" x-cloak>
 
     <button 
-    x-on:click="showSidebar = !showSidebar"  
-    x-on:click="showMobile = !showMobile"
+    @click="showSidebar = !showSidebar"  
     
     :class="{'transform rotate-90': showSidebar, 'transform rotate-0': !showSidebar}" 
     style="transition: transform 0.2s cubic-bezier(.67, .61, .28, 1.27);" 
