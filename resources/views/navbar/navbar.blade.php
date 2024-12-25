@@ -1,4 +1,4 @@
-<div class="flex bg-white justify-between border-b border-[#D4D4D4]"  style="flex">
+<div class="font-TT flex bg-white justify-between border-b border-[#D4D4D4]"  style="flex">
     <div class="flex items-center p-3 justify-center ">
         <img src="{{ asset('assets/logo/logo-sided.png') }}" alt="Dashboard Icon" class="h-12">   
     </div>
@@ -27,8 +27,14 @@
 </div>
 
 <div class="flex bg-white border-b border-[#D4D4D4] text-[#666] font-semibold">
-    <button x-on:click="showSidebar = !showSidebar" class="m-2 flex items-center p-2 justify-center rounded hover:bg-[#E6E6E6] transition-colors duration-100">
-        <img src="{{ asset('assets/icons/menu.svg') }}" alt="Menu Icon" class="w-6 h-6 transition-transform duration-300" :class="{'transform rotate-90': showSidebar, 'transform rotate-0': !showSidebar}" style="transition-timing-function: cubic-bezier(.67,.61,.28,1.27);">
+
+    <button 
+    x-on:click="showSidebar = !showSidebar"  
+    :class="{'transform rotate-90': showSidebar, 'transform rotate-0': !showSidebar}" 
+    style="transition: transform 0.2s cubic-bezier(.67, .61, .28, 1.27);" 
+    class="nav-btn nav-btn-hover" >
+            <img src="{{ asset('assets/icons/menu.svg') }}" alt="Menu Icon" class="icon">
     </button>
+
 </div>
 

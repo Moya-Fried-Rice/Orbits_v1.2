@@ -13,8 +13,11 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                TT: ['TT'],
+                silka: ['silka'],
             },
         },
     },
     plugins: [],
+    darkMode: 'class',
 };

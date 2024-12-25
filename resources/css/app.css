@@ -1,26 +1,58 @@
 /* global.css */
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* width */
+/* Custom Fonts */
+@font-face {
+    font-family: 'TT';
+    src: url('/public/assets/fonts/TT.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Silka';
+    src: url('/public/assets/fonts/Silka-Regular.otf') format('opentype');
+}
+
+/* Custom Layout */
+@layer utilities {
+    .nav-btn {
+        @apply m-2 flex items-center rounded-lg;
+    }
+
+    .nav-btn-hover {
+        @apply hover:bg-[#EFEFEF];
+    }
+
+    .icon {
+        @apply min-w-[2.5rem] min-h-[2.5rem] flex items-center justify-center p-2 rounded-lg;
+    }
+
+    .nav-text {
+        @apply whitespace-nowrap overflow-hidden transition-all duration-300;
+        transition-timing-function: cubic-bezier(.7, .26, .49, 1.17);
+    }
+}
+
+/* Claok */
+[x-cloak] {
+    display: none !important;
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
     width: 5px;
 }
 
-/* Track */
 ::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
 
-/* Handle */
 ::-webkit-scrollbar-thumb {
     background: #adadad;
     border-radius: 10px;
 }
 
-/* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
     background: #838383;
 }
