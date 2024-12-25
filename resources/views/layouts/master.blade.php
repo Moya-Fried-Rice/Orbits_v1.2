@@ -7,14 +7,13 @@
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
 </head>
-<body class="bg-gray-100 m-0 p-0" x-data="{ showSidebar: true, showData: false, showReport: false }" x-cloak>
+<body class="relative bg-gray-100 m-0 p-0" x-data="{ showSidebar: false, showData: false, showReport: false }" x-cloak>
     <div class="flex flex-col h-screen">
-
         <!-- Navigation content (Navbar) -->
         @include('navbar.navbar')
 
         <!-- Main content area -->
-        <div class="flex flex-1 overflow-hidden">
+        <div class="flex flex-1 overflow-hidden relative">
             <!-- Sidebar -->
             @include('sidebar.sidebar')
 
@@ -24,9 +23,7 @@
                     @yield('content')
                 </div>
             </div>
-
         </div>
-
     </div>
 
     @yield('scripts')
