@@ -4,12 +4,11 @@
 
         <div>
             
-            <div class="grid grid-rows-12  gap-5
+            <div class="grid grid-rows-12 gap-5 text-shadow-white 
             sm:grid-cols-1 
             md:grid-cols-2 
             lg:grid-cols-3 
             xl:grid-cols-6 
-
             {{-- sm:bg-red-200 
             md:bg-blue-200
             lg:bg-green-200
@@ -24,87 +23,87 @@
 
                 </div>
 
-                <div class="bg-white rounded-lg p-6 flex flex-1 justify-between items-center
+                <div class="bg-white rounded-lg p-6 flex flex-1 justify-between items-center relative overflow-hidden
                 sm:col-span-1
                 md:col-span-1
                 lg:col-span-1
                 xl:col-span-1">
-                    <div>
+                    <div class="relative z-10">
                         <h3 class="text-2xl font-semibold">53</h3>
-                        <p>Users</p>
+                        <p>Students</p>
                     </div>
-                    <div>
-                        <img src="{{ asset('assets/icons/section.svg') }}" class="bg-[#EFEFEF] rounded-full p-3 w-12 h-12" alt="Icon">
+                    <div class="absolute -right-8 h-full flex items-center z-0">
+                        <img src="{{ asset('assets/icons/student.svg') }}" class="border-8 bg-[#EFEFEF] opacity-30 rounded-full p-10 w-36 h-36" alt="Icon">
                     </div>
                 </div>
-              
-                <div class="bg-white rounded-lg p-6 flex flex-1 justify-between items-center
+
+                <div class="bg-white rounded-lg p-6 flex flex-1 justify-between items-center relative overflow-hidden
                 sm:col-span-1
                 md:col-span-1
                 lg:col-span-1
                 xl:col-span-1">
-                    <div>
+                    <div class="relative z-10">
                         <h3 class="text-2xl font-semibold">12</h3>
                         <p>Faculty</p>
                     </div>
-                    <div>
-                        <img src="{{ asset('assets/icons/faculty.svg') }}" class="bg-[#EFEFEF] rounded-full p-3 w-12 h-12" alt="Icon">
+                    <div class="absolute -right-8 h-full flex items-center z-0">
+                        <img src="{{ asset('assets/icons/faculty.svg') }}" class="border-8 bg-[#EFEFEF] opacity-30 rounded-full p-10 w-36 h-36" alt="Icon">
                     </div>
                 </div>
 
-                <div class="bg-white rounded-lg p-6 flex flex-1 justify-between items-center
+                <div class="bg-white rounded-lg p-6 flex flex-1 justify-between items-center relative overflow-hidden
                 sm:col-span-1
                 md:col-span-1
                 lg:col-span-1
                 xl:col-span-1">
-                    <div>
+                    <div class="relative z-10">
                         <h3 class="text-2xl font-semibold">25</h3>
                         <p>Courses</p>
                     </div>
-                    <div>
-                        <img src="{{ asset('assets/icons/course.svg') }}" class="bg-[#EFEFEF] rounded-full p-3 w-12 h-12" alt="Icon">
+                    <div class="absolute -right-8 h-full flex items-center z-0">
+                        <img src="{{ asset('assets/icons/course.svg') }}" class="border-8 bg-[#EFEFEF] opacity-30 rounded-full p-10 w-36 h-36" alt="Icon">
                     </div>
                 </div>
 
-                <div class="bg-white rounded-lg p-6 flex flex-1 justify-between items-center
+                <div class="bg-white rounded-lg p-6 flex flex-1 justify-between items-center relative overflow-hidden
                 sm:col-span-1
                 md:col-span-1
                 lg:col-span-1
                 xl:col-span-1">
-                    <div>
+                    <div class="relative z-10">
                         <h3 class="text-2xl font-semibold">8</h3>
                         <p>Programs</p>
                     </div>
-                    <div>
-                        <img src="{{ asset('assets/icons/program.svg') }}" class="bg-[#EFEFEF] rounded-full p-3 w-12 h-12" alt="Icon">
+                    <div class="absolute -right-8 h-full flex items-center z-0">
+                        <img src="{{ asset('assets/icons/program.svg') }}" class="border-8 bg-[#EFEFEF] opacity-30 rounded-full p-10 w-36 h-36" alt="Icon">
                     </div>
                 </div>
 
-                <div class="bg-white rounded-lg p-6 flex flex-1 justify-between items-center
+                <div class="bg-white rounded-lg p-6 flex flex-1 justify-between items-center relative overflow-hidden
                 sm:col-span-1
                 md:col-span-1
                 lg:col-span-1
                 xl:col-span-1">
-                    <div>
+                    <div class="relative z-10">
                         <h3 class="text-2xl font-semibold">15</h3>
                         <p>Sections</p>
                     </div>
-                    <div>
-                        <img src="{{ asset('assets/icons/section.svg') }}" class="bg-[#EFEFEF] rounded-full p-3 w-12 h-12" alt="Icon">
+                    <div class="absolute -right-8 h-full flex items-center z-0">
+                        <img src="{{ asset('assets/icons/section.svg') }}" class="border-8 bg-[#EFEFEF] opacity-30 rounded-full p-10 w-36 h-36" alt="Icon">
                     </div>
                 </div>
 
-                <div class="bg-white rounded-lg p-6 flex flex-1 justify-between items-center
+                <div class="bg-white rounded-lg p-6 flex flex-1 justify-between items-center relative overflow-hidden
                 sm:col-span-1
                 md:col-span-1
                 lg:col-span-1
                 xl:col-span-1">
-                    <div>
+                    <div class="relative z-10">
                         <h3 class="text-2xl font-semibold">5</h3>
-                        <p>Departments</p>
+                        <p>Users</p>
                     </div>
-                    <div>
-                        <img src="{{ asset('assets/icons/department.svg') }}" class="bg-[#EFEFEF] rounded-full p-3 w-12 h-12" alt="Icon">
+                    <div class="absolute -right-8 h-full flex items-center z-0">
+                        <img src="{{ asset('assets/icons/account.svg') }}" class="border-8 bg-[#EFEFEF] opacity-30 rounded-full p-10 w-36 h-36" alt="Icon">
                     </div>
                 </div>
 
