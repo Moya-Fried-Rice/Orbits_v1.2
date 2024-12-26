@@ -19,16 +19,22 @@
             <!-- Click outside to close when mobile view -->
             <div 
                 @click="showSidebar = false"
-                x-bind:class="{'opacity-20': showSidebar, 'opacity-0': !showSidebar}"
-                class="absolute z-10 w-full h-full transition-opacity duration-200 bg-black opacity-20 lg:hidden sm:block">
+                x-bind:class="{
+                    'opacity-20': showSidebar,
+                    'opacity-0': !showSidebar,
+                    'pointer-events-auto': showSidebar,
+                    'pointer-events-none': !showSidebar
+                }"
+                class="absolute z-10 w-full h-full transition-opacity duration-200 bg-black lg:hidden sm:block">
             </div>
+        
 
             <!-- Sidebar -->
             @include('sidebar.sidebar')
             
             <!-- Main content (flex-1 ensures it takes the remaining space) -->
-            <div class="w-full h-full p-5 flex-1 overflow-auto">
-                <div class="w-full h-full rounded bg-white text-[#666] font-semibold overflow-y-auto">
+            <div class="w-full flex-1 overflow-auto">
+                <div class="w-full h-full p-5 text-[#666] overflow-y-auto">
                     @yield('content')
                 </div>
             </div>

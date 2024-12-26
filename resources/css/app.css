@@ -30,7 +30,7 @@
 
     .nav-text {
         @apply whitespace-nowrap overflow-hidden transition-all duration-300;
-        transition-timing-function: cubic-bezier(.7, .26, .49, 1.17);
+        transition-timing-function: cubic-bezier(.67, .61, .28, 1.27);
     }
 }
 

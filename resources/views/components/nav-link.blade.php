@@ -3,8 +3,8 @@
 @php
 // Determine the CSS classes to apply based on the 'active' prop
 $classes = ($active ?? false)
-            ? 'nav-btn bg-[#EFEFEF] group nav-btn-hover'
-            : 'nav-btn group nav-btn-hover';
+            ? 'nav-btn bg-[#EFEFEF] group nav-btn-hover cursor-pointer'
+            : 'nav-btn group nav-btn-hover cursor-pointer';
 @endphp
 
 <a {{ $attributes->merge(['class' => $classes]) }}>

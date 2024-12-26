@@ -4,14 +4,14 @@
 // Determine the CSS classes based on the 'active' prop
 $classes = ($active ?? false)
     ? 'nav-btn bg-[#EFEFEF] group nav-btn-hover cursor-pointer'
-    : 'nav-btn group nav-btn-hover';
+    : 'nav-btn group nav-btn-hover cursor-pointer';
 @endphp
 
 <div x-data="{ showData: {{ $active ? 'true' : 'false' }} }">
     <!-- Trigger element for the dropdown -->
     <div @click="showData = !showData" {{ $attributes->merge(['class' => $classes]) }} style="margin-bottom: 0;">
         <!-- Icon for the dropdown -->
-        <img src="{{ $icon }}" alt="Data Management Icon" class="icon">
+        <img src="{{ $icon }}" alt="{{ $icon }} Icon" class="icon">
         <!-- Text for the dropdown trigger -->
         <span class="nav-text" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
             {{ $trigger }}
