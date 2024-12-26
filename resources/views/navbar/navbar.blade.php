@@ -29,12 +29,12 @@
 <div class="flex bg-white border-b border-[#D4D4D4] text-[#666] font-semibold" x-cloak>
 
     <button 
-    @click="showSidebar = !showSidebar"  
-    
-    :class="{'transform rotate-90': showSidebar, 'transform rotate-0': !showSidebar}" 
-    style="transition: transform 0.2s cubic-bezier(.67, .61, .28, 1.27);" 
-    class="nav-btn nav-btn-hover" >
-            <img src="{{ asset('assets/icons/menu.svg') }}" alt="Menu Icon" class="icon">
+        @click="showSidebar = !showSidebar"  
+        :class="{'transform rotate-90': showSidebar, 'transform rotate-0': !showSidebar}" 
+        style="transition: transform 0.2s cubic-bezier(.67, .61, .28, 1.27);" 
+        class="nav-btn nav-btn-hover">
+        
+        <img src="{{ asset('assets/icons/menu.svg') }}" alt="Menu Icon" class="icon">
     </button>
 
 </div>
