@@ -1,4 +1,4 @@
-@props(['active', 'icon'])
+@props(['active', 'icon', 'label'])
 
 @php
 // Determine the CSS classes to apply based on the 'active' prop
@@ -13,6 +13,6 @@ $classes = ($active ?? false)
     
     <!-- Navigation text with dynamic width based on 'showSidebar' -->
     <span class="nav-text" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
-        {{ $slot }}
+        {{ $label }}
     </span>
 </a>
