@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
 
 // Home route
 Route::get('/', function () {
@@ -8,9 +9,7 @@ Route::get('/', function () {
 });
 
 // Dashboard route
-Route::get('/dashboard', function () {
-    return view('dashboard.admin_dashboard');
-})->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 // Accounts route
 Route::get('/accounts', function () {
