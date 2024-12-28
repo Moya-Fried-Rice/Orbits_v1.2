@@ -54,43 +54,60 @@
 
     </div>
 
-    <!-- Charts Section -->
-    <div class="grid grid-rows-3 gap-5 
+    <!-- Progress Section -->
+    <div class="grid gap-5 
     sm:grid-cols-2 
     md:grid-cols-2 
     lg:grid-cols-3 
-    xl:grid-cols-6">
+    xl:grid-cols-4">
 
         <div class="bg-white rounded-lg p-6
         sm:col-span-2
         md:col-span-2
         lg:col-span-1
-        xl:col-span-2">
-            Chart 1
-        </div>
+        xl:col-span-1">
 
-        <div class="bg-white rounded-lg p-6
-        sm:col-span-2
-        md:col-span-2
-        lg:col-span-1
-        xl:col-span-3">
-            Chart 2
-        </div>
-
-        <div class="bg-white rounded-lg p-6
-        sm:col-span-2
-        md:col-span-2
-        lg:col-span-1 lg:row-span-2
-        xl:col-span-1 xl:row-span-2">
-            Chart 3
         </div>
 
         <div class="bg-white rounded-lg p-6
         sm:col-span-2
         md:col-span-2
         lg:col-span-2
-        xl:col-span-5">
-            Chart 4
+        xl:col-span-2">
+
+        </div>
+
+        <div class="bg-white rounded-lg p-6
+        sm:col-span-2
+        md:col-span-2
+        lg:col-span-3 
+        xl:col-span-1 ">
+        
+        </div>
+
+    </div>
+
+    <!-- Monitoring Section -->
+    <div class="grid gap-5 
+    sm:grid-cols-1 
+    md:grid-cols-1 
+    lg:grid-cols-2 
+    xl:grid-cols-2">
+
+        <div class="bg-white rounded-lg p-6
+        sm:col-span-1
+        md:col-span-1
+        lg:col-span-2
+        xl:col-span-1">
+
+        </div>
+
+        <div class="bg-white rounded-lg p-6
+        sm:col-span-1
+        md:col-span-1
+        lg:col-span-2
+        xl:col-span-1">
+
         </div>
 
     </div>
@@ -101,4 +118,10 @@
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+
+
+
+
 @endsection
