@@ -13,7 +13,8 @@
        <!-- Data Management -->
       <x-dropdown 
          :icon="asset('assets/icons/data.svg')" 
-          :active="in_array(request()->route()->getName(), ['faculties', 'students', 'courses', 'programs', 'departments', 'survey', 'sections', 'accounts'])">
+         show="showData"
+         :active="in_array(request()->route()->getName(), ['faculties', 'students', 'courses', 'programs', 'departments', 'survey', 'sections', 'accounts'])">
          <x-slot name="trigger">
          Data Management
          </x-slot>
@@ -95,8 +96,9 @@
       
       <!-- Reports -->
       <x-dropdown 
-         :icon="asset('assets/icons/report.svg')" 
-          :active="in_array(request()->route()->getName(), ['results', 'ranking', 'monitor'])">
+         :icon="asset('assets/icons/report.svg')"
+         show="showResults"
+         :active="in_array(request()->route()->getName(), ['results', 'ranking', 'monitor'])">
          <x-slot name="trigger">
          Reports
          </x-slot>

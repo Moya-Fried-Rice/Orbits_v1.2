@@ -1,4 +1,4 @@
-@props(['active', 'icon'])
+@props(['active', 'icon', 'show'])
 
 @php
 // Determine the CSS classes based on the 'active' prop
@@ -7,9 +7,9 @@ $classes = ($active ?? false)
     : 'nav-btn group nav-btn-hover cursor-pointer';
 @endphp
 
-<div x-data="{ showData: {{ $active ? 'true' : 'false' }} }">
+<div>
     <!-- Trigger element for the dropdown -->
-    <div @click="showData = !showData" {{ $attributes->merge(['class' => $classes]) }} style="margin-bottom: 0;">
+    <div @click="{{ $show }} = !{{ $show }}" {{ $attributes->merge(['class' => $classes]) }} style="margin-bottom: 0;">
         <!-- Icon for the dropdown -->
         <img src="{{ $icon }}" alt="{{ $icon }} Icon" class="icon">
         <!-- Text for the dropdown trigger -->
@@ -17,12 +17,12 @@ $classes = ($active ?? false)
             {{ $trigger }}
         </span>
         <!-- Chevron icon indicating dropdown state -->
-        <i x-show="showSidebar" class="fas fa-chevron-right mr-2 transition-transform duration-100" :class="{'transform rotate-90': showData, 'transform rotate-0': !showData}"></i>
+        <i x-show="showSidebar" class="fas fa-chevron-right mr-2 transition-transform duration-100" :class="{'transform rotate-90': {{ $show }}, 'transform rotate-0': !{{ $show }}}"></i>
     </div>
 
     <!-- Dropdown content -->
     <div 
-        x-show="showData" 
+        x-show="{{ $show }}" 
         x-transition:enter="transition-all cubic-bezier(.74,.52,.25,1) duration-500" 
         x-transition:enter-start="max-h-0" 
         x-transition:enter-end="max-h-screen" 
