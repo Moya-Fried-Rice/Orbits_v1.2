@@ -16,65 +16,41 @@
     lg:grid-cols-3 
     xl:grid-cols-6">
 
-        <div class="bg-white rounded-lg p-6 flex flex-1 justify-between items-center relative overflow-hidden">
-            <div class="relative z-10">
-                <h3 class="text-2xl font-semibold">53</h3>
-                <p>Students</p>
-            </div>
-            <div class="absolute -right-8 h-full flex items-center z-0">
-                <img src="{{ asset('assets/icons/student.svg') }}" class="border-8 bg-[#EFEFEF] opacity-20 rounded-full p-10 w-36 h-36" alt="Icon">
-            </div>
-        </div>
+        <x-card 
+            count="53" 
+            label="Students" 
+            icon="{{ asset('assets/icons/student.svg') }}" 
+        />
 
-        <div class="bg-white rounded-lg p-6 flex flex-1 justify-between items-center relative overflow-hidden">
-            <div class="relative z-10">
-                <h3 class="text-2xl font-semibold">12</h3>
-                <p>Faculty</p>
-            </div>
-            <div class="absolute -right-8 h-full flex items-center z-0">
-                <img src="{{ asset('assets/icons/faculty.svg') }}" class="border-8 bg-[#EFEFEF] opacity-20 rounded-full p-10 w-36 h-36" alt="Icon">
-            </div>
-        </div>
+        <x-card 
+            count="12" 
+            label="Faculty" 
+            icon="{{ asset('assets/icons/faculty.svg') }}" 
+        />
 
-        <div class="bg-white rounded-lg p-6 flex flex-1 justify-between items-center relative overflow-hidden">
-            <div class="relative z-10">
-                <h3 class="text-2xl font-semibold">25</h3>
-                <p>Courses</p>
-            </div>
-            <div class="absolute -right-8 h-full flex items-center z-0">
-                <img src="{{ asset('assets/icons/course.svg') }}" class="border-8 bg-[#EFEFEF] opacity-20 rounded-full p-10 w-36 h-36" alt="Icon">
-            </div>
-        </div>
+        <x-card 
+            count="25" 
+            label="Courses" 
+            icon="{{ asset('assets/icons/course.svg') }}" 
+        />
 
-        <div class="bg-white rounded-lg p-6 flex flex-1 justify-between items-center relative overflow-hidden">
-            <div class="relative z-10">
-                <h3 class="text-2xl font-semibold">8</h3>
-                <p>Programs</p>
-            </div>
-            <div class="absolute -right-8 h-full flex items-center z-0">
-                <img src="{{ asset('assets/icons/program.svg') }}" class="border-8 bg-[#EFEFEF] opacity-20 rounded-full p-10 w-36 h-36" alt="Icon">
-            </div>
-        </div>
+        <x-card 
+            count="8" 
+            label="Programs" 
+            icon="{{ asset('assets/icons/program.svg') }}" 
+        />
 
-        <div class="bg-white rounded-lg p-6 flex flex-1 justify-between items-center relative overflow-hidden">
-            <div class="relative z-10">
-                <h3 class="text-2xl font-semibold">15</h3>
-                <p>Sections</p>
-            </div>
-            <div class="absolute -right-8 h-full flex items-center z-0">
-                <img src="{{ asset('assets/icons/section.svg') }}" class="border-8 bg-[#EFEFEF] opacity-20 rounded-full p-10 w-36 h-36" alt="Icon">
-            </div>
-        </div>
+        <x-card 
+            count="15" 
+            label="Sections" 
+            icon="{{ asset('assets/icons/section.svg') }}" 
+        />
 
-        <div class="bg-white rounded-lg p-6 flex flex-1 justify-between items-center relative overflow-hidden">
-            <div class="relative z-10">
-                <h3 class="text-2xl font-semibold">5</h3>
-                <p>Users</p>
-            </div>
-            <div class="absolute -right-8 h-full flex items-center z-0">
-                <img src="{{ asset('assets/icons/account.svg') }}" class="border-8 bg-[#EFEFEF] opacity-20 rounded-full p-10 w-36 h-36" alt="Icon">
-            </div>
-        </div>
+        <x-card 
+            count="5" 
+            label="Users" 
+            icon="{{ asset('assets/icons/account.svg') }}" 
+        />
 
     </div>
 
