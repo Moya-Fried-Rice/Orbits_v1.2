@@ -37,8 +37,8 @@
          />
          <!-- Courses -->
          <x-dropdown-link 
-            :active="request()->routeIs('courses.index')" 
-            :href="route('courses.index')" 
+            {{-- :active="request()->routeIs('courses')" 
+            :href="route('courses')"  --}}
             :icon="asset('assets/icons/course.svg')"
             label="Courses"
          />
