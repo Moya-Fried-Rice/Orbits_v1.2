@@ -2,7 +2,7 @@
 
 @section('content')
 
-    @if(session('success'))
+    {{-- @if(session('success'))
         <div id="success-message" class="absolute right-0 top-0 px-4 py-2 m-2 bg-green-200 text-black opacity-50 flex items-center justify-between space-x-4">
             <span>{{ session('success') }}</span>
             <button onclick="document.getElementById('success-message').remove()" class="ml-4 text-black px-2 py-1">
@@ -11,7 +11,7 @@
         </div>
     @endif
 
-    <div class="bg-white font-TT font-light rounded-lg">
+    <div class="bg-white font-TT font-light">
             <div class="text-xl flex items-center space-x-2 p-6 pb-0">
                 <img src="{{ asset('assets/icons/course.svg') }}" alt="Course">
                 <div>
@@ -194,23 +194,12 @@
                 'sort_order' => $sortOrder
             ])->links() }}
         </div>
-    </div>
+    </div> --}}
     
+    @livewire('course-crud')
 
 @endsection
 
 @section('scripts')
  {{-- Scripts --}}
-<script>
-    function confirmDelete(event) {
-        // Prevent the form submission
-        event.preventDefault();
-        
-        // Show confirmation dialog
-        if (confirm("Are you sure you want to delete this course?")) {
-            // If confirmed, submit the form
-            event.target.closest('form').submit();
-        }
-    }
-</script>
 @endsection
