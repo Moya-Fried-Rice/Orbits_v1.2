@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="{{ asset('assets/fonts/fontawesome-free-6.7.2-web/css/all.min.css') }}">
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
+    @livewireStyles
 </head>
 <body class="relative bg-gray-100 m-0 p-0" x-data="{ showSidebar: false, showData: false, showResults: false }" x-cloak>
 
@@ -41,7 +42,8 @@
         </div>
         
     </div>
-    
+
+    @livewireScripts
     @yield('scripts')
 
 </body>
