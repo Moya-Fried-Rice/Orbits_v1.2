@@ -8,11 +8,51 @@ use Illuminate\Http\Request;
 class CourseController extends Controller
 {
     // Show all courses
-    public function index()
+    public function index(Request $request)
     {
-        $courses = Course::all();
-        return view('courses.courses', compact('courses'));
+        $sortBy = $request->input('sort_by', 'created_at'); // Default to 'course_code'
+        $sortOrder = $request->input('sort_order', 'asc'); // Default to ascending order
+        $searchName = $request->input('search_name');
+        $searchCode = $request->input('search_code');
+        $departmentId = $request->input('department_id');
+        
+        // Fetch courses based on the search criteria
+        $courses = Course::query();
+        
+        if ($searchName) {
+            $courses = $courses->where('course_name', 'like', '%' . $searchName . '%');
+        }
+        
+        if ($searchCode) {
+            $courses = $courses->where('course_code', 'like', '%' . $searchCode . '%');
+        }
+        
+        if ($departmentId) {
+            $courses = $courses->where('department_id', $departmentId);
+        }
+        
+        if ($sortBy == 'department_code') {
+            $courses = $courses->join('departments', 'departments.department_id', '=', 'courses.department_id')
+                            ->orderBy('departments.department_code', $sortOrder);
+        } elseif ($sortBy == 'department_name') {
+            $courses = $courses->join('departments', 'departments.department_id', '=', 'courses.department_id')
+                            ->orderBy('departments.department_name', $sortOrder);
+        } else {
+            $courses = $courses->orderBy($sortBy, $sortOrder);
+        }
+        
+        // Paginate the courses
+        $courses = $courses->paginate(10);
+        
+        // Get all departments for the filter dropdown
+        $departments = Department::all();
+        
+        // Pass the selected department (departmentId) to the view
+        return view('courses.courses', compact('courses', 'departments', 'searchName', 'searchCode', 'departmentId', 'sortBy', 'sortOrder'));
     }
+
+    
+    
 
     // Show the form to create a new course
     public function create()

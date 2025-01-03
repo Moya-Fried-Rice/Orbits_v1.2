@@ -1,10 +1,11 @@
 @extends('layouts.master')
 
 @section('content')
- 
 <div class="space-y-2">
-    <div class="bg-white p-12 font-TT font-light space-y-2">
-        <h1 class="font-silka text-3xl font-black">{{ $course->course_code }} - {{ $course->course_name }}</h1>
+    <div class="bg-white p-6 font-TT font-light space-y-2">
+        <div class="flex justify-between items-center">
+            <h1 class="font-silka text-3xl font-black">{{ $course->course_code }} - {{ $course->course_name }}</h1>
+        </div>
         <div class="flex gap-2">
             <img src="{{ asset('assets/icons/survey.svg') }}" alt="Description">
             <p>{{ $course->course_description }}</p>
@@ -15,7 +16,7 @@
         </div>
     </div>
 
-    <div class="bg-white p-12 font-TT font-light">
+    <div class="bg-white p-6 font-TT font-light">
         <form action="{{ route('courses.update', $course->course_id) }}" method="POST" class="grid grid-cols-1 gap-6 sm:grid-cols-2">
             @csrf
             @method('PUT')
@@ -73,8 +74,12 @@
                 </select>
             </div>
     
-            <!-- Submit Button -->
-            <div class="col-span-1 sm:col-span-2 text-right">
+            <div class="col-span-1 sm:col-span-2 text-right space-x-2">
+                <!-- Return Button -->
+                <a href="{{ url()->previous() }}" class="bg-gray-200 text-black px-5 py-2.5 rounded btn btn-primary">
+                    Cancel
+                </a>
+                 <!-- Submit Button -->
                 <button 
                     type="submit" 
                     class="bg-[#923534] text-white px-5 py-2.5 rounded btn btn-primary">
@@ -83,10 +88,7 @@
             </div>
         </form>
     </div>
-    
-    
 </div>
-
 @endsection
 
 @section('scripts')

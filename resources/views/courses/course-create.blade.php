@@ -2,7 +2,7 @@
 
 @section('content')
  
-<div class="bg-white p-12 font-TT font-light">
+<div class="bg-white p-6 font-TT font-light">
     <form action="{{ route('courses.store') }}" method="POST" class="grid grid-cols-1 gap-6 sm:grid-cols-2">
         @csrf
 
