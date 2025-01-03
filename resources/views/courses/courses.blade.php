@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-
+{{-- 
     @if(session('success'))
         <div id="success-message" class="absolute right-0 top-0 px-4 py-2 m-2 bg-green-200 text-black opacity-50 flex items-center justify-between space-x-4">
             <span>{{ session('success') }}</span>
@@ -194,11 +194,11 @@
                 'sort_order' => $sortOrder
             ])->links() }}
         </div>
-    </div>
-    
+    </div> --}}
+    @livewire('course-crud')
 
 @endsection
 
 @section('scripts')
-<script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+
 @endsection
