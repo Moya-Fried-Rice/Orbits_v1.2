@@ -47,11 +47,11 @@
                         <!-- Submit and Reset Buttons -->
                         <div class="flex items-center space-x-4">
                             <button type="submit" class="flex items-center">
-                                <i class="fa fa-filter" aria-hidden="true"></i> Filter
+                                <i class="fa fa-filter" aria-hidden="true"></i>&nbsp;Filter
                             </button>
                             
                             <a href="{{ route('courses.index') }}" class="flex items-center">
-                                <i class="fa fa-eraser"></i> Clear
+                                <i class="fa fa-eraser"></i>&nbsp;Clear
                             </a>
                         </div>
                     </div>
@@ -170,7 +170,7 @@
                                     <form action="{{ route('courses.destroy', $course->course_id) }}" method="POST" class="flex items-center" style="display:inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="flex items-center">
+                                        <button type="button" class="flex items-center" onclick="confirmDelete(event)">
                                             <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="bg-[#666] p-1.5 w-8 h-8 rounded">
                                         </button>
                                     </form>
@@ -201,4 +201,16 @@
 
 @section('scripts')
  {{-- Scripts --}}
+<script>
+    function confirmDelete(event) {
+        // Prevent the form submission
+        event.preventDefault();
+        
+        // Show confirmation dialog
+        if (confirm("Are you sure you want to delete this course?")) {
+            // If confirmed, submit the form
+            event.target.closest('form').submit();
+        }
+    }
+</script>
 @endsection
