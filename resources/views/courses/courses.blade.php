@@ -200,5 +200,5 @@
 @endsection
 
 @section('scripts')
- {{-- Scripts  --}}
+ {{-- Scripts --}}
 @endsection
