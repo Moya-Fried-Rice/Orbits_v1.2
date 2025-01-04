@@ -6,17 +6,14 @@
         </div>
     @endif
 
-    <!-- Page Title -->
-    {{-- <div class="text-xl flex items-center p-5 pb-0">
-        <img src="{{ asset('assets/icons/course.svg') }}" alt="Course">
-        <div>
-            Course Management
-        </div>
-    </div> --}}
-
-    
-
     <div class="p-5 pb-0 flex flex-wrap justify-between items-center">
+
+        <!-- Title -->
+        {{-- <div class="text-xl flex items-center justify-center h-16">
+            <div>
+            Course Management
+            </div>
+        </div> --}}
 
         <!-- Filters and Search Bar Section -->
         <div class="flex flex-wrap gap-4 items-center justify-start w-full sm:w-auto">
@@ -45,118 +42,75 @@
     
     </div>
     
-    
     <!-- Course List -->
-    <div class="overflow-x-auto w-full p-5 pb-0">
-        <table class="table table-bordered font-TT w-full table-auto">
-            <thead>
-                <tr class="uppercase font-normal bg-[#F8F8F8] text-black">
-                    <th wire:click="sortBy('course_code')" class="items-center border border-[#DDD] text-left py-2 px-4 whitespace-nowrap font-light cursor-pointer hover:bg-blue-50 transition-colors duration-100">
-                        <div class="flex items-center gap-2 justify-between" style="user-select: none;">
-                            Course Code
-                            <span class="ml-1 text-xs text-[#666]">
-                                @if($sortField === 'course_code')
-                                    <i class="fas {{ $sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down' }}"></i>
-                                @else
-                                    <i class="fas fa-sort"></i>
-                                @endif
-                            </span>
-                        </div>
-                    </th>
-                    <th wire:click="sortBy('course_name')" class="items-center border border-[#DDD] text-left py-2 px-4 whitespace-nowrap font-light cursor-pointer hover:bg-blue-50 transition-colors duration-100">
-                        <div class="flex items-center gap-2 justify-between" style="user-select: none;">
-                            Course Name
-                            <span class="ml-1 text-xs text-[#666]">
-                                @if($sortField === 'course_name')
-                                    <i class="fas {{ $sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down' }}"></i>
-                                @else
-                                    <i class="fas fa-sort"></i>
-                                @endif
-                            </span>
-                        </div>
-                    </th>
-                    <th wire:click="sortBy('course_description')" class="items-center border border-[#DDD] text-left py-2 px-4 whitespace-nowrap font-light cursor-pointer hover:bg-blue-50 transition-colors duration-100">
-                        <div class="flex items-center gap-2 justify-between" style="user-select: none;">
-                            Course Description
-                            <span class="ml-1 text-xs text-[#666]">
-                                @if($sortField === 'course_description')
-                                    <i class="fas {{ $sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down' }}"></i>
-                                @else
-                                    <i class="fas fa-sort"></i>
-                                @endif
-                            </span>
-                        </div>
-                    </th>
-                    <th wire:click="sortBy('department_id')" class="items-center border border-[#DDD] text-left py-2 px-4 whitespace-nowrap font-light cursor-pointer hover:bg-blue-50 transition-colors duration-100">
-                        <div class="flex items-center gap-2 justify-between" style="user-select: none;">
-                            Department
-                            <span class="ml-1 text-xs text-[#666]">
-                                @if($sortField === 'department_id')
-                                    <i class="fas {{ $sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down' }}"></i>
-                                @else
-                                    <i class="fas fa-sort"></i>
-                                @endif
-                            </span>
-                        </div>
-                    </th>
-                    <th wire:click="sortBy('created_at')" class="items-center border border-[#DDD] text-left py-2 px-4 whitespace-nowrap font-light cursor-pointer hover:bg-blue-50 transition-colors duration-100">
-                        <div class="flex items-center gap-2 justify-between" style="user-select: none;">
-                            Created At
-                            <span class="ml-1 text-xs text-[#666]">
-                                @if($sortField === 'created_at')
-                                    <i class="fas {{ $sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down' }}"></i>
-                                @else
-                                    <i class="fas fa-sort"></i>
-                                @endif
-                            </span>
-                        </div>
-                    </th>
-                    <th wire:click="sortBy('updated_at')" class="items-center border border-[#DDD] text-left py-2 px-4 whitespace-nowrap font-light cursor-pointer hover:bg-blue-50 transition-colors duration-100">
-                        <div class="flex items-center gap-2 justify-between" style="user-select: none;">
-                            Updated At
-                            <span class="ml-1 text-xs text-[#666]">
-                                @if($sortField === 'updated_at')
-                                    <i class="fas {{ $sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down' }}"></i>
-                                @else
-                                    <i class="fas fa-sort"></i>
-                                @endif
-                            </span>
-                        </div>
-                    </th>
-                    <th class="border border-[#DDD] text-left py-2 px-4 whitespace-nowrap font-light hover:bg-blue-50 transition-colors duration-100">Actions</th>
-                </tr>
-            </thead>
-            
-            <tbody>
-                @if($courses->isEmpty())
-                <tr>
-                    <td colspan="7" class="text-center py-4">No courses found.</td>
-                </tr>
-                @else
-                @foreach ($courses as $course)
-                <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
-                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->course_code }}</td>
-                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->course_name }}</td>
-                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-sm">{{ $course->course_description }}</td>
-                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->department->department_code }}</td>
-                    <td class="py-2 whitespace-nowrap px-4">{{ $course->created_at->format('Y-m-d H:i') }}</td>
-                    <td class="py-2 whitespace-nowrap px-4">{{ $course->updated_at->format('Y-m-d H:i') }}</td>
-                    <td class="py-2 whitespace-nowrap px-4">
-                        <div class="flex items-center space-x-2">
-                            <button wire:click="edit({{ $course->course_id }})">
-                                <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
-                            </button>
-                            <button wire:click="delete({{ $course->course_id }})">
-                                <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
-                            </button>
-                        </div>
-                    </td>
-                </tr>            
-                @endforeach
-                @endif
-            </tbody>
-        </table>
-    </div>
+    <x-table>
+        <x-slot name="header">
+            <x-table-data
+                sortField="{{ $sortField }}"
+                sortDirection="{{ $sortDirection }}"
+                data="course_code"
+                label="Course Code">
+            </x-table-data>
+            <x-table-data
+                sortField="{{ $sortField }}"
+                sortDirection="{{ $sortDirection }}"
+                data="course_name"
+                label="Course Name">
+            </x-table-data>
+            <x-table-data
+                sortField="{{ $sortField }}"
+                sortDirection="{{ $sortDirection }}"
+                data="course_description"
+                label="Course Description">
+            </x-table-data>
+            <x-table-data
+                sortField="{{ $sortField }}"
+                sortDirection="{{ $sortDirection }}"
+                data="department_id"
+                label="Department">
+            </x-table-data>
+            <x-table-data
+                sortField="{{ $sortField }}"
+                sortDirection="{{ $sortDirection }}"
+                data="created_at"
+                label="Created At">
+            </x-table-data>
+            <x-table-data
+                sortField="{{ $sortField }}"
+                sortDirection="{{ $sortDirection }}"
+                data="updated_at"
+                label="Updated At">
+            </x-table-data>
+        </x-slot>
+        <x-slot name="body">
+            @if($courses->isEmpty())
+            <tr>
+                <td colspan="7" class="text-center py-4">No courses found.</td>
+            </tr>
+            @else
+            @foreach ($courses as $course)
+            <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
+                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->course_code }}</td>
+                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->course_name }}</td>
+                <td class="py-2 whitespace-nowrap px-4 truncate max-w-sm">{{ $course->course_description }}</td>
+                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->department->department_code }}</td>
+                <td class="py-2 whitespace-nowrap px-4">{{ $course->created_at->format('Y-m-d H:i') }}</td>
+                <td class="py-2 whitespace-nowrap px-4">{{ $course->updated_at->format('Y-m-d H:i') }}</td>
+                <td class="py-2 whitespace-nowrap px-4">
+                    <div class="flex items-center space-x-2">
+                        <button wire:click="edit({{ $course->course_id }})">
+                            <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                        </button>
+                        <button wire:click="delete({{ $course->course_id }})">
+                            <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                        </button>
+                    </div>
+                </td>
+            </tr>            
+            @endforeach
+            @endif
+        </x-slot>
+    </x-table>
 
     <!-- Pagination -->
     <div class="p-5">
