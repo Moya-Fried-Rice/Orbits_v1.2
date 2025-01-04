@@ -112,7 +112,7 @@
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->department->department_code }}</td>
                 <td class="py-2 whitespace-nowrap px-4">{{ $course->created_at->format('Y-m-d H:i') }}</td>
                 <td class="py-2 whitespace-nowrap px-4">{{ $course->updated_at->format('Y-m-d H:i') }}</td>
-                <td class="py-2 whitespace-nowrap px-4">
+                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
                     <div class="flex items-center space-x-2">
                         <button wire:click="edit({{ $course->course_id }})">
                             <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
@@ -186,7 +186,7 @@
 
             {{-- Body --}}
             <form wire:submit.prevent="{{ $updateMode ? 'update' : 'store' }}">
-                <div class="space-y-4 py-4 max-h-[70vh] px-6">
+                <div class="space-y-4 py-4 max-h-[70vh] px-6 overflow-y-auto">
                     <div>
                         <label for="course_name" class="block text-sm font-medium text-gray-700">Course Name</label>
                         <input type="text" wire:model="course_name" id="course_name" class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300"/>

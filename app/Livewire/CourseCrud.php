@@ -202,6 +202,7 @@ class CourseCrud extends Component
         $this->search = '';
         $this->selectedDepartment = '';
         $this->resetPage();
+        $this->dispatch('clearFilters');
     }
 
     // Fetch all departments for dropdown
