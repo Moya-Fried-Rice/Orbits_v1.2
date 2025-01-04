@@ -32,19 +32,6 @@ class CourseCrud extends Component
         'department_id' => 'required|exists:departments,department_id',
     ];
 
-    // Render method for displaying courses and departments
-    public function render()
-    {
-        $courses = Course::query()
-            ->when($this->search, fn($query) => $query->where('course_name', 'like', '%' . $this->search . '%')
-                                                     ->orWhere('course_code', 'like', '%' . $this->search . '%'))
-            ->when($this->selectedDepartment, fn($query) => $query->where('department_id', $this->selectedDepartment))
-            ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate(12);
-
-        return view('livewire.course-crud', compact('courses'));
-    }
-
     // Method to search courses
     public function searchCourses($searchTerm)
     {
@@ -215,5 +202,18 @@ class CourseCrud extends Component
     public function clearMessage()
     {
         session()->forget(['success', 'error']);
+    }
+
+    // Render method for displaying courses and departments
+    public function render()
+    {
+        $courses = Course::query()
+            ->when($this->search, fn($query) => $query->where('course_name', 'like', '%' . $this->search . '%')
+                                                     ->orWhere('course_code', 'like', '%' . $this->search . '%'))
+            ->when($this->selectedDepartment, fn($query) => $query->where('department_id', $this->selectedDepartment))
+            ->orderBy($this->sortField, $this->sortDirection)
+            ->paginate(12);
+
+        return view('livewire.course-crud', compact('courses'));
     }
 }
