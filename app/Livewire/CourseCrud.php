@@ -6,196 +6,173 @@ use Livewire\Component;
 use App\Models\Course;
 use App\Models\Department;
 use Livewire\WithPagination;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Exception;
 
 class CourseCrud extends Component
 {
     use WithPagination;
 
-    // Public properties for the course CRUD operations and modal states.
+    // Public properties for course data and modal states.
     public $course_id, $course_name, $course_description, $course_code, $department_id;
-    public $updateMode = false;
-    public $showConfirmation = false;
-    public $showDeleteConfirmation = false;
-    public $search = '';
-    public $deleteId;
-    public $page = 1;
-    public $sortField = 'created_at';
-    public $sortDirection = 'asc';
-    public $selectedDepartment = '';
+    public $updateMode = false, $showConfirmation = false, $showDeleteConfirmation = false;
+    public $search = '', $deleteId, $selectedDepartment = '';
+    public $sortField = 'created_at', $sortDirection = 'asc';
 
-
-
-
-
-    // Listen for events dispatched by other Livewire components. __________..
     protected $listeners = [
         'departmentSelected' => 'departmentSearch',
         'searchPerformed' => 'searchCourses'
     ];
-    //______________________________________________________________________..
 
-
-
-
-
-    // Method to search courses by name or code. ____________________________..
-    public function searchCourses($searchTerm)
-    {
-        $this->search = $searchTerm;
-        $this->resetPage();
-    }
-    //_______________________________________________________________________..
-
-
-
-
-
-    // Method to filter courses by department. _____________________________..
-    public function departmentSearch($departmentId)
-    {
-        $this->selectedDepartment = $departmentId;
-        $this->resetPage();
-    }
-    //______________________________________________________________________..
-
-
-
-
-    
-    // Validation rules for storing or updating courses. ____________________..
+    // Validation rules
     protected $rules = [
         'course_name' => 'required|string|max:255',
         'course_code' => 'required|string|max:50',
         'course_description' => 'nullable|string|max:500',
         'department_id' => 'required|exists:departments,department_id',
     ];
-    //______________________________________________________________________..
 
-
-
-
-    // Render method to display the view with courses and departments. ______..
+    // Render method for displaying courses and departments
     public function render()
     {
         $courses = Course::query()
-            ->where(function($query) {
-                $query->where('course_name', 'like', '%' . $this->search . '%') 
-                    ->orWhere('course_code', 'like', '%' . $this->search . '%');
-            });
-        if ($this->selectedDepartment) {
-            $courses->where('department_id', $this->selectedDepartment);
-        }
-        $courses = $courses->orderBy($this->sortField, $this->sortDirection)->paginate(12);
+            ->when($this->search, fn($query) => $query->where('course_name', 'like', '%' . $this->search . '%')
+                                                     ->orWhere('course_code', 'like', '%' . $this->search . '%'))
+            ->when($this->selectedDepartment, fn($query) => $query->where('department_id', $this->selectedDepartment))
+            ->orderBy($this->sortField, $this->sortDirection)
+            ->paginate(12);
+
         return view('livewire.course-crud', compact('courses'));
     }
-    //______________________________________________________________________..
 
+    // Method to search courses
+    public function searchCourses($searchTerm)
+    {
+        $this->search = $searchTerm;
+        $this->resetPage();
+    }
 
+    // Method to filter courses by department
+    public function departmentSearch($departmentId)
+    {
+        $this->selectedDepartment = $departmentId;
+        $this->resetPage();
+    }
 
-
-
-    // Store method to add a new course. __________________________________..
+    // Store method to add a new course
     public function store()
     {
         $this->validate();
-        Course::create([
-            'course_name' => $this->course_name,
-            'course_description' => $this->course_description,
-            'course_code' => $this->course_code,
-            'department_id' => $this->department_id
-        ]);
-        session()->flash('message', 'Course successfully added!');
-        $this->resetInputFields();
-        $this->showConfirmation = false;
+        
+        try {
+            Course::create([
+                'course_name' => $this->course_name,
+                'course_description' => $this->course_description,
+                'course_code' => $this->course_code,
+                'department_id' => $this->department_id,
+            ]);
+            session()->flash('success', 'Course successfully added!');
+        } catch (Exception $e) {
+            session()->flash('error', 'Failed to add course: ' . $e->getMessage());
+        } finally {
+            $this->resetInputFields();
+            $this->showConfirmation = false;
+        }
     }
-    //______________________________________________________________________..
 
-
-
-
-
-    // Populate fields when editing an existing course. ____________________..
+    // Method to edit course details
     public function edit($id)
     {
-        $course = Course::findOrFail($id);
-        $this->course_id = $course->course_id;
-        $this->course_name = $course->course_name;
-        $this->course_description = $course->course_description;
-        $this->course_code = $course->course_code;
-        $this->department_id = $course->department_id;
-        $this->showConfirmation = true;
-        $this->updateMode = true;
+        try {
+            $course = Course::findOrFail($id);
+            $this->course_id = $course->course_id;
+            $this->course_name = $course->course_name;
+            $this->course_description = $course->course_description;
+            $this->course_code = $course->course_code;
+            $this->department_id = $course->department_id;
+            $this->updateMode = true;
+            $this->showConfirmation = true;
+        } catch (ModelNotFoundException $e) {
+            session()->flash('error', 'Course not found.');
+        } catch (Exception $e) {
+            session()->flash('error', 'Failed to load course: ' . $e->getMessage());
+        }
     }
-    //______________________________________________________________________..
 
-
-
-
-
-    // Save changes when updating an existing course. _______________________..
+    // Update method for modifying course details
     public function update()
     {
         $this->validate();
-        $course = Course::find($this->course_id);
-        $course->update([
-            'course_name' => $this->course_name,
-            'course_description' => $this->course_description,
-            'course_code' => $this->course_code,
-            'department_id' => $this->department_id
-        ]);
-        session()->flash('message', 'Course successfully updated!');
-        $this->resetInputFields();
-        $this->updateMode = false;
-        $this->showConfirmation = false;
+        
+        try {
+            $course = Course::findOrFail($this->course_id);
+            $course->update([
+                'course_name' => $this->course_name,
+                'course_description' => $this->course_description,
+                'course_code' => $this->course_code,
+                'department_id' => $this->department_id,
+            ]);
+            session()->flash('success', 'Course successfully updated!');
+        } catch (ModelNotFoundException $e) {
+            session()->flash('error', 'Course not found.');
+        } catch (Exception $e) {
+            session()->flash('error', 'Failed to update course: ' . $e->getMessage());
+        } finally {
+            $this->resetInputFields();
+            $this->updateMode = false;
+            $this->showConfirmation = false;
+        }
     }
-    //______________________________________________________________________..
 
-
-
-
-
-    // Trigger the deletion confirmation modal. ____________________________..
+    // Delete method to initiate course deletion
     public function delete($id)
     {
         $this->deleteId = $id;
         $this->showDeleteConfirmation = true;
     }
-    //______________________________________________________________________..
 
-
-
-
-
-    // Method to delete the course if confirmed. ___________________________..
+    // Confirm deletion of a course
     public function confirmDelete()
     {
         if ($this->deleteId) {
-            Course::find($this->deleteId)->delete();
-            session()->flash('message', 'Course successfully deleted!');
-            $this->showDeleteConfirmation = false;
-            $this->deleteId = null;
+            try {
+                $course = Course::findOrFail($this->deleteId);
+
+                // Check for related course sections
+                if ($course->courseSections()->exists()) {
+                    session()->flash('error', 'Cannot delete the course due to related course sections.');
+                    $this->resetDeleteState();
+                    return;
+                }
+
+                $course->delete();
+                session()->flash('success', 'Course successfully deleted!');
+            } catch (ModelNotFoundException $e) {
+                session()->flash('error', 'Course not found.');
+            } catch (Exception $e) {
+                session()->flash('error', 'Failed to delete course: ' . $e->getMessage());
+            } finally {
+                $this->resetDeleteState();
+            }
         }
     }
-    //______________________________________________________________________..
 
+    // Reset delete state
+    private function resetDeleteState()
+    {
+        $this->showDeleteConfirmation = false;
+        $this->deleteId = null;
+    }
 
-
-
-
-    // Close the delete confirmation modal without deleting. ________________..
+    // Close delete confirmation modal without deleting
     public function cancelDelete()
     {
         $this->showDeleteConfirmation = false;
         $this->deleteId = null;
     }
-    //______________________________________________________________________..
 
-
-
-
-
-    // Reset input fields after adding or editing a course. ________________..
-    public function resetInputFields()
+    // Reset all input fields
+    private function resetInputFields()
     {
         $this->course_id = null;
         $this->course_name = '';
@@ -203,57 +180,39 @@ class CourseCrud extends Component
         $this->course_code = '';
         $this->department_id = '';
     }
-    //______________________________________________________________________..
 
-
-
-
-
-    // Show the modal for adding a new course. _____________________________..
+    // Open modal for adding a new course
     public function showAddCourseModal()
     {
         $this->resetInputFields();
         $this->showConfirmation = true;
         $this->updateMode = false;
     }
-    //______________________________________________________________________..
 
-
-
-
-
-    // Sort courses by field and direction. ________________________________..
+    // Sort courses by field and direction
     public function sortBy($field)
     {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortField = $field;
-            $this->sortDirection = 'asc';
-        }
+        $this->sortField = $this->sortField === $field ? $this->sortField : $field;
+        $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
     }
-    //______________________________________________________________________..
 
-
-
-
-
-    // Clear search filters. _______________________________________________..
+    // Clear filters
     public function clearFilters()
     {
         $this->search = '';
         $this->selectedDepartment = '';
         $this->resetPage();
     }
-    //______________________________________________________________________..
 
-
-
-    // Method to get all departments for the dropdown. ______________________..
+    // Fetch all departments for dropdown
     public function getDepartments()
     {
         return Department::all();
     }
-    //______________________________________________________________________..
 
+    // Clear session messages
+    public function clearMessage()
+    {
+        session()->forget(['success', 'error']);
+    }
 }
