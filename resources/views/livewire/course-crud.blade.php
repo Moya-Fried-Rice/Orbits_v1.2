@@ -117,7 +117,7 @@
         {{ $courses->links() }}
     </div>
 
-
+    {{-- Modal Confirmation --}}
     @if ($showDeleteConfirmation)
     <div class="absolute inset-0 bg-black bg-opacity-20 overflow-y-auto">
         <div class="bg-[#F8F8F8] rounded-lg w-full max-w-md mx-auto mt-20 relative">
