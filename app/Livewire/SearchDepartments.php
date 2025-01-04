@@ -10,6 +10,16 @@ class SearchDepartments extends Component
     public $searchDepartment = '';  // Holds the search input
     public $departments = [];       // Holds the filtered departments
 
+    // Listen for the clearFilters event
+    protected $listeners = ['clearFilters' => 'clearFilters']; 
+
+    // This method will clear the search term
+    public function clearFilters()
+    {
+        $this->searchDepartment = '';
+        $this->departments = Department::all();
+    }
+
     // This method is called whenever the searchDepartment property is updated
     public function updatedSearchDepartment()
     {
