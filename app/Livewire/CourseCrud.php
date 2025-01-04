@@ -21,62 +21,100 @@ class CourseCrud extends Component
     public $page = 1;
     public $sortField = 'created_at';
     public $sortDirection = 'asc';
-    public $isFocused = false;
-    public $searchDepartment = '';
     public $selectedDepartment = '';
-    public $departments = [];
 
-    // Validation rules for storing or updating courses.
+
+
+
+
+    // Listen for events dispatched by other Livewire components. __________..
+    protected $listeners = [
+        'departmentSelected' => 'departmentSearch',
+        'searchPerformed' => 'searchCourses'
+    ];
+    //______________________________________________________________________..
+
+
+
+
+
+    // Method to search courses by name or code. ____________________________..
+    public function searchCourses($searchTerm)
+    {
+        $this->search = $searchTerm;
+        $this->resetPage();
+    }
+    //_______________________________________________________________________..
+
+
+
+
+
+    // Method to filter courses by department. _____________________________..
+    public function departmentSearch($departmentId)
+    {
+        $this->selectedDepartment = $departmentId;
+        $this->resetPage();
+    }
+    //______________________________________________________________________..
+
+
+
+
+    
+    // Validation rules for storing or updating courses. ____________________..
     protected $rules = [
         'course_name' => 'required|string|max:255',
         'course_code' => 'required|string|max:50',
         'course_description' => 'nullable|string|max:500',
         'department_id' => 'required|exists:departments,department_id',
     ];
+    //______________________________________________________________________..
 
-    // Fetch departments from the database
-    public function mount()
-    {
-        $this->departments = Department::all();
-    }
 
-    // Render method to display the view with courses and departments.
+
+
+    // Render method to display the view with courses and departments. ______..
     public function render()
     {
         $courses = Course::query()
             ->where(function($query) {
-                $query->where('course_name', 'like', '%' . $this->search . '%')
+                $query->where('course_name', 'like', '%' . $this->search . '%') 
                     ->orWhere('course_code', 'like', '%' . $this->search . '%');
             });
-
         if ($this->selectedDepartment) {
             $courses->where('department_id', $this->selectedDepartment);
         }
-
-        $courses = $courses->orderBy($this->sortField, $this->sortDirection)
-            ->paginate(12);
-
+        $courses = $courses->orderBy($this->sortField, $this->sortDirection)->paginate(12);
         return view('livewire.course-crud', compact('courses'));
     }
+    //______________________________________________________________________..
 
-    // Store method to add a new course.
+
+
+
+
+    // Store method to add a new course. __________________________________..
     public function store()
     {
         $this->validate();
-
         Course::create([
             'course_name' => $this->course_name,
             'course_description' => $this->course_description,
             'course_code' => $this->course_code,
             'department_id' => $this->department_id
         ]);
-
         session()->flash('message', 'Course successfully added!');
         $this->resetInputFields();
         $this->showConfirmation = false;
     }
+    //______________________________________________________________________..
 
-    // Edit method to populate fields when editing an existing course.
+
+
+
+
+    // Populate fields when editing an existing course. ____________________..
     public function edit($id)
     {
         $course = Course::findOrFail($id);
@@ -85,16 +123,19 @@ class CourseCrud extends Component
         $this->course_description = $course->course_description;
         $this->course_code = $course->course_code;
         $this->department_id = $course->department_id;
-
         $this->showConfirmation = true;
         $this->updateMode = true;
     }
+    //______________________________________________________________________..
 
-    // Update method to save changes when updating an existing course.
+
+
+
+
+    // Save changes when updating an existing course. _______________________..
     public function update()
     {
         $this->validate();
-
         $course = Course::find($this->course_id);
         $course->update([
             'course_name' => $this->course_name,
@@ -102,21 +143,30 @@ class CourseCrud extends Component
             'course_code' => $this->course_code,
             'department_id' => $this->department_id
         ]);
-
         session()->flash('message', 'Course successfully updated!');
         $this->resetInputFields();
         $this->updateMode = false;
         $this->showConfirmation = false;
     }
+    //______________________________________________________________________..
 
-    // Delete method to trigger the deletion confirmation modal.
+
+
+
+
+    // Trigger the deletion confirmation modal. ____________________________..
     public function delete($id)
     {
         $this->deleteId = $id;
         $this->showDeleteConfirmation = true;
     }
+    //______________________________________________________________________..
 
-    // Confirm delete method to delete the course if confirmed.
+
+
+
+
+    // Method to delete the course if confirmed. ___________________________..
     public function confirmDelete()
     {
         if ($this->deleteId) {
@@ -126,15 +176,25 @@ class CourseCrud extends Component
             $this->deleteId = null;
         }
     }
+    //______________________________________________________________________..
 
-    // Cancel delete method to close the delete confirmation modal without deleting.
+
+
+
+
+    // Close the delete confirmation modal without deleting. ________________..
     public function cancelDelete()
     {
         $this->showDeleteConfirmation = false;
         $this->deleteId = null;
     }
+    //______________________________________________________________________..
 
-    // Reset input fields after adding or editing a course.
+
+
+
+
+    // Reset input fields after adding or editing a course. ________________..
     public function resetInputFields()
     {
         $this->course_id = null;
@@ -143,34 +203,26 @@ class CourseCrud extends Component
         $this->course_code = '';
         $this->department_id = '';
     }
+    //______________________________________________________________________..
 
-    // Method to fetch all departments (called for dropdown).
-    public function getDepartments()
-    {
-        return Department::all();
-    }
 
-    // Show the modal for adding a new course.
+
+
+
+    // Show the modal for adding a new course. _____________________________..
     public function showAddCourseModal()
     {
         $this->resetInputFields();
         $this->showConfirmation = true;
         $this->updateMode = false;
     }
+    //______________________________________________________________________..
 
-    // Method to handle department selection
-    public function selectDepartment($departmentId)
-    {
-        $this->selectedDepartment = $departmentId;
-        $this->searchDepartment = '';
-    }
 
-    // Triggered when the filter button is clicked
-    public function applyFilter()
-    {
-        $this->resetPage();
-    }
 
+
+
+    // Sort courses by field and direction. ________________________________..
     public function sortBy($field)
     {
         if ($this->sortField === $field) {
@@ -180,21 +232,28 @@ class CourseCrud extends Component
             $this->sortDirection = 'asc';
         }
     }
+    //______________________________________________________________________..
 
-    public function updatedSearch()
-    {
-        $this->resetPage();
-    }
 
-    public function showDropdown($status)
-    {
-        $this->isFocused = $status;
-    }
 
+
+
+    // Clear search filters. _______________________________________________..
     public function clearFilters()
     {
         $this->search = '';
         $this->selectedDepartment = '';
         $this->resetPage();
     }
+    //______________________________________________________________________..
+
+
+
+    // Method to get all departments for the dropdown. ______________________..
+    public function getDepartments()
+    {
+        return Department::all();
+    }
+    //______________________________________________________________________..
+
 }

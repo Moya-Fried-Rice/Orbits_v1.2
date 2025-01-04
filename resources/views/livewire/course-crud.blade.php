@@ -14,63 +14,18 @@
         </div>
     </div> --}}
 
+    
+
     <div class="p-5 pb-0 flex flex-wrap justify-between items-center">
 
         <!-- Filters and Search Bar Section -->
         <div class="flex flex-wrap gap-4 items-center justify-start w-full sm:w-auto">
     
             <!-- Search Bar -->
-            <div class="relative group w-full sm:w-[250px]">
-                <input 
-                    class="px-5 py-2 pr-20 border border-[#DDD] rounded appearance-none w-full transition-all duration-200 group-hover:border-[#923534]" 
-                    wire:model.live="search" 
-                    placeholder="Search..." 
-                />
-                <div class="absolute right-5 top-1/2 transform -translate-y-1/2 hover:text-blue-500 transition-colors duration-200">
-                    <img class="w-4 h-4 group-hover:transform group-hover:-translate-x-1 transition-transform duration-200" src="{{ asset('assets/icons/search.svg') }}" alt="Search">
-                </div>
-            </div>
+            <livewire:search-bar />
     
-            <div class="relative group w-full sm:w-[250px]">
-                <!-- Search Input -->
-                <input 
-                    wire:model.live="searchDepartment"
-                    type="text"
-                    class="px-5 py-2 pr-20 border border-[#DDD] rounded appearance-none w-full bg-[#F8F8F8] transition-all duration-200 group-hover:border-[#923534]"
-                    placeholder="{{ $searchDepartment ? 'Searching: ' . $searchDepartment : 'Search Department...' }}"
-                    wire:focus="showDropdown(true)" 
-                    wire:blur="showDropdown(false)"  
-                />
-                
-                <!-- Dropdown of Filtered Departments -->
-                <div class="absolute left-0 right-0 mt-1 bg-white border border-[#DDD] rounded max-h-60 overflow-y-auto z-10"
-                     style="display: {{ strlen($searchDepartment) > 0 || $isFocused ? 'block' : 'none' }};">
-                    @if(strlen($searchDepartment) > 0) 
-                        <!-- Show filtered departments if search input exists -->
-                        @foreach($departments as $department)
-                            @if(stripos($department->department_code, $searchDepartment) !== false)
-                                <a href="javascript:void(0);" wire:click="selectDepartment({{ $department->department_id }})" 
-                                class="block px-5 py-2 hover:bg-[#f1f1f1] cursor-pointer">
-                                    {{ $department->department_code }}
-                                </a>
-                            @endif
-                        @endforeach
-                    @else
-                        <!-- Show all departments if no search input -->
-                        @foreach($departments as $department)
-                            <a href="javascript:void(0);" wire:click="selectDepartment({{ $department->department_id }})" 
-                            class="block px-5 py-2 hover:bg-[#f1f1f1] cursor-pointer">
-                                {{ $department->department_code }}
-                            </a>
-                        @endforeach
-                    @endif
-                </div>
-            
-                <!-- Department Dropdown Arrow -->
-                <div class="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer hover:text-blue-500 transition-colors duration-200">
-                    <img class="w-6 h-6 group-hover:transform" src="{{ asset('assets/icons/arrow1.svg') }}" alt="Arrow">
-                </div>
-            </div>
+            <!-- Search Department -->
+            <livewire:search-departments />
     
             <!-- Clear Button -->
             <div class="flex flex-cols w-full sm:w-auto">
