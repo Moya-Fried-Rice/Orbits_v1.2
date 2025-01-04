@@ -208,12 +208,17 @@ class CourseCrud extends Component
     public function render()
     {
         $courses = Course::query()
-            ->when($this->search, fn($query) => $query->where('course_name', 'like', '%' . $this->search . '%')
-                                                     ->orWhere('course_code', 'like', '%' . $this->search . '%'))
+            ->when($this->search, function ($query) {
+                $query->where(function ($query) {
+                    $query->where('course_name', 'like', '%' . $this->search . '%')
+                        ->orWhere('course_code', 'like', '%' . $this->search . '%');
+                });
+            })
             ->when($this->selectedDepartment, fn($query) => $query->where('department_id', $this->selectedDepartment))
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate(12);
 
         return view('livewire.course-crud', compact('courses'));
     }
+
 }
