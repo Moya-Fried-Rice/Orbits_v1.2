@@ -29,13 +29,13 @@
             <button
                 @click="showSidebar = !showSidebar"  
                 :class="{'transform rotate-90': showSidebar, 'transform rotate-0': !showSidebar}" 
-                style="transition: transform 0.2s cubic-bezier(.67, .61, .28, 1.27);"
-                class="nav-btn nav-btn-hover">     
-                <img src="{{ asset('assets/icons/menu.svg') }}" alt="Menu Icon" class="icon">
+                class="m-2 flex items-center rounded-lg transition-transform duration-200" style="transition-timing-function: cubic-bezier(.67, .61, .28, 1.27);">   
+                <div class="rounded-lg hover:bg-[#EFEFEF] transition-all duration-100">
+                    <img src="{{ asset('assets/icons/menu.svg') }}" alt="Menu Icon" class="icon">
+                </div>  
             </button>
         </div>
     </div>
-
     <!-- First div (red) -->
     <div class="flex items-center justify-start border-b border-[#D4D4D4]
         justify-center

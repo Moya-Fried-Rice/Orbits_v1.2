@@ -18,10 +18,11 @@
 @layer utilities {
     .nav-btn {
         @apply m-2 flex items-center rounded-lg;
+        user-select: none;
     }
 
     .nav-btn-hover {
-        @apply hover:bg-[#EFEFEF];
+        @apply hover:bg-[#EFEFEF] transition duration-100;
     }
 
     .icon {
