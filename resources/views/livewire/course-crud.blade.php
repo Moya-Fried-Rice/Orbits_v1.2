@@ -1,10 +1,26 @@
 <div class="bg-white">
+
     <!-- Success Message -->
-    @if (session()->has('message'))
-        <div class="alert alert-success">
-            {{ session('message') }}
-        </div>
+    @if (session()->has('success'))
+    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 flex justify-between items-center" role="alert">
+        {{ session('success') }}
+        <button type="button" class="text-green-700 mr-5" wire:click="clearMessage">
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
+    @elseif (session()->has('error'))
+    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 flex justify-between items-center" role="alert">
+        {{ session('error') }}
+        <button type="button" class="text-red-700 mr-5" wire:click="clearMessage">
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
     @endif
+
+    @if ($errors->has('search'))
+    <div class="error">{{ $errors->first('search') }}</div>
+@endif
+
 
     <div class="p-5 pb-0 flex flex-wrap justify-between items-center">
 
