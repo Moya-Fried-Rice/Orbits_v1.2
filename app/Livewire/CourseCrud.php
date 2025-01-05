@@ -19,6 +19,7 @@ class CourseCrud extends Component
     public $search = '', $deleteId, $selectedDepartment = '';
     public $sortField = 'created_at', $sortDirection = 'asc';
 
+    // Listen to dispatched events
     protected $listeners = [
         'departmentSelected' => 'departmentSearch',
         'searchPerformed' => 'searchCourses'
@@ -32,14 +33,14 @@ class CourseCrud extends Component
         'department_id' => 'required|exists:departments,department_id',
     ];
 
-    // Method to search courses
+    // Search courses
     public function searchCourses($searchTerm)
     {
         $this->search = $searchTerm;
         $this->resetPage();
     }
 
-    // Method to filter courses by department
+    // Filter courses by department
     public function departmentSearch($departmentId)
     {
         $this->selectedDepartment = $departmentId;
@@ -67,7 +68,7 @@ class CourseCrud extends Component
         }
     }
 
-    // Method to edit course details
+    // Edit course details
     public function edit($id)
     {
         try {
@@ -161,19 +162,22 @@ class CourseCrud extends Component
     // Reset all input fields
     private function resetInputFields()
     {
-        $this->course_id = null;
-        $this->course_name = '';
-        $this->course_description = '';
-        $this->course_code = '';
-        $this->department_id = '';
+        $this->reset(['course_id', 'course_name', 'course_code', 'course_description', 'department_id']);
     }
 
     // Open modal for adding a new course
-    public function showAddCourseModal()
+    public function showModal()
     {
         $this->resetInputFields();
         $this->showConfirmation = true;
         $this->updateMode = false;
+    }
+
+    // Close modal when canceled or closed
+    public function closeModal() {
+        $this->resetInputFields();
+        $this->showConfirmation = false;
+        $this->resetErrorBag();
     }
 
     // Sort courses by field and direction
