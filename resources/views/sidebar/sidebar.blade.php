@@ -1,4 +1,4 @@
-<div class="z-50 h-full absolute lg:static transition-all duration-500 -left-16" 
+<div class="z-20 h-full absolute lg:static transition-all duration-500 -left-16 overflow-hidden" 
     x-bind:class="{'-left-0': showSidebar, '-left-16': !showSidebar}">
     <div class="text-[#666] font-semibold border-r border-[#D4D4D4] bg-white overflow-y-auto h-full">
 
