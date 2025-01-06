@@ -15,7 +15,9 @@ class CourseCrud extends Component
 
     // Public properties for course data and modal states.
     public $course_id, $course_name, $course_description, $course_code, $department_id;
-    public $updateMode = false, $showConfirmation = false, $showDeleteConfirmation = false;
+    public $showDeleteConfirmation = false;
+    public $showEditForm = false, $showEditConfirmation = false;
+    public $showAddForm = false, $showAddConfirmation = false;
     public $search = '', $deleteId, $selectedDepartment = '';
     public $sortField = 'created_at', $sortDirection = 'asc';
 
@@ -47,139 +49,6 @@ class CourseCrud extends Component
         $this->resetPage();
     }
 
-    // Store method to add a new course
-    public function store()
-    {
-        $this->validate();
-        
-        try {
-            Course::create([
-                'course_name' => $this->course_name,
-                'course_description' => $this->course_description,
-                'course_code' => $this->course_code,
-                'department_id' => $this->department_id,
-            ]);
-            session()->flash('success', 'Course successfully added!');
-        } catch (Exception $e) {
-            session()->flash('error', 'Failed to add course: ' . $e->getMessage());
-        } finally {
-            $this->resetInputFields();
-            $this->showConfirmation = false;
-        }
-    }
-
-    // Edit course details
-    public function edit($id)
-    {
-        try {
-            $course = Course::findOrFail($id);
-            $this->course_id = $course->course_id;
-            $this->course_name = $course->course_name;
-            $this->course_description = $course->course_description;
-            $this->course_code = $course->course_code;
-            $this->department_id = $course->department_id;
-            $this->updateMode = true;
-            $this->showConfirmation = true;
-        } catch (ModelNotFoundException $e) {
-            session()->flash('error', 'Course not found.');
-        } catch (Exception $e) {
-            session()->flash('error', 'Failed to load course: ' . $e->getMessage());
-        }
-    }
-
-    // Update method for modifying course details
-    public function update()
-    {
-        $this->validate();
-        
-        try {
-            $course = Course::findOrFail($this->course_id);
-            $course->update([
-                'course_name' => $this->course_name,
-                'course_description' => $this->course_description,
-                'course_code' => $this->course_code,
-                'department_id' => $this->department_id,
-            ]);
-            session()->flash('success', 'Course successfully updated!');
-        } catch (ModelNotFoundException $e) {
-            session()->flash('error', 'Course not found.');
-        } catch (Exception $e) {
-            session()->flash('error', 'Failed to update course: ' . $e->getMessage());
-        } finally {
-            $this->resetInputFields();
-            $this->updateMode = false;
-            $this->showConfirmation = false;
-        }
-    }
-
-    // Delete method to initiate course deletion
-    public function delete($id)
-    {
-        $this->deleteId = $id;
-        $this->showDeleteConfirmation = true;
-    }
-
-    // Confirm deletion of a course
-    public function confirmDelete()
-    {
-        if ($this->deleteId) {
-            try {
-                $course = Course::findOrFail($this->deleteId);
-
-                // Check for related course sections
-                if ($course->courseSections()->exists()) {
-                    session()->flash('error', 'Cannot delete the course due to related course sections.');
-                    $this->resetDeleteState();
-                    return;
-                }
-
-                $course->delete();
-                session()->flash('success', 'Course successfully deleted!');
-            } catch (ModelNotFoundException $e) {
-                session()->flash('error', 'Course not found.');
-            } catch (Exception $e) {
-                session()->flash('error', 'Failed to delete course: ' . $e->getMessage());
-            } finally {
-                $this->resetDeleteState();
-            }
-        }
-    }
-
-    // Reset delete state
-    private function resetDeleteState()
-    {
-        $this->showDeleteConfirmation = false;
-        $this->deleteId = null;
-    }
-
-    // Close delete confirmation modal without deleting
-    public function cancelDelete()
-    {
-        $this->showDeleteConfirmation = false;
-        $this->deleteId = null;
-    }
-
-    // Reset all input fields
-    private function resetInputFields()
-    {
-        $this->reset(['course_id', 'course_name', 'course_code', 'course_description', 'department_id']);
-    }
-
-    // Open modal for adding a new course
-    public function showModal()
-    {
-        $this->resetInputFields();
-        $this->showConfirmation = true;
-        $this->updateMode = false;
-    }
-
-    // Close modal when canceled or closed
-    public function closeModal() {
-        $this->resetInputFields();
-        $this->showConfirmation = false;
-        $this->resetErrorBag();
-    }
-
     // Sort courses by field and direction
     public function sortBy($field)
     {
@@ -208,21 +77,271 @@ class CourseCrud extends Component
         session()->forget(['success', 'error']);
     }
 
-    // Render method for displaying courses and departments
-    public function render()
-    {
-        $courses = Course::query()
-            ->when($this->search, function ($query) {
-                $query->where(function ($query) {
-                    $query->where('course_name', 'like', '%' . $this->search . '%')
-                        ->orWhere('course_code', 'like', '%' . $this->search . '%');
-                });
-            })
-            ->when($this->selectedDepartment, fn($query) => $query->where('department_id', $this->selectedDepartment))
-            ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate(12);
 
-        return view('livewire.course-crud', compact('courses'));
-    }
+
+
+
+    // Method for editing field ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+        // Clicked edit to show forms > Show Confirmation > Confirm/Cancel > Update and close everthing
+        // Modal/s - showEditForm, showEditConfirmation
+        
+        // Step 1: Choose field to edit to show forms
+        public function edit($id)
+        {
+            $this->resetErrorBag();
+            try {
+                $course = Course::findOrFail($id);
+                $this->course_id = $course->course_id;
+                $this->course_name = $course->course_name;
+                $this->course_description = $course->course_description;
+                $this->course_code = $course->course_code;
+                $this->department_id = $course->department_id;
+                $this->showEditForm = true;
+            } catch (ModelNotFoundException $e) {
+                session()->flash('error', 'Course not found.');
+            } catch (Exception $e) {
+                session()->flash('error', 'Failed to load course: ' . $e->getMessage());
+            }
+        }
+
+        // Step 2: Show update confirmation
+        public function updateConfirmation()
+        {
+            $this->validate();
+            $this->showEditForm = false; // Close the forms
+            $this->showEditConfirmation = true; // Show confirmation
+        }
+
+        // Step 3 Confirm/Cancel update
+
+            // If confirmed
+            public function confirmUpdate()
+            {
+                $this->update(); // Update the field
+                $this->closeEdit();
+            }
+
+            // If canceled
+            public function cancelUpdate()
+            {
+                $this->showEditConfirmation = false; // Close the confirmation modal
+                $this->showEditForm = true; // Show the edit form again
+                $this->resetErrorBag(); // Reset errors
+            }
+
+        // Step 4: Update the field
+        public function update()
+        {
+            $this->validate();
+            
+            try {
+                $course = Course::findOrFail($this->course_id);
+
+                // Check if any fields have changed
+                $changes = false;
+                if ($course->course_name !== $this->course_name) {
+                    $course->course_name = $this->course_name;
+                    $changes = true;
+                }
+                if ($course->course_description !== $this->course_description) {
+                    $course->course_description = $this->course_description;
+                    $changes = true;
+                }
+                if ($course->course_code !== $this->course_code) {
+                    $course->course_code = $this->course_code;
+                    $changes = true;
+                }
+                if ($course->department_id !== $this->department_id) {
+                    $course->department_id = $this->department_id;
+                    $changes = true;
+                }
+
+                // If there are changes, update the course
+                if ($changes) {
+                    $course->save();
+                    session()->flash('success', 'Course successfully updated!');
+                } else {
+                    session()->flash('info', 'No changes were made.');
+                }
+            } catch (ModelNotFoundException $e) {
+                session()->flash('error', 'Course not found.');
+            } catch (Exception $e) {
+                session()->flash('error', 'Failed to update course: ' . $e->getMessage());
+            } finally {
+                $this->closeEdit();
+            }
+        }
+
+
+        // Close all
+        public function closeEdit() {
+            $this->showEditForm = false;
+            $this->showEditConfirmation = false;
+            $this->resetErrorBag();
+        }
+
+    // Method for editing field ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+
+
+
+
+    // Method for deleting field ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+        // Clicked delete to show confirmation > Confirm/Cancel > Delete and close everything
+        // Modal/s - showDeleteConfirmation
+
+        // Step 1: Choose field to delete
+        public function delete($id)
+        {
+            $this->deleteId = $id;
+            $this->showDeleteConfirmation = true;
+        }
+
+        // Step 2: Confirm/Cancel delete
+
+            // If confirmed
+            public function confirmDelete()
+            {
+                $this->remove(); // Delete a field from database
+                $this->showDeleteConfirmation = false; // Close confirmation modal
+                $this->deleteId = null; // Reset delete state
+            }
+
+            // If canceled
+            public function cancelDelete()
+            {
+                $this->showDeleteConfirmation = false; // Close confirmation modal
+                $this->deleteId = null; // Reset delete state
+            }
+
+        // Step 3: Delete a field
+        private function remove()
+        {
+            if ($this->deleteId) {
+                try {
+                    $course = Course::findOrFail($this->deleteId);
+
+                    // Check for related course sections
+                    if ($course->courseSections()->exists()) {
+                        session()->flash('error', 'Cannot delete the course due to related course sections.');
+                        return;
+                    }
+
+                    $course->delete();
+                    session()->flash('success', 'Course successfully deleted!');
+                } catch (ModelNotFoundException $e) {
+                    session()->flash('error', 'Course not found.');
+                } catch (Exception $e) {
+                    session()->flash('error', 'Failed to delete course: ' . $e->getMessage());
+                }
+            }
+        }
+
+    // Method for deleting field ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+
+
+
+
+    // Method for adding field ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+        // Clicked add to show forms > Show add confirmation > Add/Cancel > Add and close everything
+        // Modal/s - showAddForm
+
+        // Step 1: Clicked add button
+        public function add()
+        {
+            $this->resetErrorBag(); // Reset errors
+            $this->resetInputFields(); // Reset inputs
+            $this->showAddForm = true; // Show add form modal
+        }
+
+        // Step 2: Show confirmation
+        public function storeConfirmation() 
+        {
+            $this->validate(); // Validate first
+            $this->showAddForm = false; // Close add form modal
+            $this->showAddConfirmation = true; // Show confirmation modal
+        }
+
+
+        // Step 3: Confirm/Cancel add
+
+            // If confirmed
+            public function confirmStore() {
+                $this->store(); // Store new field
+                $this->showAddConfirmation = false; // Close confirmation
+                $this->showAddForm = false; // Close add form modal
+                $this->resetInputFields(); // Reset inputs
+            }
+
+            // If canceled
+            public function cancelStore() {
+                $this->showAddConfirmation = false; // Close confirmation
+                $this->showAddForm = true; // Show add form modal again
+                $this->resetErrorBag();
+            }
+
+        // Step 4: Store new field
+        public function store()
+        {
+            $this->validate();
+            
+            try {
+                Course::create([
+                    'course_name' => $this->course_name,
+                    'course_description' => $this->course_description,
+                    'course_code' => $this->course_code,
+                    'department_id' => $this->department_id,
+                ]);
+                session()->flash('success', 'Course successfully added!');
+            } catch (Exception $e) {
+                session()->flash('error', 'Failed to add course: ' . $e->getMessage());
+            } finally {
+                $this->resetInputFields();
+            }
+        }
+        
+        // Reset all input fields
+        private function resetInputFields()
+        {
+            $this->reset(['course_id', 'course_name', 'course_code', 'course_description', 'department_id']);
+        }
+
+        // Close all
+        public function closeAdd() {
+            $this->showAddForm = false; // Close add form modal
+            $this->showAddConfirmation = false; // Close confirmation
+            $this->resetInputFields(); // Reset inputs
+            $this->resetErrorBag(); // Reset errors
+        }
+
+    // Method for adding field ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+
+
+
+
+    // Render method for displaying courses and departments ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+        public function render()
+        {
+            $courses = Course::query()
+                ->when($this->search, function ($query) {
+                    $query->where(function ($query) {
+                        $query->where('course_name', 'like', '%' . $this->search . '%')
+                            ->orWhere('course_code', 'like', '%' . $this->search . '%');
+                    });
+                })
+                ->when($this->selectedDepartment, fn($query) => $query->where('department_id', $this->selectedDepartment))
+                ->orderBy($this->sortField, $this->sortDirection)
+                ->paginate(12);
+
+            return view('livewire.course-crud', compact('courses'));
+        }
+
+    // Render method for displaying courses and departments ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
 }
