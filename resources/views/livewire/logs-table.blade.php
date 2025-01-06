@@ -100,7 +100,10 @@
                                     @break
 
                                     @case('Update')
-                                        @if(isset($log->properties['changes']))
+                                    @if(isset($log->properties['changes']))
+                                        @if(is_string($log->properties['changes']))
+                                            <p>{{ $log->properties['changes'] }}</p>
+                                        @else
                                             @foreach($log->properties['changes'] as $field => $change)
                                                 @if($field === 'department_id')
                                                     <!-- If it's department_id, use getDepartment to display department name -->
@@ -116,6 +119,7 @@
                                                 @endif
                                             @endforeach
                                         @endif
+                                    @endif
                                         
                                         @if(isset($log->properties['message']))
                                             Message: {{ $log->properties['message'] ?? 'N/A' }}
