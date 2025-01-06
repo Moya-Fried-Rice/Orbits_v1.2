@@ -19,7 +19,8 @@ class CreateEvaluationsTable extends Migration
             $table->foreignId('survey_id')->constrained('surveys', 'survey_id')->onDelete('cascade'); // Foreign key to the surveys table
             $table->foreignId('period_id')->constrained('evaluation_periods', 'period_id')->onDelete('cascade'); // Foreign key to the evaluation_periods table
             $table->timestamps(); // created_at, updated_at
-        });
+            $table->softDeletes(); // Soft delete column (deleted_at)
+        });        
     }
 
     /**

@@ -19,7 +19,8 @@ class CreateCourseSectionsTable extends Migration
             $table->string('section'); // e.g., 'A', 'B', 'C'
             $table->foreignId('period_id')->constrained('evaluation_periods', 'period_id')->onDelete('cascade'); // Foreign key to the evaluation_periods table
             $table->timestamps(); // created_at, updated_at
-        });
+            $table->softDeletes(); // Add soft deletes (deleted_at column)
+        });        
     }
 
     /**

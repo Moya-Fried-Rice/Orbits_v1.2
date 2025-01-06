@@ -18,7 +18,8 @@ class CreateQuestionCriteriaTable extends Migration
             $table->string('description'); // Description of the criteria
             $table->foreignId('survey_id')->constrained('surveys', 'survey_id')->onDelete('cascade'); // Foreign key to the surveys table
             $table->timestamps(); // created_at, updated_at
-        });
+            $table->softDeletes(); // Soft delete column (deleted_at)
+        });        
     }
 
     /**

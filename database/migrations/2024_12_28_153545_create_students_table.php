@@ -24,7 +24,8 @@ class CreateStudentsTable extends Migration
             $table->foreignId('program_id')->constrained('programs', 'program_id')->onDelete('cascade'); // Foreign key to programs table
             $table->string('phone_number')->nullable(); // Optional phone number
             $table->string('profile_image')->nullable(); // Optional profile image path
-        });
+            $table->softDeletes(); // Soft delete column (deleted_at)
+        });        
     }
 
     /**

@@ -12,7 +12,8 @@ class CreateProgramCoursesTable extends Migration
             $table->foreignId('program_id')->constrained('programs', 'program_id')->onDelete('cascade'); // Foreign key to the programs table
             $table->foreignId('course_id')->constrained('courses', 'course_id')->onDelete('cascade'); // Foreign key to the courses table
             $table->timestamps(); // created_at, updated_at
-        });
+            $table->softDeletes(); // Soft delete column (deleted_at)
+        });        
     }
 
     public function down()

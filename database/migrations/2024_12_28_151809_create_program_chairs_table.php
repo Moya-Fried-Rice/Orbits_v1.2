@@ -18,7 +18,8 @@ class CreateProgramChairsTable extends Migration
             $table->string('last_name'); // Last name of the program chair
             $table->foreignId('department_id')->constrained('departments', 'department_id')->onDelete('cascade'); // Foreign key to the departments table
             $table->string('profile_image')->nullable(); // Profile image of the program chair (nullable)
-        });
+            $table->softDeletes(); // Soft delete column (deleted_at)
+        });        
     }
 
     public function down()
