@@ -5,8 +5,9 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Course;
 use App\Models\Department;
+use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Livewire\WithPagination;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Exception;
 
 class CourseCrud extends Component
@@ -288,14 +289,26 @@ class CourseCrud extends Component
         public function store()
         {
             $this->validate();
-            
+        
             try {
-                Course::create([
+                $course = Course::create([
                     'course_name' => $this->course_name,
                     'course_description' => $this->course_description,
                     'course_code' => $this->course_code,
                     'department_id' => $this->department_id,
                 ]);
+        
+                // Log the activity
+                activity()
+                    ->performedOn($course)
+                    ->causedBy(auth()->user())
+                    ->withProperties([
+                        'course_name' => $this->course_name,
+                        'course_code' => $this->course_code,
+                        'department_id' => $this->department_id,
+                    ])
+                    ->log('Course created');
+        
                 session()->flash('success', 'Course successfully added!');
             } catch (Exception $e) {
                 session()->flash('error', 'Failed to add course: ' . $e->getMessage());
@@ -344,4 +357,21 @@ class CourseCrud extends Component
 
     // Render method for displaying courses and departments ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
+
+
+
+    // Testing lang to delete pag tapos
+    public $logs = [];
+    public $showLogs = false;
+
+    public function toggleLogs()
+    {
+        $this->showLogs = !$this->showLogs;
+
+        if ($this->showLogs) {
+            $this->logs = Activity::latest()->get();
+        } else {
+            $this->logs = [];
+        }
+    }
 }

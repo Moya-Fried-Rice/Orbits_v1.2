@@ -1,5 +1,28 @@
 <div class="bg-white">
 
+    <div>
+        <button wire:click="toggleLogs" class="btn btn-primary">
+            {{ $showLogs ? 'Hide Logs' : 'Show Logs' }}
+        </button>
+    
+        @if ($showLogs)
+            <div class="mt-3">
+                <h3>Activity Logs</h3>
+                <ul>
+                    @forelse ($logs as $log)
+                        <li>
+                            <strong>{{ $log->description }}</strong>
+                            <p>Performed by: {{ $log->causer->name ?? 'System' }} on {{ $log->created_at }}</p>
+                        </li>
+                    @empty
+                        <p>No logs available.</p>
+                    @endforelse
+                </ul>
+            </div>
+        @endif
+    </div>
+
+    
     <!-- Notification -->
     @if (session()->has('success'))
     <div class="bg-green-100 border-l-4 border-[#87C26A] text-[#87C26A] p-4 flex justify-between items-center" role="alert">
