@@ -140,10 +140,10 @@
     </div>
 
 {{-- Modal Delete --}}
-<x-delete-modal :modal="$showDeleteConfirmation" label="course"/>
+<x-delete-modal label="course"/>
 
 {{-- Modal Edit --}}
-<x-edit-modal :modal="$showEditForm" :confirmation="$showEditConfirmation" label="course">
+<x-edit-modal label="course">
 
     <!-- Course Name -->
     <x-add-modal-data name="course_name" label="Course Name:">
@@ -204,7 +204,7 @@
 
 
 {{-- Modal Add --}}
-<x-add-modal :modal="$showAddForm" :confirmation="$showAddConfirmation" label="course">
+<x-add-modal label="course">
 
     <!-- Course Name -->
     <x-add-modal-data name="course_name" label="Course Name:">
