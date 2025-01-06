@@ -34,7 +34,7 @@
             
             <!-- Main content (flex-1 ensures it takes the remaining space) -->
             <div class="w-full flex-1 overflow-auto relative">
-                <div class="w-full h-full p-5 text-[#666]">
+                <div class="w-full h-full p-5 overflow-auto text-[#666]">
                     @yield('content')
                 </div>
             </div>
