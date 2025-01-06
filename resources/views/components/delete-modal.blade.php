@@ -1,14 +1,16 @@
-@props(['label', 'modal'])
+@props(['label'])
 
-@if ($modal)
-    <div class="fixed inset-0 bg-black bg-opacity-20 overflow-y-auto flex justify-center items-center z-30" wire:click="cancelDelete">
-        <div class="bg-[#F8F8F8] rounded-lg w-full max-w-lg sm:max-w-md mx-auto relative">
+<div x-data="{ modalOpen: @entangle('showDeleteConfirmation') }">
+    <div x-show="modalOpen" x-transition.opacity class="fixed inset-0 bg-black bg-opacity-20 overflow-y-auto flex justify-center items-center z-30" @click.self="modalOpen = false">
+        <div x-show="modalOpen" 
+        x-transition:enter="transition transform"
+        x-transition:enter-start="translate-y-[-40px]"
+        x-transition:enter-end="translate-y-0"
+        style="transition: all 250ms cubic-bezier(0, 1.13, 0.53, 1.13);"
+        class="bg-[#F8F8F8] rounded-lg w-full max-w-lg sm:max-w-md mx-auto relative">
 
             {{-- Header --}}
             <div class="p-4 flex justify-center font-semibold items-center bg-white font-TT rounded-t-lg relative">
-                {{-- <button wire:click="cancelDelete" class="font-thin text-lg absolute left-4">
-                    <i class="fa fa-times"></i>
-                </button> --}}
                 <h3 class="text-lg sm:text-xl">Delete Confirmation</h3>
             </div>
 
@@ -24,10 +26,10 @@
                 <button wire:click="confirmDelete" class="transition duration-100 bg-[#923534] text-white px-4 py-2 rounded hover:bg-[#7B2323] focus:outline-none focus:ring focus:ring-red-300">
                     Yes, Delete
                 </button>
-                <button wire:click="cancelDelete" class="transition duration-100 bg-[#666] text-white px-4 py-2 rounded hover:bg-zinc-600 focus:outline-none focus:ring focus:ring-gray-300">
+                <button @click="modalOpen = false" class="transition duration-100 bg-[#666] text-white px-4 py-2 rounded hover:bg-zinc-600 focus:outline-none focus:ring focus:ring-gray-300">
                     Cancel
                 </button>
             </div>
         </div>
     </div>
-@endif
+</div>
