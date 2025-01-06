@@ -132,6 +132,14 @@
 
       </x-dropdown>
       
+      <!-- Logs -->
+      <x-nav-link 
+         :href="route('logs.index')" 
+         :active="request()->routeIs('logs.index')" 
+         :icon="asset('assets/icons/logs.svg')"
+         label="Logs"
+      />
+
       <!-- Sign-out -->
       <x-nav-link 
          {{-- :href="route('dashboard')" 
@@ -139,6 +147,7 @@
          :icon="asset('assets/icons/logout.svg')"
          label="Sign-out"
       />
+
     </div>
 </div>
 

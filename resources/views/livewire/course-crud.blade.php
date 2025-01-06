@@ -1,75 +1,13 @@
 <div class="bg-white">
-
-    <div>
-        <button wire:click="toggleLogs" class="btn btn-primary">
-            {{ $showLogs ? 'Hide Logs' : 'Show Logs' }}
-        </button>
-    
-        @if ($showLogs)
-            <div class="mt-3">
-                <h3>Activity Logs</h3>
-                <ul>
-                    @forelse ($logs as $log)
-                        <li>
-                            <strong>{{ $log->description }}</strong>
-                            <p>Performed by: {{ $log->causer->name ?? 'System' }} on {{ $log->created_at }}</p>
-                        </li>
-                    @empty
-                        <p>No logs available.</p>
-                    @endforelse
-                </ul>
-            </div>
-        @endif
-    </div>
+    {{-- <div>
+        <h3>Session Data</h3>
+        <pre>
+            {{ print_r(session()->all(), true) }}
+        </pre>
+    </div> --}}
     
     <!-- Notification -->
-    @if (session()->has('success'))
-    <div class="bg-green-100 border-l-4 border-[#87C26A] text-[#87C26A] p-4 flex justify-between items-center" role="alert">
-        <div class="flex gap-2">
-            <img src="{{ asset('assets/icons/success.svg') }}" alt="Success">
-            {{ session('success') }}
-        </div>
-        <button type="button" class="text-[#87C26A] mr-5" wire:click="clearMessage">
-            <i class="fa fa-times"></i>
-        </button>
-    </div>
-    @elseif(session()->has('deleted'))
-    <div class="bg-green-100 border-l-4 border-[#87C26A] text-[#87C26A] p-4 flex justify-between items-center" role="alert">
-        <div class="flex gap-2">
-            <img src="{{ asset('assets/icons/success.svg') }}" alt="Success">
-            {{ session('success') }}
-            <button 
-                type="button" 
-                class="btn btn-success" 
-                wire:click="restore">
-                Restore
-            </button>
-        </div>
-        <button type="button" class="text-[#87C26A] mr-5" wire:click="clearMessage">
-            <i class="fa fa-times"></i>
-        </button>
-    </div>
-    @elseif (session()->has('error'))
-    <div class="bg-red-100 border-l-4 border-[#923534] text-[#923534] p-4 flex justify-between items-center" role="alert">
-        <div class="flex gap-2">
-            <img src="{{ asset('assets/icons/error.svg') }}" alt="Error">
-            {{ session('error') }}
-        </div>
-        <button type="button" class="text-[#923534] mr-5" wire:click="clearMessage">
-            <i class="fa fa-times"></i>
-        </button>
-    </div>
-    @elseif (session()->has('info'))
-    <div class="bg-blue-100 border-l-4 border-[#4A90E2] text-[#4A90E2] p-4 flex justify-between items-center" role="alert">
-        <div class="flex gap-2">
-            <img src="{{ asset('assets/icons/info.svg') }}" alt="Info">
-            {{ session('info') }}
-        </div>
-        <button type="button" class="text-[#4A90E2] mr-5" wire:click="clearMessage">
-            <i class="fa fa-times"></i>
-        </button>
-    </div>
-    @endif
+    <x-system-notification />
     
     <div class="p-5 pb-0 flex flex-wrap justify-between items-center">
 
@@ -101,7 +39,7 @@
     </div>
     
     <!-- Course List -->
-    <x-table>
+    <x-table :action="true">
         <x-slot name="header">
 
             <x-table-header
