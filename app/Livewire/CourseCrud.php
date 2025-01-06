@@ -18,7 +18,7 @@ class CourseCrud extends Component
     public $showDeleteConfirmation = false;
     public $showEditForm = false, $showEditConfirmation = false;
     public $showAddForm = false, $showAddConfirmation = false;
-    public $search = '', $deleteId, $selectedDepartment = '';
+    public $search = null, $deleteId, $selectedDepartment = null;
     public $sortField = 'created_at', $sortDirection = 'asc';
 
     // Listen to dispatched events
@@ -99,9 +99,9 @@ class CourseCrud extends Component
                 $this->department_id = $course->department_id;
                 $this->showEditForm = true;
             } catch (ModelNotFoundException $e) {
-                session()->flash('error', 'Course not found.');
+                $this->logSystemError('Course not found', $e, $course);
             } catch (Exception $e) {
-                session()->flash('error', 'Failed to load course: ' . $e->getMessage());
+                $this->logSystemError('Failed to load course', $e, $course);
             }
         }
 
@@ -137,59 +137,78 @@ class CourseCrud extends Component
 
             try {
                 $course = Course::findOrFail($this->course_id);
-                $changes = $this->checkChanges($course);
-                $this->handleUpdate($course, $changes);
+                $changes = $this->changes($course);
+                $this->checkForChanges($course, $changes);
 
             } catch (ModelNotFoundException $e) {
-                $this->logError('Course not found', $e);
+                $this->logSystemError('Course not found', $e, $course);
             } catch (Exception $e) {
-                $this->logError('Failed to update course', $e);
+                $this->logUpdateError('Failed to update course', $e, $course);
             } finally {
                 $this->closeEdit();
             }
         }
 
         // Handle field update
-        private function handleUpdate($course, $changes)
+        private function checkForChanges($course, $changes)
         {
             if ($changes) {
                 $course->save();
-                $this->logUpdate($course);
+                $this->logUpdate('Course successfully updated!', $course);
             } else {
-                $this->logNoChanges($course);
+                $this->logNoChanges('No changes were made.', $course);
             }
         }
 
         // Log update
-        private function logUpdate($course)
+        private function logUpdate($message, $course)
         {
-            session()->flash('success', 'Course successfully updated!');
+            session()->flash('success', $message);
             activity()
                 ->performedOn($course)
                 ->causedBy(auth()->user())
                 ->withProperties([
-                    'type' => 'update',
+                    'status' => 'success',
                     'changes' => $this->changedProperties,
-                    'course_id' => $course->course_id,
+                    'name' => $course->course_name,
                 ])
+                ->event('Update')
                 ->log('Course updated');
         }
 
-        // Log if no changes
-        private function logNoChanges($course)
+        // Log update error
+        private function logUpdateError($message, $exception, $course)
         {
-            session()->flash('info', 'No changes were made.');
+            session()->flash('error', $message . ($exception ? ": " . $exception->getMessage() : ''));
             activity()
+                ->performedOn($course)
                 ->causedBy(auth()->user())
                 ->withProperties([
-                    'type' => 'update',
+                    'status' => 'error',
+                    'message' => $exception ? $exception->getMessage() : $message
+                ])
+                ->event('Update')
+                ->log('Failed to update course');
+        }
+
+
+        // Log if no changes
+        private function logNoChanges($message, $course)
+        {
+            session()->flash('info', $message);
+            activity()
+                ->performedOn($course)
+                ->causedBy(auth()->user())
+                ->withProperties([
+                    'status' => 'neutral',
                     'changes' => 'No changes were made',
-                    'course_id' => $course->course_id])
+                    'name' => $course->course_name])
+                ->event('Update')
                 ->log('No changes made to course');
         }
 
         // Check for changes
-        private function checkChanges($course)
+        private function changes($course)
         {
             $changes = false;
             $this->changedProperties = [];
@@ -263,9 +282,9 @@ class CourseCrud extends Component
                     $course = Course::findOrFail($this->deleteId);
                     $this->checkForRelatedSections($course);
                 } catch (ModelNotFoundException $e) {
-                    $this->logError('Course not found', $e);
+                    $this->logSystemError('Course not found', $e, $course);
                 } catch (Exception $e) {
-                    $this->logError('Failed to delete course', $e);
+                    $this->logSystemError('Failed to delete course', $e, $course);
                 }
             }
         }
@@ -274,8 +293,7 @@ class CourseCrud extends Component
         private function checkForRelatedSections($course)
         {
             if ($course->courseSections()->exists()) {
-                $this->logError('Cannot delete the course due to related course sections.', null, $course);
-                session()->flash('error', 'Cannot delete the course due to related course sections.');
+                $this->logDeletionError('Failed to delete course', $course);
                 return;
             } else {
                 $this->storeDeletedCourse($course);
@@ -293,22 +311,37 @@ class CourseCrud extends Component
         private function deleteCourse($course)
         {
             $course->delete();
-            session()->flash('deleted', 'Course successfully deleted!');
-            $this->logDeletion($course);
+            $this->logDeletion('Course successfully deleted!', $course);
         }
 
         // Log deletion
-        private function logDeletion($course)
+        private function logDeletion($message, $course)
         {
+            session()->flash('deleted', $message);
             activity()
                 ->performedOn($course)
                 ->causedBy(auth()->user())
                 ->withProperties([
-                    'type' => 'delete',
-                    'course_id' => $course->course_id,
-                    'course_name' => $course->course_name,
+                    'status' => 'success',
+                    'name' => $course->course_name,
                 ])
+                ->event('Delete')
                 ->log('Course deleted');
+        }
+
+        // Log deletion error
+        private function logDeletionError($message, $course)
+        {
+            session()->flash('error', $message);
+            activity()
+                ->performedOn($course)
+                ->causedBy(auth()->user())
+                ->withProperties([
+                    'status' => 'error',
+                    'name' => $course->course_name,
+                ])
+                ->event('Delete')
+                ->log('Failed to delete course');
         }
 
         // Step 4: Restore a deleted field
@@ -321,9 +354,9 @@ class CourseCrud extends Component
                     $course = Course::withTrashed()->findOrFail($courseId);
                     $this->checkIfRestored($course);
                 } catch (ModelNotFoundException $e) {
-                    $this->logError('Course not found', $e, $courseId);
+                    $this->logSystemError('Course not found', $e, $course);
                 } catch (Exception $e) {
-                    $this->logError('Failed to restore course', $e);
+                    $this->logSystemError('Failed to restore course', $e, $course);
                 }
             }
         }
@@ -332,8 +365,7 @@ class CourseCrud extends Component
         private function checkIfRestored($course)
         {
             if (!$course->trashed()) {
-                $this->logError('Course is already active', null, $course->course_id);
-                session()->flash('error', 'Course is already active.');
+                $this->logRestorationError('Course is already active', $course);
                 return;
             } else {
                 $this->restoreCourse($course);
@@ -345,22 +377,37 @@ class CourseCrud extends Component
         {
             $course->restore();
             session()->forget('deleted_course_id');
-            $this->logRestoration($course);
-            session()->flash('success', 'Course successfully restored!');
+            $this->logRestoration('Course successfully restored!', $course);
         }
 
         // Log restoration
-        private function logRestoration($course)
+        private function logRestoration($message, $course)
         {
+            session()->flash('success', $message);
             activity()
                 ->performedOn($course)
                 ->causedBy(auth()->user())
                 ->withProperties([
-                    'type' => 'restore',
-                    'course_id' => $course->course_id,
-                    'course_name' => $course->course_name,
+                    'status' => 'success',
+                    'name' => $course->course_name,
                 ])
+                ->event('Restore')
                 ->log('Course restored');
+        }
+
+        // Log restore error
+        private function logRestorationError($message, $course)
+        {
+            session()->flash('error', $message);
+            activity()
+                ->performedOn($course)
+                ->causedBy(auth()->user())
+                ->withProperties([
+                    'status' => 'error',
+                    'name' => $course->course_name,
+                ])
+                ->event('Restore')
+                ->log('Failed to restore course');
         }
 
     // Method for deleting field ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
@@ -413,18 +460,19 @@ class CourseCrud extends Component
         {
             $this->validate();
 
+            $course = null;
+
             try {
                 $course = $this->createCourse();
-                $this->logAdd('Course created', $course);
-                session()->flash('success', 'Course successfully added!');
+                $this->logAdd('Course successfully added!', $course);
             } catch (Exception $e) {
-                $this->logError('Failed to create course', $e);
-                session()->flash('error', 'Failed to add course: ' . $e->getMessage());
+                $this->logAddError('Failed to create course', $e);
             } finally {
                 $this->resetInputFields();
             }
         }
 
+        // Create coruse field
         private function createCourse()
         {
             return Course::create([
@@ -435,18 +483,33 @@ class CourseCrud extends Component
             ]);
         }
 
+        // Log course adding
         private function logAdd($message, $course)
         {
+            session()->flash('success', $message);
             activity()
                 ->performedOn($course)
                 ->causedBy(auth()->user())
                 ->withProperties([
-                    'type' => 'add',
-                    'course_name' => $this->course_name,
-                    'course_code' => $this->course_code,
-                    'department_id' => $this->department_id,
+                    'status' => 'success',
+                    'name' => $this->course_name,
                 ])
-                ->log($message);
+                ->event('Store')
+                ->log('Course Created');
+        }
+
+        // Log course adding error
+        private function logAddError($message, $exception) 
+        {
+            session()->flash('error', $message . ($exception ? ": " . $exception->getMessage() : ''));
+            activity()
+                ->causedBy(auth()->user())
+                ->withProperties([
+                    'status' => 'error',
+                    'message' => $exception ? $exception->getMessage() : $message
+                ])
+                ->event('Store')
+                ->log('Failed to create course');
         }
         
         // Reset all input fields
@@ -469,19 +532,34 @@ class CourseCrud extends Component
 
 
 
-    // Log for any error and session error message
-    private function logError($message, $exception = null, $course = null)
+    /// Log system error with session error message
+    private function logSystemError($message, $exception = null, $context = null)
     {
+        // Set session error message for the UI
         session()->flash('error', $message . ($exception ? ": " . $exception->getMessage() : ''));
+
+        // Prepare activity log properties
+        $properties = [
+            'status' => 'error',
+            'error_message' => $exception ? $exception->getMessage() : $message,
+            'context' => $context ?? 'N/A',
+            'trace' => $exception ? $exception->getTraceAsString() : null,
+        ];
+
+        // Log the error in the activity log
         activity()
             ->causedBy(auth()->user())
-            ->withProperties([
-                'type' => 'error',
-                'message' => $exception ? $exception->getMessage() : $message,
-                'course_id' => $course ? $course->course_id : $this->deleteId
-            ])
+            ->withProperties($properties)
+            ->event('System Error')
             ->log($message);
+
+        // Optionally log details to a system log file for debugging
+        \Log::error($message, [
+            'exception' => $exception,
+            'context' => $context,
+        ]);
     }
+
 
 
 
