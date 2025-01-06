@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class EvaluationPeriod extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     // Define the table name (optional if it follows Laravel's convention)
     protected $table = 'evaluation_periods';

@@ -231,11 +231,37 @@ class CourseCrud extends Component
                     }
 
                     $course->delete();
-                    session()->flash('success', 'Course successfully deleted!');
+                    session()->flash('deleted', 'Course successfully deleted!');
                 } catch (ModelNotFoundException $e) {
                     session()->flash('error', 'Course not found.');
                 } catch (Exception $e) {
                     session()->flash('error', 'Failed to delete course: ' . $e->getMessage());
+                }
+            }
+        }
+
+        // Restore deleted field
+        private function restore()
+        {
+            if ($this->deleteId) {
+                try {
+                    // Find the soft-deleted course by its ID
+                    $course = Course::withTrashed()->findOrFail($this->deleteId);
+
+                    // Check if the course is already restored
+                    if (!$course->trashed()) {
+                        session()->flash('info', 'Course is not deleted.');
+                        return;
+                    }
+
+                    // Restore the course
+                    $course->restore();
+
+                    session()->flash('success', 'Course successfully restored!');
+                } catch (ModelNotFoundException $e) {
+                    session()->flash('error', 'Course not found.');
+                } catch (Exception $e) {
+                    session()->flash('error', 'Failed to restore course: ' . $e->getMessage());
                 }
             }
         }
