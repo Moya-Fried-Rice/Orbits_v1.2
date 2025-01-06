@@ -19,7 +19,8 @@ class CreateQuestionsTable extends Migration
             $table->string('question_code')->unique(); // Unique code for the question
             $table->foreignId('criteria_id')->constrained('question_criteria', 'criteria_id')->onDelete('cascade'); // Foreign key to the question_criteria table
             $table->timestamps(); // created_at, updated_at
-        });
+            $table->softDeletes(); // Soft delete column (deleted_at)
+        });        
     }
 
     /**

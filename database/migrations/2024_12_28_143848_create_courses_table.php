@@ -16,11 +16,13 @@ class CreateCoursesTable extends Migration
         Schema::create('courses', function (Blueprint $table) {
             $table->id('course_id'); // Primary key
             $table->string('course_name'); // Course name
-            $table->text('course_description'); // Course description
+            $table->text('course_description')->nullable(); // Course description (nullable)
             $table->string('course_code')->unique(); // Course code, should be unique
-            $table->foreignId('department_id')->constrained('departments', 'department_id')->onDelete('cascade');
+            $table->foreignId('department_id')->constrained('departments', 'department_id')->onDelete('cascade'); // Foreign key to the departments table with cascade delete
             $table->timestamps(); // created_at and updated_at
+            $table->softDeletes(); // Add soft deletes (deleted_at column)
         });
+        
     }
 
     /**
