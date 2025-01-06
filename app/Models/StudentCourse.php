@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StudentCourse extends Pivot
 {
     use HasFactory;
+    use SoftDeletes;
 
     // Define the table name (optional if it follows Laravel's convention)
     protected $table = 'student_courses';

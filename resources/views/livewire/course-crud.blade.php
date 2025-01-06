@@ -21,7 +21,6 @@
             </div>
         @endif
     </div>
-
     
     <!-- Notification -->
     @if (session()->has('success'))
@@ -29,6 +28,22 @@
         <div class="flex gap-2">
             <img src="{{ asset('assets/icons/success.svg') }}" alt="Success">
             {{ session('success') }}
+        </div>
+        <button type="button" class="text-[#87C26A] mr-5" wire:click="clearMessage">
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
+    @elseif(session()->has('deleted'))
+    <div class="bg-green-100 border-l-4 border-[#87C26A] text-[#87C26A] p-4 flex justify-between items-center" role="alert">
+        <div class="flex gap-2">
+            <img src="{{ asset('assets/icons/success.svg') }}" alt="Success">
+            {{ session('success') }}
+            <button 
+                type="button" 
+                class="btn btn-success" 
+                wire:click="restore">
+                Restore
+            </button>
         </div>
         <button type="button" class="text-[#87C26A] mr-5" wire:click="clearMessage">
             <i class="fa fa-times"></i>
