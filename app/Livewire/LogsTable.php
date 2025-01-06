@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Spatie\Activitylog\Models\Activity;
+use App\Models\Department;
 
 class LogsTable extends Component
 {
@@ -16,6 +17,13 @@ class LogsTable extends Component
     {
         // Retrieve all logs and apply sorting
         $this->logs = Activity::orderBy($this->sortField, $this->sortDirection)->get();
+    }
+
+    // Fetch all departments for dropdown
+    public function getDepartment($departmentId)
+    {
+        $department = Department::find($departmentId); // Or use another method to fetch department
+        return $department ? $department->department_code : null; // Return the department name or null if not found
     }
 
     // Method to update sorting
