@@ -204,7 +204,7 @@ class CourseCrud extends Component
                     'changes' => 'No changes were made',
                     'name' => $course->course_name])
                 ->event('Update')
-                ->log('No changes made to course');
+                ->log('Attempted to Update');
         }
 
         // Check for changes
