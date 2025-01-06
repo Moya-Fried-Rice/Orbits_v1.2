@@ -74,7 +74,7 @@ class CourseCrud extends Component
     // Clear session messages
     public function clearMessage()
     {
-        session()->forget(['success', 'error']);
+        session()->forget(['success', 'error', 'info']);
     }
 
 

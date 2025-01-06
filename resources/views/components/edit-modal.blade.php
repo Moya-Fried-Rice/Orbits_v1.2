@@ -2,15 +2,19 @@
 
 <div x-data="{ modalOpen: @entangle('showEditForm'), confirmationOpen: @entangle('showEditConfirmation') }">
 
-    <div x-show="modalOpen || confirmationOpen" x-transition.opacity
+    <div x-show="modalOpen || confirmationOpen" 
+    x-transition:enter="transition opacity" 
+    x-transition:enter-start="opacity-0" 
+    x-transition:enter-end="opacity-100"
+    style="transition: all 300ms cubic-bezier(0, 1.13, 0.53, 1.13);"
     class="fixed inset-0 bg-black bg-opacity-20 overflow-y-auto flex justify-center items-center z-30" wire:click.self="closeEdit">
 
         <!-- Modal Content -->
         <div x-show="modalOpen"
         x-transition:enter="transition transform"
-        x-transition:enter-start="translate-y-[-40px]"
-        x-transition:enter-end="translate-y-0"
-        style="transition: all 250ms cubic-bezier(0, 1.13, 0.53, 1.13);"
+        x-transition:enter-start="translate-y-[-40px] opacity-0" 
+        x-transition:enter-end="translate-y-0 opacity-100"
+        style="transition: all 300ms cubic-bezier(0, 1.13, 0.53, 1.13);"
         class="inset-0 bg-[#F8F8F8] rounded-lg w-full max-w-lg sm:max-w-md md:max-w-xl lg:max-w-2xl mx-auto relative">
 
             {{-- Header --}}
@@ -39,9 +43,9 @@
         <!-- Confirmation Modal -->
         <div x-show="confirmationOpen" 
         x-transition:enter="transition transform"
-        x-transition:enter-start="translate-y-[-40px]"
-        x-transition:enter-end="translate-y-0"
-        style="transition: all 250ms cubic-bezier(0, 1.13, 0.53, 1.13);"
+        x-transition:enter-start="translate-y-[-40px] opacity-0" 
+        x-transition:enter-end="translate-y-0 opacity-100"
+        style="transition: all 300ms cubic-bezier(0, 1.13, 0.53, 1.13);"
         class="inset-0 bg-[#F8F8F8] rounded-lg w-full max-w-lg sm:max-w-md mx-auto relative">
 
             {{-- Header --}}
