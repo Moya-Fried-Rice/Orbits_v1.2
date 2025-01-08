@@ -89,7 +89,7 @@
                             </td>
 
                             {{-- Details --}}
-                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-md">
+                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-md overflow-auto">
                                 @switch($log->event)
                                     @case('Store')
                                         @if(isset($log->properties['message']))

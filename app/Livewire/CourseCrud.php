@@ -8,6 +8,9 @@ use App\Models\Department;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Livewire\WithPagination;
 use Exception;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
+use Illuminate\Validation\ValidationException;
 
 class CourseCrud extends Component
 {
@@ -77,511 +80,632 @@ class CourseCrud extends Component
         session()->forget(['success', 'error', 'info', 'deleted']);
     }
 
-
-
-
-
-    // Method for editing field ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-
-        // Clicked edit to show forms > Show Confirmation > Confirm/Cancel > Update and close everthing
-        // Modal/s - showEditForm, showEditConfirmation
-        
-        // Step 1: Choose field to edit to show forms
-        public function edit($id)
-        {
-            $this->resetErrorBag();
-            try {
-                $course = Course::findOrFail($id);
-                $this->course_id = $course->course_id;
-                $this->course_name = $course->course_name;
-                $this->course_description = $course->course_description;
-                $this->course_code = $course->course_code;
-                $this->department_id = $course->department_id;
-                $this->showEditForm = true;
-            } catch (ModelNotFoundException $e) {
-                $this->logSystemError('Course not found', $e, $course);
-            } catch (Exception $e) {
-                $this->logSystemError('Failed to load course', $e, $course);
-            }
+    // Method to edit course data ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    public function edit($id)
+    {
+        $this->resetErrorBag(); // Reset any previous errors
+    
+        try {
+            // Attempt to find the course by ID
+            $course = Course::findOrFail($id);
+    
+            // Populate input fields with course data
+            $this->course_id = $course->course_id; // Assuming you use `id` instead of `course_id`
+            $this->course_name = $course->course_name;
+            $this->course_description = $course->course_description;
+            $this->course_code = $course->course_code;
+            $this->department_id = $course->department_id;
+    
+            // Show the edit form
+            $this->showEditForm = true;
+        } catch (ModelNotFoundException $e) {
+            // Log error if course is not found
+            $this->logSystemError('Course not found', $e);
+        } catch (Exception $e) {
+            // Log general errors
+            $this->logSystemError('Failed to load course', $e);
         }
-
-        // Step 2: Show update confirmation
-        public function updateConfirmation()
-        {
-            $this->validate();
-            $this->showEditForm = false; // Close the forms
-            $this->showEditConfirmation = true; // Show confirmation
-        }
-
-        // Step 3 Confirm/Cancel update
-
-            // If confirmed
-            public function confirmUpdate()
-            {
-                $this->update(); // Update the field
-                $this->closeEdit();
-            }
-
-            // If canceled
-            public function cancelUpdate()
-            {
-                $this->showEditConfirmation = false; // Close the confirmation modal
-                $this->showEditForm = true; // Show the edit form again
-                $this->resetErrorBag(); // Reset errors
-            }
-
-        // Step 4: Update the field
-        public function update()
-        {
-            $this->validate();
-
-            try {
-                $course = Course::findOrFail($this->course_id);
-                $changes = $this->changes($course);
-                $this->checkForChanges($course, $changes);
-
-            } catch (ModelNotFoundException $e) {
-                $this->logSystemError('Course not found', $e, $course);
-            } catch (Exception $e) {
-                $this->logUpdateError('Failed to update course', $e, $course);
-            } finally {
-                $this->closeEdit();
-            }
-        }
-
-        // Handle field update
-        private function checkForChanges($course, $changes)
-        {
-            if ($changes) {
-                $course->save();
-                $this->logUpdate('Course successfully updated!', $course);
-            } else {
-                $this->logNoChanges('No changes were made.', $course);
-            }
-        }
-
-        // Log update
-        private function logUpdate($message, $course)
-        {
-            session()->flash('success', $message);
-            activity()
-                ->performedOn($course)
-                ->causedBy(auth()->user())
-                ->withProperties([
-                    'status' => 'success',
-                    'changes' => $this->changedProperties,
-                    'name' => $course->course_name,
-                ])
-                ->event('Update')
-                ->log('Course updated');
-        }
-
-        // Log update error
-        private function logUpdateError($message, $exception, $course)
-        {
-            session()->flash('error', $message . ($exception ? ": " . $exception->getMessage() : ''));
-            activity()
-                ->performedOn($course)
-                ->causedBy(auth()->user())
-                ->withProperties([
-                    'status' => 'error',
-                    'message' => $exception ? $exception->getMessage() : $message
-                ])
-                ->event('Update')
-                ->log('Failed to update course');
-        }
-
-
-        // Log if no changes
-        private function logNoChanges($message, $course)
-        {
-            session()->flash('info', $message);
-            activity()
-                ->performedOn($course)
-                ->causedBy(auth()->user())
-                ->withProperties([
-                    'status' => 'neutral',
-                    'changes' => 'No changes were made',
-                    'name' => $course->course_name])
-                ->event('Update')
-                ->log('Attempted to Update');
-        }
-
-        // Check for changes
-        private function changes($course)
-        {
-            $changes = false;
-            $this->changedProperties = [];
-
-            $properties = [
-                'course_name' => $this->course_name,
-                'course_description' => $this->course_description,
-                'course_code' => $this->course_code,
-                'department_id' => $this->department_id,
-            ];
-
-            foreach ($properties as $property => $newValue) {
-                $oldValue = $course->$property;
-                if ($oldValue !== $newValue) {
-                    $course->$property = $newValue;
-                    $changes = true;
-                    $this->changedProperties[$property] = ['old' => $oldValue, 'new' => $newValue];
-                }
-            }
-
-            return $changes;
-        }
-
-        // Close all
-        public function closeEdit() {
+    }
+    
+    // Step 2: Show update confirmation
+    public function updateConfirmation()
+    {
+    
+        // Check if any changes were made
+        if (!$this->isCourseUpdated()) {
+            // If no changes, show a message and return
+            session()->flash('info', 'No changes were made to the course.');
             $this->showEditForm = false;
             $this->showEditConfirmation = false;
-            $this->resetErrorBag();
+            return;
         }
-
-    // Method for editing field ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-
-
-
-
-
-    // Method for deleting field ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-
-        // Clicked delete to show confirmation > Confirm/Cancel > Delete and close everything
-        // Modal/s - showDeleteConfirmation
-
-        // Step 1: Choose field to delete
-        public function delete($id)
-        {
-            $this->deleteId = $id;
-            $this->showDeleteConfirmation = true;
-        }
-
-        // Step 2: Confirm/Cancel delete
-
-            // If confirmed
-            public function confirmDelete()
-            {
-                $this->remove(); // Delete a field from database
-                $this->showDeleteConfirmation = false; // Close confirmation modal
-                $this->deleteId = null; // Reset delete state
-            }
-
-            // If canceled
-            public function cancelDelete()
-            {
-                $this->showDeleteConfirmation = false; // Close confirmation modal
-                $this->deleteId = null; // Reset delete state
-            }
-
-        // Step 3: Delete a field
-        public function remove()
-        {
-            if ($this->deleteId) {
-                try {
-                    $course = Course::findOrFail($this->deleteId);
-                    $this->checkForRelatedSections($course);
-                } catch (ModelNotFoundException $e) {
-                    $this->logSystemError('Course not found', $e, $course);
-                } catch (Exception $e) {
-                    $this->logSystemError('Failed to delete course', $e, $course);
-                }
-            }
-        }
-
-        // Check for constraints
-        private function checkForRelatedSections($course)
-        {
-            if ($course->courseSections()->exists()) {
-                $this->logDeletionError('Failed to delete course', $course);
-                return;
-            } else {
-                $this->storeDeletedCourse($course);
-                $this->deleteCourse($course);
-            }
-        }
-
-        // Store deleted id in session
-        private function storeDeletedCourse($course)
-        {
-            session()->put('deleted_course_id', $this->deleteId);
-        }
-
-        // Soft delete course
-        private function deleteCourse($course)
-        {
-            $course->delete();
-            $this->logDeletion('Course successfully deleted!', $course);
-        }
-
-        // Log deletion
-        private function logDeletion($message, $course)
-        {
-            session()->flash('deleted', $message);
-            activity()
-                ->performedOn($course)
-                ->causedBy(auth()->user())
-                ->withProperties([
-                    'status' => 'success',
-                    'name' => $course->course_name,
-                ])
-                ->event('Delete')
-                ->log('Course deleted');
-        }
-
-        // Log deletion error
-        private function logDeletionError($message, $course)
-        {
-            session()->flash('error', $message);
-            activity()
-                ->performedOn($course)
-                ->causedBy(auth()->user())
-                ->withProperties([
-                    'status' => 'error',
-                    'name' => $course->course_name,
-                ])
-                ->event('Delete')
-                ->log('Failed to delete course');
-        }
-
-        // Step 4: Restore a deleted field
-        public function undoDelete()
-        {
-            $courseId = session()->get('deleted_course_id');
-
-            if ($courseId) {
-                try {
-                    $course = Course::withTrashed()->findOrFail($courseId);
-                    $this->checkIfRestored($course);
-                } catch (ModelNotFoundException $e) {
-                    $this->logSystemError('Course not found', $e, $course);
-                } catch (Exception $e) {
-                    $this->logSystemError('Failed to restore course', $e, $course);
-                }
-            }
-        }
-
-        // Check if already restored
-        private function checkIfRestored($course)
-        {
-            if (!$course->trashed()) {
-                $this->logRestorationError('Course is already active', $course);
-                return;
-            } else {
-                $this->restoreCourse($course);
-            }
-        }
-
-        // Restore if not restored
-        private function restoreCourse($course)
-        {
-            $course->restore();
-            session()->forget('deleted_course_id');
-            $this->logRestoration('Course successfully restored!', $course);
-        }
-
-        // Log restoration
-        private function logRestoration($message, $course)
-        {
-            session()->flash('success', $message);
-            activity()
-                ->performedOn($course)
-                ->causedBy(auth()->user())
-                ->withProperties([
-                    'status' => 'success',
-                    'name' => $course->course_name,
-                ])
-                ->event('Restore')
-                ->log('Course restored');
-        }
-
-        // Log restore error
-        private function logRestorationError($message, $course)
-        {
-            session()->flash('error', $message);
-            activity()
-                ->performedOn($course)
-                ->causedBy(auth()->user())
-                ->withProperties([
-                    'status' => 'error',
-                    'name' => $course->course_name,
-                ])
-                ->event('Restore')
-                ->log('Failed to restore course');
-        }
-
-    // Method for deleting field ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-
-
-
-
-
-    // Method for adding field ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-
-        // Clicked add to show forms > Show add confirmation > Add/Cancel > Add and close everything
-        // Modal/s - showAddForm
-
-        // Step 1: Clicked add button
-        public function add()
-        {
-            $this->resetErrorBag(); // Reset errors
-            $this->resetInputFields(); // Reset inputs
-            $this->showAddForm = true; // Show add form modal
-        }
-
-        // Step 2: Show confirmation
-        public function storeConfirmation() 
-        {
-            $this->validate(); // Validate first
-            $this->showAddForm = false; // Close add form modal
-            $this->showAddConfirmation = true; // Show confirmation modal
-        }
-
-
-        // Step 3: Confirm/Cancel add
-
-            // If confirmed
-            public function confirmStore() {
-                $this->store(); // Store new field
-                $this->showAddConfirmation = false; // Close confirmation
-                $this->showAddForm = false; // Close add form modal
-                $this->resetInputFields(); // Reset inputs
-            }
-
-            // If canceled
-            public function cancelStore() {
-                $this->showAddConfirmation = false; // Close confirmation
-                $this->showAddForm = true; // Show add form modal again
-                $this->resetErrorBag();
-            }
-
-        // Step 4: Store new field
-        public function store()
-        {
-            $this->validate();
-
-            $course = null;
-
-            try {
-                $course = $this->createCourse();
-                $this->logAdd('Course successfully added!', $course);
-            } catch (Exception $e) {
-                $this->logAddError('Failed to create course', $e);
-            } finally {
-                $this->resetInputFields();
-            }
-        }
-
-        // Create coruse field
-        private function createCourse()
-        {
-            return Course::create([
-                'course_name' => $this->course_name,
-                'course_description' => $this->course_description,
-                'course_code' => $this->course_code,
-                'department_id' => $this->department_id,
-            ]);
-        }
-
-        // Log course adding
-        private function logAdd($message, $course)
-        {
-            session()->flash('success', $message);
-            activity()
-                ->performedOn($course)
-                ->causedBy(auth()->user())
-                ->withProperties([
-                    'status' => 'success',
-                    'name' => $this->course_name,
-                ])
-                ->event('Store')
-                ->log('Course Created');
-        }
-
-        // Log course adding error
-        private function logAddError($message, $exception) 
-        {
-            session()->flash('error', $message . ($exception ? ": " . $exception->getMessage() : ''));
-            activity()
-                ->causedBy(auth()->user())
-                ->withProperties([
-                    'status' => 'error',
-                    'message' => $exception ? $exception->getMessage() : $message
-                ])
-                ->event('Store')
-                ->log('Failed to create course');
-        }
-        
-        // Reset all input fields
-        private function resetInputFields()
-        {
-            $this->reset(['course_id', 'course_name', 'course_code', 'course_description', 'department_id']);
-        }
-
-        // Close all
-        public function closeAdd() {
-            $this->showAddForm = false; // Close add form modal
-            $this->showAddConfirmation = false; // Close confirmation
-            $this->resetInputFields(); // Reset inputs
-            $this->resetErrorBag(); // Reset errors
-        }
-
-    // Method for adding field ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-
-
-
-
-
-    /// Log system error with session error message
-    private function logSystemError($message, $exception = null, $context = null)
+    
+        // Close the edit form and show confirmation if there are changes
+        $this->showEditForm = false;
+        $this->showEditConfirmation = true;
+    }
+    
+    // Step 3: Confirm/Cancel update
+    public function confirmUpdate()
     {
-        // Set session error message for the UI
-        session()->flash('error', $message . ($exception ? ": " . $exception->getMessage() : ''));
+        $this->update(); // Process the update
+        $this->closeEdit(); // Close the form after update
+    }
+    
+    public function cancelUpdate()
+    {
+        $this->showEditConfirmation = false; // Close the confirmation modal
+        $this->showEditForm = true; // Reopen the edit form
+        $this->resetErrorBag(); // Reset error bag to clear any previous errors
+    }
+    
+    // Function to update course
+    public function update()
+    {
+        try {
+            // Only proceed with the update if changes were made
+            if (!$this->isCourseUpdated()) {
+                session()->flash('info', 'No changes were made to the course.');
+                return;
+            }
+    
+            // Validate and update the course
+            $this->validateQueryEdit();
+        } catch (Exception $e) {
+            // Handle any exceptions during the update process
+            $this->logSystemError('An error occurred while updating the course.', $e);
+        } finally {
+            // Reset input fields after the operation
+            $this->resetInputFields();
+        }
+    }
 
-        // Prepare activity log properties
-        $properties = [
-            'status' => 'error',
-            'error_message' => $exception ? $exception->getMessage() : $message,
-            'context' => $context ?? 'N/A',
-            'trace' => $exception ? $exception->getTraceAsString() : null,
-        ];
+    // Check if the course data has been updated
+    private function isCourseUpdated()
+    {
+        $course = Course::find($this->course_id);
+        return $course && (
+            $course->course_name !== $this->course_name ||
+            $course->course_description !== $this->course_description ||
+            $course->course_code !== $this->course_code ||
+            $course->department_id !== $this->department_id
+        );
+    }
+    
+    // Function to validate inputs and handle course editing
+    public function validateQueryEdit()
+    {
+        // Attempt to edit the course and retrieve the updated course object
+        $course = $this->editCourse();
+        
+        try {
+            // Validate inputs using defined rules
+            $this->validate($this->rules);
 
-        // Log the error in the activity log
+            // Save the course changes to the database
+            $course->save();
+
+            // Log the successful update along with changes and return a success response
+            return $this->logEdit('Course successfully updated!', $course, 200);
+        } catch (ValidationException $e) {
+            // Handle validation errors (e.g., invalid inputs)
+            return $this->logEditError('Invalid inputs!', $course, 422);
+        } catch (QueryException $e) {
+            // Handle database-related errors
+            if ($e->errorInfo[1] == 1062) {
+                // Specific error for duplicate course code or name
+                return $this->logEditError('Course code or name already exists!', $course, 400);
+            }
+
+            // General database error
+            return $this->logEditError('Database error: ' . $e->getMessage(), $course, 500);
+        }
+    }
+
+    // Function to retrieve and update the course in the database
+    private function editCourse()
+    {
+        // Retrieve the course by its ID
+        $course = Course::find($this->course_id);
+
+        // If the course doesn't exist, throw an exception
+        if (!$course) {
+            throw new ModelNotFoundException('Course not found!');
+        }
+
+        // Store old values to log changes later
+        $this->oldValues = $course->getOriginal();
+
+        // Update the course properties with new values
+        $course->course_name = $this->course_name;
+        $course->course_description = $this->course_description;
+        $course->course_code = $this->course_code;
+        $course->department_id = $this->department_id;
+
+        // Return the updated course object
+        return $course;
+    }
+
+    // Log successful course edit along with changes
+    private function logEdit($message, $course, $statusCode)
+    {
+        // Flash success message to the session
+        session()->flash('success', $message);
+
+        // Compare old and new values to log changes
+        $changes = $this->compareChanges($this->oldValues, $course->getAttributes());
+
+        // Log the activity
         activity()
+            ->performedOn($course)
             ->causedBy(auth()->user())
-            ->withProperties($properties)
-            ->event('System Error')
-            ->log($message);
+            ->withProperties([
+                'status' => 'success',
+                'course_name' => $this->course_name,
+                'status_code' => $statusCode,
+                'changes' => $changes, // Include changes in the log
+            ])
+            ->event('Edit')
+            ->log($message); // Log the success message
+    }
 
-        // Optionally log details to a system log file for debugging
-        \Log::error($message, [
-            'exception' => $exception,
-            'context' => $context,
+    // Compare the old and new values to find changes
+    private function compareChanges($oldValues, $newValues)
+    {
+        $changes = [];
+
+        // Compare old and new values for each attribute
+        foreach ($oldValues as $key => $oldValue) {
+            if (array_key_exists($key, $newValues) && $oldValue !== $newValues[$key]) {
+                $changes[$key] = [
+                    'old' => $oldValue,
+                    'new' => $newValues[$key]
+                ];
+            }
+        }
+
+        // Return the changes (if any)
+        return $changes;
+    }
+    
+    // Log edit error
+    private function logEditError($message, $course, $statusCode)
+    {
+        session()->flash('error', $message); // Flash error message
+    
+        activity()
+            ->performedOn($course)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'status' => 'error',
+                'course_name' => $this->course_name,
+                'status_code' => $statusCode,
+            ])
+            ->event('Failed Edit')
+            ->log($message); // Log activity
+    }
+    
+    // Close all modals and reset the form
+    public function closeEdit()
+    {
+        $this->showEditForm = false;
+        $this->showEditConfirmation = false;
+        $this->resetErrorBag(); // Reset error bag
+    }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+
+
+
+
+    // Method to initiate deletion process ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    public function delete($id)
+    {
+        $this->deleteId = $id;
+        $this->showDeleteConfirmation = true;
+    }
+
+    // Step 2: Confirm/Cancel delete
+
+    // If confirmed
+    public function confirmDelete()
+    {
+        $this->remove(); // Proceed to delete course from database
+        $this->resetDeleteState(); // Close confirmation modal and reset state
+    }
+
+    // If canceled
+    public function cancelDelete()
+    {
+        $this->resetDeleteState(); // Close confirmation modal and reset state
+    }
+
+    // Reset delete state to prepare for next action
+    private function resetDeleteState()
+    {
+        $this->showDeleteConfirmation = false;
+        $this->deleteId = null;
+    }
+
+    // Main method to handle deletion
+    public function remove()
+    {
+        try {
+            $this->validateQueryRemove();
+        } catch (Exception $e) {
+            $this->logSystemError('An error occurred while deleting the course.', $e);
+        } finally {
+            session()->forget('deleteId');
+        }
+    }
+
+    // Validate and process deletion
+    public function validateQueryRemove()
+    {
+        try {
+            // Retrieve course by ID
+            $course = Course::find($this->deleteId);
+
+            if (!$course) {
+                return $this->logRemoveError('Course not found!', $course, 404);
+            }
+
+            // Check for related records (dependencies) that prevent deletion
+            if ($course->courseSections()->exists()) { 
+                return $this->logRemoveError('Cannot delete the course due to existing dependencies.', $course, 400);
+            }
+
+            // Soft delete the course
+            $course->delete(); 
+
+            // Log the successful removal
+            $this->logRemove('Course successfully deleted!', $course, 200);
+
+        } catch (QueryException $e) {
+            // Handle database query exceptions
+            return $this->logRemoveError('Database error: ' . $e->getMessage(), $course, 500);
+        }
+    }
+
+    // Soft delete the course and log success
+    private function deleteCourse($course)
+    {
+        $course->delete();  // Perform soft delete
+
+        // Log the successful deletion
+        return $this->logRemove('Course successfully deleted!', $course, 200);
+    }
+
+    // Log successful course removal
+    private function logRemove($message, $course, $statusCode)
+    {
+        // Flash deleted id for restoration to the session
+        session()->put('deleted_course_id', $this->deleteId);
+
+        // Flash success message to the session
+        session()->flash('deleted', $message);
+
+        // Log the activity using Spatie Activitylog
+        activity()
+            ->performedOn($course)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'status' => 'success',  // Status: success
+                'course_name' => $this->course_name, // Log course name for reference
+                'status_code' => $statusCode, // HTTP status code (e.g., 200 for successful removal)
+            ])
+            ->event('Course Removed') // Event: Course Removed
+            ->log($message); // Log the custom success message
+    }
+
+    // Log an error when course removal fails
+    private function logRemoveError($message, $course, $statusCode)
+    {
+        // Flash error message to the session
+        session()->flash('error', $message);
+
+        // Log the activity using Spatie Activitylog
+        activity()
+            ->performedOn($course)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'status' => 'error',  // Status: error
+                'course_name' => $this->course_name, // Log course name for reference
+                'status_code' => $statusCode, // HTTP status code (e.g., 400, 422 for failure cases)
+            ])
+            ->event('Failed to Remove Course') // Event: Failed to Remove Course
+            ->log($message); // Log the custom error message
+    }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+
+
+
+
+    // Method for restoring deleted course ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    public function undoDelete()
+    {
+        // Get the deleted course ID from the session
+        $courseId = session()->get('deleted_course_id');
+
+        if ($courseId) {
+            try {
+                // Retrieve the course including trashed ones
+                $course = Course::withTrashed()->findOrFail($courseId);
+
+                // Check if the course is already active or needs restoration
+                $this->checkIfRestored($course);
+            } catch (ModelNotFoundException $e) {
+                // Log error if course is not found
+                $this->logSystemError('Course not found for restoration!', $e, $course);
+            } catch (Exception $e) {
+                // Log any other exceptions
+                $this->logSystemError('Failed to restore course', $e, $course);
+            }
+        } else {
+            // Handle case where no deleted course is found in session
+            session()->flash('error', 'No course available to restore!');
+        }
+    }
+
+    // Check if the course is already restored
+    private function checkIfRestored($course)
+    {
+        if (!$course->trashed()) {
+            // Log if the course is already active
+            $this->logRestorationError('Course is already active', $course);
+            return;
+        } else {
+            // Restore the course if it’s trashed
+            $this->restoreCourse($course);
+        }
+    }
+
+    // Restore the course
+    private function restoreCourse($course)
+    {
+        try {
+            // Attempt to restore the course
+            $course->restore();
+            
+            // Clear the session for deleted course ID
+            session()->forget('deleted_course_id');
+
+            // Log the restoration success
+            $this->logRestoration('Course successfully restored!', $course, 200);
+        } catch (Exception $e) {
+            // Log any errors during the restoration process
+            $this->logRestorationError('Failed to restore course', $course, 500);
+        }
+    }
+
+    // Log the course restoration
+    private function logRestoration($message, $course, $statusCode)
+    {
+        session()->flash('success', $message);
+
+        // Log activity using Spatie Activitylog
+        activity()
+            ->performedOn($course)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'status' => 'success',
+                'course_name' => $this->course_name,
+                'status_code' => $statusCode,
+            ])
+            ->event('Restore')
+            ->log('Course restored');
+    }
+
+    // Log restoration error
+    private function logRestorationError($message, $course, $statusCode)
+    {
+        session()->flash('error', $message);
+
+        // Log activity using Spatie Activitylog
+        activity()
+            ->performedOn($course)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'status' => 'error',
+                'course_name' => $this->course_name,
+                'status_code' => $statusCode,
+            ])
+            ->event('Restore')
+            ->log('Failed to restore course');
+    }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+
+
+
+
+    // Function to show the add course form ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    public function add()
+    {
+        $this->resetErrorBag(); // Reset any validation errors
+        $this->resetInputFields(); // Reset all input fields to their initial state
+        $this->showAddForm = true; // Show the add form modal for the user to enter data
+    }
+
+    // Function to store the course information
+    public function store()
+    {
+        try {
+            // Attempt to validate and create the course
+            $this->validateQueryStore();
+        } catch (Exception $e) {
+            // If an unexpected error occurs, log the system error
+            $this->logSystemError('An error occurred while storing the course.', $e);
+        } finally {
+            // Reset input fields after the operation, regardless of success or failure
+            $this->resetInputFields();
+        }
+    }
+
+    // Function to show the confirmation modal after clicking "Store"
+    public function storeConfirmation() 
+    {
+        $this->showAddForm = false; // Close the add form modal
+        $this->showAddConfirmation = true; // Show the confirmation modal to confirm the action
+    }
+
+    // Function that is called if the user confirms to store the course
+    public function confirmStore() 
+    {
+        $this->store(); // Call the store method to save the new course
+        $this->showAddConfirmation = false; // Close the confirmation modal
+        $this->showAddForm = false; // Close the add form modal
+        $this->resetInputFields(); // Reset the input fields after storing the course
+    }
+
+    // Function that is called if the user cancels the store action
+    public function cancelStore() 
+    {
+        $this->showAddConfirmation = false; // Close the confirmation modal
+        $this->showAddForm = true; // Show the add form modal again
+        $this->resetErrorBag(); // Reset any validation errors
+    }
+
+    // Function to validate inputs and handle course creation
+    public function validateQueryStore() 
+    {
+        try {
+            // Validate inputs using the $rules property
+            $this->validate($this->rules);
+
+            // Try creating the course
+            $course = $this->createCourse();
+        
+            // Success logic (e.g., return a success message)
+            return $this->logAdd('Course successfully added!', $course, 201);
+        
+        } catch (ValidationException $e) {
+            // Handle validation errors (e.g., required fields missing, incorrect data)
+            return $this->logAddError('Invalid inputs!', 422);  // Status code 422 for validation errors
+        
+        } catch (QueryException $e) {
+            // Handle SQL query exceptions (e.g., unique constraint violation)
+            if ($e->errorInfo[1] == 1062) { // Duplicate entry error (for unique constraint)
+                return $this->logAddError('Course code or name already exists!', 400);
+            }
+        
+            // Handle other SQL errors
+            return $this->logAddError('Database error: ' . $e->getMessage(), 500);
+        }
+    }
+
+    // Function to create the course entry in the database
+    private function createCourse()
+    {
+        return Course::create([
+            'course_name' => $this->course_name,
+            'course_description' => $this->course_description,
+            'course_code' => $this->course_code,
+            'department_id' => $this->department_id,
         ]);
     }
 
+    // Function to log a successful course creation
+    private function logAdd($message, $course, $statusCode)
+    {
+        // Flash success message to the session for user feedback
+        session()->flash('success', $message);
+        
+        // Log the activity using Spatie Activitylog
+        activity()
+            ->performedOn($course) // Attach the log to the course object
+            ->causedBy(auth()->user()) // Associate the logged action with the authenticated user
+            ->withProperties([ // Add any additional properties to log
+                'status' => 'success', // Mark the status as success
+                'course_name' => $this->course_name,  // Log the course name for reference
+                'status_code' => $statusCode, // Log the HTTP status code (e.g., 201 for created)
+            ])
+            ->event('Course Created') // Set the event name as "Course Created"
+            ->log($message); // Log the custom success message
+    }
 
+    // Function to log an error when course creation fails
+    private function logAddError($message, $statusCode)
+    {
+        // Flash error message to the session for user feedback
+        session()->flash('error', $message);
+        
+        // Log the activity using Spatie Activitylog
+        activity()
+            ->causedBy(auth()->user()) // Associate the logged action with the authenticated user
+            ->withProperties([ // Add any additional properties to log
+                'status' => 'error', // Mark the status as error
+                'status_code' => $statusCode, // Log the HTTP status code (e.g., 422 for validation errors)
+            ])
+            ->event('Failed to Add Course') // Set the event name as "Failed to Add Course"
+            ->log($message); // Log the custom error message
+    }
 
+    // Function to close the add course form and reset everything
+    public function closeAdd() 
+    {
+        $this->showAddForm = false; // Close the add form modal
+        $this->showAddConfirmation = false; // Close the confirmation modal
+        $this->resetInputFields(); // Reset input fields
+        $this->resetErrorBag(); // Reset any validation errors
+    }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
+    // Log unexpected system errors
+    private function logSystemError($message, Exception $e)
+    {
+        // Capture essential error details
+        $errorMessage = $e->getMessage(); // Error message
+        $errorCode = $e->getCode(); // Error code (if available)
+        $errorTrace = $e->getTraceAsString(); // Stack trace (for debugging)
 
+        // Log the error information to the session
+        session()->flash('error', $message);
 
-    // Render method for displaying courses and departments ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        // Log the activity using Spatie Activitylog
+        activity()
+            ->causedBy(auth()->user()) // Associate the logged action with the authenticated user
+            ->withProperties([ // Log essential error information
+                'error_message' => $errorMessage, // Error message
+                'error_code' => $errorCode, // Error code
+                'error_stack' => $errorTrace, // Stack trace for debugging
+                'status' => 'error', // Custom status for the log entry
+            ])
+            ->event('System Error') // Event name for clarity
+            ->log($message); // Log the custom error message
 
-        public function render()
-        {
-            $courses = Course::query()
-                ->when($this->search, function ($query) {
-                    $query->where(function ($query) {
-                        $query->where('course_name', 'like', '%' . $this->search . '%')
-                            ->orWhere('course_code', 'like', '%' . $this->search . '%');
-                    });
-                })
-                ->when($this->selectedDepartment, fn($query) => $query->where('department_id', $this->selectedDepartment))
-                ->orderBy($this->sortField, $this->sortDirection)
-                ->paginate(12);
+        // Optionally, log the error to the Laravel log file as well
+        \Log::error($message, [
+            'exception' => [
+                'message' => $errorMessage,
+                'code' => $errorCode,
+                'trace' => $errorTrace
+            ]
+        ]);
+    }
 
-            return view('livewire.course-crud', compact('courses'));
-        }
+     // Function to reset all input fields
+     private function resetInputFields()
+    {
+        // Reset specific input fields to their initial state
+        $this->reset(['course_id', 'course_name', 'course_code', 'course_description', 'department_id']);
+    }
 
-    // Render method for displaying courses and departments ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+    // Render everything
+    public function render()
+    {
+        $courses = Course::query()
+            ->when($this->search, function ($query) {
+                $query->where(function ($query) {
+                    $query->where('course_name', 'like', '%' . $this->search . '%')
+                        ->orWhere('course_code', 'like', '%' . $this->search . '%');
+                });
+            })
+            ->when($this->selectedDepartment, fn($query) => $query->where('department_id', $this->selectedDepartment))
+            ->orderBy($this->sortField, $this->sortDirection)
+            ->paginate(12);
+
+        return view('livewire.course-crud', compact('courses'));
+    }
 }
