@@ -15,7 +15,7 @@ class CreateDepartmentsTable extends Migration
     {
         Schema::create('departments', function (Blueprint $table) {
             $table->id('department_id'); // Primary key
-            $table->string('department_name'); // Department name
+            $table->string('department_name')->unique();; // Department name
             $table->text('department_description')->nullable(); // Department description (nullable)
             $table->string('department_code')->unique(); // Department code, should be unique
             $table->timestamps(); // created_at and updated_at
