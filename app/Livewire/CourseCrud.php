@@ -90,7 +90,7 @@ class CourseCrud extends Component
             $course = Course::findOrFail($id);
     
             // Populate input fields with course data
-            $this->course_id = $course->course_id; // Assuming you use `id` instead of `course_id`
+            $this->course_id = $course->course_id;
             $this->course_name = $course->course_name;
             $this->course_description = $course->course_description;
             $this->course_code = $course->course_code;
@@ -123,6 +123,18 @@ class CourseCrud extends Component
         // Close the edit form and show confirmation if there are changes
         $this->showEditForm = false;
         $this->showEditConfirmation = true;
+    }
+
+    // Check if the course data has been updated
+    private function isCourseUpdated()
+    {
+        $course = Course::find($this->course_id);
+        return $course && (
+            $course->course_name !== $this->course_name ||
+            $course->course_description !== $this->course_description ||
+            $course->course_code !== $this->course_code ||
+            $course->department_id !== $this->department_id
+        );
     }
     
     // Step 3: Confirm/Cancel update
@@ -158,18 +170,6 @@ class CourseCrud extends Component
             // Reset input fields after the operation
             $this->resetInputFields();
         }
-    }
-
-    // Check if the course data has been updated
-    private function isCourseUpdated()
-    {
-        $course = Course::find($this->course_id);
-        return $course && (
-            $course->course_name !== $this->course_name ||
-            $course->course_description !== $this->course_description ||
-            $course->course_code !== $this->course_code ||
-            $course->department_id !== $this->department_id
-        );
     }
     
     // Function to validate inputs and handle course editing
@@ -356,10 +356,7 @@ class CourseCrud extends Component
             }
 
             // Soft delete the course
-            $course->delete(); 
-
-            // Log the successful removal
-            $this->logRemove('Course successfully deleted!', $course, 200);
+            $this->deleteCourse($course);
 
         } catch (QueryException $e) {
             // Handle database query exceptions
@@ -391,7 +388,7 @@ class CourseCrud extends Component
             ->causedBy(auth()->user())
             ->withProperties([
                 'status' => 'success',  // Status: success
-                'course_name' => $this->course_name, // Log course name for reference
+                'course_name' => $course->course_name, // Log course name for reference
                 'status_code' => $statusCode, // HTTP status code (e.g., 200 for successful removal)
             ])
             ->event('Course Removed') // Event: Course Removed
@@ -410,7 +407,7 @@ class CourseCrud extends Component
             ->causedBy(auth()->user())
             ->withProperties([
                 'status' => 'error',  // Status: error
-                'course_name' => $this->course_name, // Log course name for reference
+                'course_name' => $course->course_name, // Log course name for reference
                 'status_code' => $statusCode, // HTTP status code (e.g., 400, 422 for failure cases)
             ])
             ->event('Failed to Remove Course') // Event: Failed to Remove Course
@@ -437,10 +434,10 @@ class CourseCrud extends Component
                 $this->checkIfRestored($course);
             } catch (ModelNotFoundException $e) {
                 // Log error if course is not found
-                $this->logSystemError('Course not found for restoration!', $e, $course);
+                $this->logSystemError('Course not found for restoration!', $e);
             } catch (Exception $e) {
                 // Log any other exceptions
-                $this->logSystemError('Failed to restore course', $e, $course);
+                $this->logSystemError('Failed to restore course', $e);
             }
         } else {
             // Handle case where no deleted course is found in session
@@ -490,7 +487,7 @@ class CourseCrud extends Component
             ->causedBy(auth()->user())
             ->withProperties([
                 'status' => 'success',
-                'course_name' => $this->course_name,
+                'course_name' => $course->course_name,
                 'status_code' => $statusCode,
             ])
             ->event('Restore')
@@ -508,7 +505,7 @@ class CourseCrud extends Component
             ->causedBy(auth()->user())
             ->withProperties([
                 'status' => 'error',
-                'course_name' => $this->course_name,
+                'course_name' => $course->course_name,
                 'status_code' => $statusCode,
             ])
             ->event('Restore')
@@ -546,8 +543,22 @@ class CourseCrud extends Component
     // Function to show the confirmation modal after clicking "Store"
     public function storeConfirmation() 
     {
-        $this->showAddForm = false; // Close the add form modal
-        $this->showAddConfirmation = true; // Show the confirmation modal to confirm the action
+        if ($this->isPopulated()) {
+            $this->showAddForm = false; // Close the add form modal
+            $this->showAddConfirmation = true; // Show the confirmation modal
+        } else {
+            session()->flash('info', 'Please fill in all required fields before proceeding.'); // Error message
+            $this->showAddForm = false; // Close the add form modal
+        }
+    }    
+
+    // Function to check if form is empty
+    public function isPopulated()
+    {
+        return !empty($this->course_name) ||
+            !empty($this->course_description) ||
+            !empty($this->course_code) ||
+            !empty($this->department_id);
     }
 
     // Function that is called if the user confirms to store the course
@@ -570,28 +581,36 @@ class CourseCrud extends Component
     // Function to validate inputs and handle course creation
     public function validateQueryStore() 
     {
+        // Initialize $course with the intended input values
+        $course = new Course([
+            'course_name' => $this->course_name,
+            'course_description' => $this->course_description,
+            'course_code' => $this->course_code,
+            'department_id' => $this->department_id,
+        ]);
+
         try {
             // Validate inputs using the $rules property
             $this->validate($this->rules);
 
-            // Try creating the course
+            // Attempt to create the course
             $course = $this->createCourse();
-        
-            // Success logic (e.g., return a success message)
+
+            // Log success and return a success response
             return $this->logAdd('Course successfully added!', $course, 201);
-        
+
         } catch (ValidationException $e) {
-            // Handle validation errors (e.g., required fields missing, incorrect data)
-            return $this->logAddError('Invalid inputs!', 422);  // Status code 422 for validation errors
-        
+            // Log validation error with the initialized $course
+            return $this->logAddError('Invalid inputs!', $course, 422);
+
         } catch (QueryException $e) {
-            // Handle SQL query exceptions (e.g., unique constraint violation)
-            if ($e->errorInfo[1] == 1062) { // Duplicate entry error (for unique constraint)
-                return $this->logAddError('Course code or name already exists!', 400);
+            // Handle duplicate entry error
+            if ($e->errorInfo[1] == 1062) {
+                return $this->logAddError('Course code or name already exists!', $course, 400);
             }
-        
+
             // Handle other SQL errors
-            return $this->logAddError('Database error: ' . $e->getMessage(), 500);
+            return $this->logAddError('Database error: ' . $e->getMessage(), $course, 500);
         }
     }
 
