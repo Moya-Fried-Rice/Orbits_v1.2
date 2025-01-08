@@ -1,7 +1,18 @@
 @props(['label'])
 
 <div x-data="{ modalOpen: @entangle('showDeleteConfirmation') }">
-    <div x-show="modalOpen" x-transition.opacity class="fixed inset-0 bg-black bg-opacity-20 overflow-y-auto flex justify-center items-center z-30" @click.self="modalOpen = false">
+    <div 
+    x-show="modalOpen"
+    x-transition:enter="transition-opacity duration-300 ease-out"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition-opacity duration-300 ease-in"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    style="transition: all 100ms ease;"
+    class="fixed inset-0 bg-black bg-opacity-20 overflow-y-auto flex justify-center items-center z-30" 
+    wire:click.self="cancelDelete">
+
         <div x-show="modalOpen" 
         x-transition:enter="transition transform"
         x-transition:enter-start="translate-y-[-40px] opacity-0" 
@@ -26,7 +37,7 @@
                 <button wire:click="confirmDelete" class="transition duration-100 bg-[#923534] text-white px-4 py-2 rounded hover:bg-[#7B2323] focus:outline-none focus:ring focus:ring-red-300">
                     Yes, Delete
                 </button>
-                <button @click="modalOpen = false" class="transition duration-100 bg-[#666] text-white px-4 py-2 rounded hover:bg-zinc-600 focus:outline-none focus:ring focus:ring-gray-300">
+                <button wire:click="cancelDelete" class="transition duration-100 bg-[#666] text-white px-4 py-2 rounded hover:bg-zinc-600 focus:outline-none focus:ring focus:ring-gray-300">
                     Cancel
                 </button>
             </div>
