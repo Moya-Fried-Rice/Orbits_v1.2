@@ -2,12 +2,17 @@
 
 <div x-data="{ modalOpen: @entangle('showEditForm'), confirmationOpen: @entangle('showEditConfirmation') }">
 
-    <div x-show="modalOpen || confirmationOpen" 
-    x-transition:enter="transition opacity" 
-    x-transition:enter-start="opacity-0" 
+    <div 
+    x-show="modalOpen || confirmationOpen"
+    x-transition:enter="transition-opacity duration-300 ease-out"
+    x-transition:enter-start="opacity-0"
     x-transition:enter-end="opacity-100"
-    style="transition: all 300ms cubic-bezier(0, 1.13, 0.53, 1.13);"
-    class="fixed inset-0 bg-black bg-opacity-20 overflow-y-auto flex justify-center items-center z-30" wire:click.self="closeEdit">
+    x-transition:leave="transition-opacity duration-300 ease-in"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    style="transition: all 100ms ease;"
+    class="fixed inset-0 bg-black bg-opacity-20 overflow-y-auto flex justify-center items-center z-30" 
+    wire:click.self="closeEdit">
 
         <!-- Modal Content -->
         <div x-show="modalOpen"
