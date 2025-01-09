@@ -14,7 +14,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): RedirectResponse
+    public function create(): RedirectResponse|View
     {
         // Check if the user is authenticated using Auth facade
         if (Auth::check()) {
@@ -26,8 +26,6 @@ class AuthenticatedSessionController extends Controller
         return view('auth.login');
     }
     
-    
-
     /**
      * Handle an incoming authentication request.
      */
