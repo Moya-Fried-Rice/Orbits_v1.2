@@ -39,27 +39,7 @@ return [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',  // Default user provider
-        ],
-
-        'admin' => [
-            'driver' => 'session',
-            'provider' => 'admins', // Custom provider for Admins
-        ],
-
-        'faculty' => [
-            'driver' => 'session',
-            'provider' => 'faculties', // Custom provider for Faculties
-        ],
-
-        'program_chair' => [
-            'driver' => 'session',
-            'provider' => 'program_chairs', // Custom provider for Program Chairs
-        ],
-
-        'student' => [
-            'driver' => 'session',
-            'provider' => 'students', // Custom provider for Students
-        ],
+        ]
     ],
 
 
@@ -84,27 +64,7 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class, // Default User model
-        ],
-
-        'admins' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Admin::class, // Admin model
-        ],
-
-        'faculties' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Faculty::class, // Faculty model
-        ],
-
-        'program_chairs' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\ProgramChair::class, // ProgramChair model
-        ],
-
-        'students' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Student::class, // Student model
-        ],
+        ]
     ],
 
 
