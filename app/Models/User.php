@@ -17,11 +17,13 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'user_id',
         'email',
         'password',
         'role',
     ];
+
+    protected $primaryKey = 'user_id';
 
     /**
      * The attributes that should be hidden for serialization.
@@ -44,24 +46,24 @@ class User extends Authenticatable
 
     public function faculty()
     {
-        return $this->hasOne(Faculty::class, 'user_id', 'id');
+        return $this->hasOne(Faculty::class, 'user_id', 'faculty_id');
     }
 
     // A user can be linked to a student
     public function student()
     {
-        return $this->hasOne(Student::class, 'user_id', 'id');
+        return $this->hasOne(Student::class, 'user_id', 'student_id');
     }
 
     // A user can be linked to a program chair
     public function programChair()
     {
-        return $this->hasOne(ProgramChair::class, 'user_id', 'id');
+        return $this->hasOne(ProgramChair::class, 'user_id', 'chair_id');
     }
 
     // A user can be linked to an admin
     public function admin()
     {
-        return $this->hasOne(Admin::class, 'user_id', 'id');
+        return $this->hasOne(Admin::class, 'user_id', 'admin_id');
     }
 }

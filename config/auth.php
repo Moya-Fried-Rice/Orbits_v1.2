@@ -38,10 +38,9 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',  // Default user provider
-        ]
+            'provider' => 'users',
+        ],
     ],
-
 
     /*
     |--------------------------------------------------------------------------
@@ -63,10 +62,14 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class, // Default User model
-        ]
-    ],
+            'model' => env('AUTH_MODEL', App\Models\User::class),
+        ],
 
+        // 'users' => [
+        //     'driver' => 'database',
+        //     'table' => 'users',
+        // ],
+    ],
 
     /*
     |--------------------------------------------------------------------------
