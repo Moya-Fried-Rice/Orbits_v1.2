@@ -45,6 +45,11 @@ class ProgramChair extends Authenticatable
         return $this->hasMany(Program::class, 'department_id', 'department_id');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
     // Custom password setter (for hashing)
     public function setPasswordAttribute($value)
     {

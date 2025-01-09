@@ -52,6 +52,11 @@ class Faculty extends Authenticatable
         return $this->hasMany(PeerEvaluation::class, 'faculty_id', 'faculty_id');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
     // Custom password setter (for hashing)
     public function setPasswordAttribute($value)
     {

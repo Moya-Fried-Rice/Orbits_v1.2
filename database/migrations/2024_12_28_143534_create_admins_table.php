@@ -15,9 +15,7 @@ class CreateAdminsTable extends Migration
     {
         Schema::create('admins', function (Blueprint $table) {
             $table->id('admin_id'); // Primary key
-            $table->string('username')->unique(); // Admin's username
-            $table->string('password'); // Admin's password (hashed)
-            $table->string('email')->unique(); // Admin's email address
+            $table->foreignId('user_id')->unique()->constrained('users', 'user_id')->onDelete('cascade');
             $table->string('first_name'); // Admin's first name
             $table->string('last_name'); // Admin's last name
             $table->string('phone')->nullable(); // Admin's phone number (optional)
