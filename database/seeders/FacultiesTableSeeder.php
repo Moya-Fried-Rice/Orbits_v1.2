@@ -23,7 +23,7 @@ class FacultiesTableSeeder extends Seeder
             
             $user = User::create([
                 'name' => $firstName . ' ' . $lastName, // Combine first and last name
-                'password' => bcrypt('password'),  // Default password or generate one
+                'password' => bcrypt('faculty123'),  // Default password or generate one
                 'email' => $faker->unique()->safeEmail,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
