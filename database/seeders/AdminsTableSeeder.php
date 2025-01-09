@@ -13,9 +13,9 @@ class AdminsTableSeeder extends Seeder
         // Inserting data into the admins table using Eloquent
         Admin::create([
             'admin_id' => 1,
-            'username' => 'appleAdmin',
-            'password' => Hash::make('password1'), // Replace with actual hash if needed
-            'email' => 'admin1@example.com',
+            'username' => 'AppleAdmin',
+            'password' => Hash::make('admin123'), // Replace with actual hash if needed
+            'email' => 'appleadmin@gmail.com',
             'created_at' => '2024-10-13 06:52:28',
             'first_name' => 'Apple',
             'last_name' => 'Tree',
