@@ -5,11 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Auth\Authenticatable as AuthenticatableTrait;
 
-class Student extends Model
+class Student extends Model implements Authenticatable
 {
     use HasFactory;
     use SoftDeletes;
+    use AuthenticatableTrait; // Add this trait to handle authentication
 
     // Define the table name (optional if it follows Laravel's convention)
     protected $table = 'students';
@@ -44,5 +47,11 @@ class Student extends Model
     public function courseSections()
     {
         return $this->belongsToMany(CourseSection::class, 'student_courses', 'student_id', 'course_section_id');
+    }
+
+    // Custom password setter (for hashing)
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = bcrypt($value); // Automatically hash password before saving
     }
 }

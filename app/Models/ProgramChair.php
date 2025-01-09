@@ -5,11 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Auth\Authenticatable as AuthenticatableTrait;
 
-class ProgramChair extends Model
+class ProgramChair extends Model implements Authenticatable
 {
     use HasFactory;
     use SoftDeletes;
+    use AuthenticatableTrait; // Add this trait to handle authentication
 
     // Define the table name (optional if it follows Laravel's convention)
     protected $table = 'program_chairs';
@@ -46,4 +49,10 @@ class ProgramChair extends Model
     }
 
     // You can define any custom methods or additional relationships here
+
+    // Custom password setter (for hashing)
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = bcrypt($value); // Automatically hash password before saving
+    }
 }
