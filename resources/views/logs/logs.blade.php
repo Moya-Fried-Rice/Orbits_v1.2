@@ -1,6 +1,12 @@
 {{-- Layout Template --}}
 @extends('layouts.master')
 
+@section('title')
+
+    <title>Orbits | Activity Logs</title>
+    
+@endsection
+
 {{-- Content --}}
 @section('content')
 
