@@ -22,7 +22,7 @@ style="background-size: cover; background-position: center; background-attachmen
             </div>
 
             @if ($errors->any())
-                <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <div class="mb-4 bg-red-100 border border-[#923534] text-[#923534] px-4 py-3 relative" role="alert">
                     <b>Whoops!</b>
                     
                     {{-- Display the email error message --}}
@@ -65,4 +65,29 @@ style="background-size: cover; background-position: center; background-attachmen
         </div>
     </div>
 </body>
+<script>
+    const emailPlaceholders = [
+        "ilovepizza@nomnom.com", 
+        "whyso@serious.com", 
+        "iamtheone@youarelookingfor.com", 
+        "hackme@please.com",
+        "mymail@isbetterthanyours.com",
+        "do.not.reply@spooky.com",
+        "yourdreams@nightmare.com",
+        "sendhelp@i'mstuck.com"
+    ];
+    const passwordPlaceholders = [
+        "Shhh... It's a secret!", 
+        "Guess what? You won’t.",
+        "password123", 
+        "No peeking...",
+        "Top-secret.",
+        "Not your cat's name.",
+        "Faker what was that?"
+    ];
+
+    // Randomly set placeholders
+    document.getElementById('email').placeholder = emailPlaceholders[Math.floor(Math.random() * emailPlaceholders.length)];
+    document.getElementById('password').placeholder = passwordPlaceholders[Math.floor(Math.random() * passwordPlaceholders.length)];
+</script>
 </html>
