@@ -28,7 +28,7 @@ class StudentsTableSeeder extends Seeder
             // Step 2: Create a User record for each student
             $user = User::create([
                 'name' => $firstName . ' ' . $lastName,  // Combine first and last name for the name field
-                'password' => bcrypt('password123'),  // Default password or generate one
+                'password' => bcrypt('student123'),  // Default password or generate one
                 'email' => $faker->unique()->safeEmail,  // Unique email
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
