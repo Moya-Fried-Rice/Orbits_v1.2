@@ -3,16 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Auth\Authenticatable as AuthenticatableTrait;
 
-class Faculty extends Model implements Authenticatable
+class Faculty extends Authenticatable
 {
-    use HasFactory;
-    use SoftDeletes;
-    use AuthenticatableTrait; // Add this trait to handle authentication
+    use HasFactory, Notifiable, SoftDeletes;
 
     // Define the table name (optional if it follows Laravel's convention)
     protected $table = 'faculties';
@@ -20,7 +17,7 @@ class Faculty extends Model implements Authenticatable
     // Define the primary key (optional if it follows Laravel's convention)
     protected $primaryKey = 'faculty_id';
 
-    // Disable timestamps if you're not using created_at and updated_at fields
+    // Enable timestamps (default behavior)
     public $timestamps = true;
 
     // Define the fillable attributes (to prevent mass assignment issues)
@@ -37,19 +34,19 @@ class Faculty extends Model implements Authenticatable
 
     // Define the relationships (if any)
 
-    // Define the relationship with the Department model (Faculty belongs to Department)
+    // Relationship with Department model (Faculty belongs to Department)
     public function department()
     {
         return $this->belongsTo(Department::class, 'department_id', 'department_id');
     }
 
-    // Define the many-to-many relationship with CourseSection (Faculty can teach many course sections)
+    // Many-to-many relationship with CourseSection (Faculty can teach many course sections)
     public function courseSections()
     {
         return $this->belongsToMany(CourseSection::class, 'faculty_courses', 'faculty_id', 'course_section_id');
     }
 
-    // Define the relationship with PeerEvaluation (Faculty can be evaluated by peers)
+    // Relationship with PeerEvaluation (Faculty can be evaluated by peers)
     public function peerEvaluations()
     {
         return $this->hasMany(PeerEvaluation::class, 'faculty_id', 'faculty_id');
@@ -59,5 +56,19 @@ class Faculty extends Model implements Authenticatable
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value); // Automatically hash password before saving
+    }
+
+    // Hide sensitive data from serialization
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    // Get the attributes that should be cast
+    protected function casts(): array
+    {
+        return [
+            'password' => 'hashed', // Ensure password is always hashed
+        ];
     }
 }

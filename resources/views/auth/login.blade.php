@@ -36,7 +36,7 @@ style="background-size: cover; background-position: center; background-attachmen
                 </div>
             @endif
         
-            <form action="{{ route('dashboard') }}" method="POST" autocomplete="off">
+            <form action="{{ route('dashboard') }}" method="GET" autocomplete="off">
                 @csrf
                 <div class="mb-4 group">
                     <label for="email" class="block text-sm">Email</label>
