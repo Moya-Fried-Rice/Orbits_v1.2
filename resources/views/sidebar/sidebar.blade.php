@@ -37,8 +37,8 @@
          />
          <!-- Courses -->
          <x-dropdown-link 
-            :active="request()->routeIs('courses.index')" 
-            :href="route('courses.index')" 
+            :active="request()->routeIs('courses')" 
+            :href="route('courses')" 
             :icon="asset('assets/icons/course.svg')"
             label="Courses"
          />
@@ -134,8 +134,8 @@
       
       <!-- Logs -->
       <x-nav-link 
-         :href="route('logs.index')" 
-         :active="request()->routeIs('logs.index')" 
+         :href="route('logs')" 
+         :active="request()->routeIs('logs')" 
          :icon="asset('assets/icons/logs.svg')"
          label="Logs"
       />

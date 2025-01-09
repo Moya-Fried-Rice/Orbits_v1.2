@@ -2,13 +2,6 @@
 
 @section('content')
 
-<div>
-        <h3>Session Data</h3>
-        <pre>
-            {{ print_r(session()->all(), true) }}
-        </pre>
-    </div>
-
 <div class="space-y-6">
 
     <!-- Evaluation Section -->

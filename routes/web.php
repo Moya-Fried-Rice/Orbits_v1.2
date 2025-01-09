@@ -5,19 +5,22 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\LogController;
 
-
 Route::get('/', function () {
-    return view('auth.login');
+    return redirect()->route('login');
 });
 
-Route::resource('courses', CourseController::class);
-Route::resource('logs', LogController::class);
+Route::get('/courses', [CourseController::class, 'index'])
+    ->middleware(['auth', 'check_role:admin'])
+    ->name('courses');
 
-Route::get('/dashboard', function () {
-    return view('dashboard.admin_dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/logs', [LogController::class, 'index'])
+    ->middleware(['auth', 'check_role:admin'])
+    ->name('logs');
+
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'check_role:admin,student,faculty,program_chair'])
+    ->name('dashboard');
 
 
 require __DIR__.'/auth.php';
-
 
