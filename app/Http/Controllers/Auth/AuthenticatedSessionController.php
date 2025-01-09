@@ -14,10 +14,19 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): View
+    public function create(): RedirectResponse
     {
+        // Check if the user is authenticated using Auth facade
+        if (Auth::check()) {
+            // Redirect authenticated users to the dashboard
+            return redirect()->route('dashboard');
+        }
+    
+        // If the user is not authenticated, show the login page
         return view('auth.login');
     }
+    
+    
 
     /**
      * Handle an incoming authentication request.
