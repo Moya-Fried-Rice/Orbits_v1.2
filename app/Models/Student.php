@@ -46,6 +46,11 @@ class Student extends Authenticatable
         return $this->belongsToMany(CourseSection::class, 'student_courses', 'student_id', 'course_section_id');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
     // Custom password setter (for hashing)
     public function setPasswordAttribute($value)
     {
