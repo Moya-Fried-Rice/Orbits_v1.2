@@ -7,7 +7,7 @@ use App\Http\Controllers\LogController;
 
 // Home route
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 // Dashboard route
