@@ -1,5 +1,11 @@
 @extends('layouts.master')
 
+@section('title')
+
+    <title>Orbits | Student Dashboard </title>
+    
+@endsection
+
 @section('content')
 
 student

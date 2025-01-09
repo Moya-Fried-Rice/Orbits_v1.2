@@ -1,5 +1,11 @@
 @extends('layouts.master')
 
+@section('title')
+
+    <title>Orbits | Program Chair Dashboard</title>
+    
+@endsection
+
 @section('content')
 
 chair

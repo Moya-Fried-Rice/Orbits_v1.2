@@ -7,6 +7,9 @@
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
     @livewireStyles
+
+    @yield('title')
+    
 </head>
 <body class="bg-gray-100 m-0 p-0" x-data="{ showSidebar: false, showData: false, showResults: false }" x-cloak>
 

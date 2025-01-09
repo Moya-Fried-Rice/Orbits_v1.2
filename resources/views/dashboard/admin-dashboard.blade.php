@@ -1,5 +1,11 @@
 @extends('layouts.master')
 
+@section('title')
+
+    <title>Orbits | Admin Dashboard</title>
+    
+@endsection
+
 @section('content')
 
 <div class="space-y-6">

@@ -7,6 +7,7 @@
   @vite('resources/css/app.css')
   @vite('resources/js/app.js')
   @livewireStyles
+  <title>Orbits | Login</title>
 </head>
 <body background="{{ asset('assets/images/background.png') }}"
 style="background-size: cover; background-position: center; background-attachment: fixed;">
