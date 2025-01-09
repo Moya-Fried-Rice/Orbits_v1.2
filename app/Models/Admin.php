@@ -3,16 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Auth\Authenticatable as AuthenticatableTrait;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Admin extends Model implements Authenticatable
+class Admin extends Authenticatable
 {
-    use SoftDeletes;
-    use HasFactory;
-    use AuthenticatableTrait; // Add this trait to handle authentication
+    use HasFactory, Notifiable;
 
     // Define the table name (optional if it follows Laravel's convention)
     protected $table = 'admins';
@@ -20,7 +16,7 @@ class Admin extends Model implements Authenticatable
     // Define the primary key (optional if it follows Laravel's convention)
     protected $primaryKey = 'admin_id';
 
-    // Disable timestamps if you're not using created_at and updated_at fields
+    // Enable timestamps (default behavior)
     public $timestamps = true;
 
     // Define the fillable attributes (to prevent mass assignment issues)
@@ -32,7 +28,21 @@ class Admin extends Model implements Authenticatable
         'last_name',
     ];
 
-    // If you need custom logic, you can define it here (like for password hashing, etc.)
+    // Hide sensitive attributes from serialization
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    // Get the attributes that should be cast
+    protected function casts(): array
+    {
+        return [
+            'password' => 'hashed', // Ensure password is always hashed
+        ];
+    }
+
+    // Custom logic for setting the password
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value); // Automatically hash password before saving

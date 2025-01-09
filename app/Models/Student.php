@@ -3,16 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Auth\Authenticatable as AuthenticatableTrait;
 
-class Student extends Model implements Authenticatable
+class Student extends Authenticatable
 {
-    use HasFactory;
-    use SoftDeletes;
-    use AuthenticatableTrait; // Add this trait to handle authentication
+    use HasFactory, Notifiable, SoftDeletes;
 
     // Define the table name (optional if it follows Laravel's convention)
     protected $table = 'students';
@@ -20,7 +17,7 @@ class Student extends Model implements Authenticatable
     // Define the primary key (optional if it follows Laravel's convention)
     protected $primaryKey = 'student_id'; // Assuming student_id is the primary key
 
-    // Disable timestamps if you're not using created_at and updated_at fields
+    // Enable timestamps (default behavior)
     public $timestamps = true;
 
     // Define the fillable attributes (to prevent mass assignment issues)
@@ -37,13 +34,13 @@ class Student extends Model implements Authenticatable
 
     // Define the relationships (if any)
 
-    // Define the relationship with the Program model (Student belongs to a Program)
+    // Relationship with Program model (Student belongs to a Program)
     public function program()
     {
         return $this->belongsTo(Program::class, 'program_id', 'program_id');
     }
 
-    // Define the relationship with the CourseSection model (Student has many CourseSections)
+    // Many-to-many relationship with CourseSection model (Student has many CourseSections)
     public function courseSections()
     {
         return $this->belongsToMany(CourseSection::class, 'student_courses', 'student_id', 'course_section_id');
@@ -53,5 +50,19 @@ class Student extends Model implements Authenticatable
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value); // Automatically hash password before saving
+    }
+
+    // Hide sensitive data from serialization
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    // Get the attributes that should be cast
+    protected function casts(): array
+    {
+        return [
+            'password' => 'hashed', // Ensure password is always hashed
+        ];
     }
 }
