@@ -141,12 +141,18 @@
       />
 
       <!-- Sign-out -->
-      <x-nav-link 
-         {{-- :href="route('dashboard')" 
-         :active="request()->routeIs('dashboard')"  --}}
-         :icon="asset('assets/icons/logout.svg')"
-         label="Sign-out"
-      />
+      <form method="POST" action="{{ route('logout') }}">
+         @csrf
+         <button type="submit" class="nav-btn group nav-btn-hover cursor-pointer flex items-center justify-start">
+             <!-- Icon image -->
+             <img src="{{ asset('assets/icons/logout.svg') }}" alt="Icon" class="icon">
+             
+             <!-- Navigation text with dynamic width based on 'showSidebar' -->
+             <span class="nav-text text-left" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
+                 Sign out
+             </span>
+         </button>
+     </form>
 
     </div>
 </div>

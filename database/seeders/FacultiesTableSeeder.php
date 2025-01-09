@@ -17,8 +17,12 @@ class FacultiesTableSeeder extends Seeder
 
         // Insert 10 sample faculty records
         foreach (range(1, 10) as $index) {
-            // Step 1: Create a User record
+            // Step 1: Create a User record with combined first and last name
+            $firstName = $faker->firstName;
+            $lastName = $faker->lastName;
+            
             $user = User::create([
+                'name' => $firstName . ' ' . $lastName, // Combine first and last name
                 'password' => bcrypt('password'),  // Default password or generate one
                 'email' => $faker->unique()->safeEmail,
                 'created_at' => Carbon::now(),
@@ -29,9 +33,9 @@ class FacultiesTableSeeder extends Seeder
             // Step 2: Create a Faculty record and link it to the User
             DB::table('faculties')->insert([
                 'faculty_id' => $index, // Auto-increment primary key for faculties
-                'user_id' => $user->id, // Link to the created user's user_id
-                'first_name' => $faker->firstName,
-                'last_name' => $faker->lastName,
+                'user_id' => $user->user_id, // Link to the created user's user_id
+                'first_name' => $firstName, // Store the first name
+                'last_name' => $lastName,   // Store the last name
                 'department_id' => rand(1, 7),  // Assuming you have 7 departments
                 'phone_number' => $faker->phoneNumber,
                 'profile_image' => $faker->imageUrl(200, 200, 'people'),
