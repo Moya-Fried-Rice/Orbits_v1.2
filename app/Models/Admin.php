@@ -1,17 +1,18 @@
 <?php
 
-// app/Models/Admin.php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Auth\Authenticatable as AuthenticatableTrait;
 
-class Admin extends Model
+class Admin extends Model implements Authenticatable
 {
     use SoftDeletes;
     use HasFactory;
+    use AuthenticatableTrait; // Add this trait to handle authentication
 
     // Define the table name (optional if it follows Laravel's convention)
     protected $table = 'admins';
@@ -37,4 +38,3 @@ class Admin extends Model
         $this->attributes['password'] = bcrypt($value); // Automatically hash password before saving
     }
 }
-

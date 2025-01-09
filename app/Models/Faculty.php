@@ -5,11 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Auth\Authenticatable as AuthenticatableTrait;
 
-class Faculty extends Model
+class Faculty extends Model implements Authenticatable
 {
     use HasFactory;
     use SoftDeletes;
+    use AuthenticatableTrait; // Add this trait to handle authentication
 
     // Define the table name (optional if it follows Laravel's convention)
     protected $table = 'faculties';
@@ -52,5 +55,9 @@ class Faculty extends Model
         return $this->hasMany(PeerEvaluation::class, 'faculty_id', 'faculty_id');
     }
 
-    // You can define any custom methods or additional relationships here
+    // Custom password setter (for hashing)
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = bcrypt($value); // Automatically hash password before saving
+    }
 }
