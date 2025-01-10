@@ -1,26 +1,48 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\CourseController;
-use App\Http\Controllers\LogController;
 
+// Route home direct to login
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::get('/courses', [CourseController::class, 'index'])
-    ->middleware(['auth', 'check_role:admin'])
-    ->name('courses');
 
-Route::get('/logs', [LogController::class, 'index'])
-    ->middleware(['auth', 'check_role:admin'])
-    ->name('logs');
+// Route to course page
+Route::get('/courses', function () {
+    return view('courses.courses');
+})
+->middleware(['auth', 'check_role:admin'])  // Filter role: only admin
+->name('courses');  // Route name
 
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'check_role:admin,student,faculty,program_chair'])
-    ->name('dashboard');
 
+// Route to logs page
+Route::get('/logs', function () {
+    return view('logs.logs');
+})
+->middleware(['auth', 'check_role:admin']) // Filter role: only admin
+->name('logs'); // Route name
+
+
+// Route to dashboard with conditioning
+Route::get('/dashboard', function () {
+    $user = auth()->user();
+    switch ($user->role) {
+        case 'admin':
+            return view('dashboard.admin-dashboard');
+        case 'student':
+            return view('dashboard.student-dashboard');
+        case 'faculty':
+            return view('dashboard.faculty-dashboard');
+        case 'program_chair':
+            return view('dashboard.program-chair-dashboard');
+        default:
+            abort(403, 'Unauthorized');
+    }
+})
+->middleware(['auth', 'check_role:admin,student,faculty,program_chair']) // Filter role: all
+->name('dashboard'); // Route name
+    
 
 require __DIR__.'/auth.php';
 
