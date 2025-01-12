@@ -48,6 +48,6 @@ class Department extends Model
     // Define the relationship with ProgramChair model
     public function programChairs()
     {
-        return $this->hasMany(ProgramChair::class, 'department_id', 'department_id');
+        return $this->hasOne(ProgramChair::class, 'department_id', 'department_id');
     }
 }

@@ -53,8 +53,8 @@
 
          <!-- Departments -->
          <x-dropdown-link 
-            {{-- :active="request()->routeIs('departments')" 
-            :href="route('departments')"  --}}
+            :href="route('departments')" 
+            :active="request()->routeIs('departments')" 
             :icon="asset('assets/icons/department.svg')"
             label="Departments"
          />

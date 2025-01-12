@@ -30,15 +30,18 @@ class ProgramChairsTableSeeder extends Seeder
 
             // Step 2: Create a Program Chair record and link it to the User
             DB::table('program_chairs')->insert([
-                'chair_id' => $index, // Auto-increment primary key for program_chairs
-                'user_id' => $user->user_id, // Link to the created user's user_id
-                'first_name' => $firstName, // Store the first name
-                'last_name' => $lastName,   // Store the last name
-                'department_id' => rand(1, 7),  // Assuming you have 7 departments
-                'profile_image' => $faker->imageUrl(200, 200, 'people'),
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]);
+                [
+                    'chair_id' => $index, // Auto-increment primary key for program_chairs
+                    'user_id' => $user->user_id, // Link to the created user's user_id
+                    'first_name' => $firstName, // Store the first name
+                    'last_name' => $lastName,   // Store the last name
+                    // Assign a unique department_id if a department exists, otherwise null
+                    'department_id' => $index <= 7 ? $index : null,  // For demo, assuming the first 7 rows get department IDs
+                    'profile_image' => $faker->imageUrl(200, 200, 'people'),
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]
+            ]);            
         }
     }
 }
