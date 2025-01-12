@@ -48,5 +48,10 @@ class Program extends Model
         return $this->hasMany(Student::class, 'program_id', 'program_id');
     }
 
+    public function programs()
+    {
+        return $this->hasMany(Student::class, 'course_section_id', 'course_section_id');
+    }
+
     // You can define any custom methods or additional relationships here
 }
