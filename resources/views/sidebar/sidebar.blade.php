@@ -22,16 +22,16 @@
          <x-slot name="content"> 
          <!-- Faculties -->
          <x-dropdown-link
-            {{-- :active="request()->routeIs('faculties')" 
-            :href="route('faculties')"  --}}
+            :active="request()->routeIs('faculties')" 
+            :href="route('faculties')" 
             :icon="asset('assets/icons/faculty.svg')"
             label="Faculties"
          />
 
          <!-- Students -->
          <x-dropdown-link 
-            {{-- :active="request()->routeIs('students')" 
-            :href="route('students')"  --}}
+            :active="request()->routeIs('students')" 
+            :href="route('students')" 
             :icon="asset('assets/icons/student.svg')"
             label="Students"
          />
@@ -45,8 +45,8 @@
 
          <!-- Programs -->
          <x-dropdown-link 
-            {{-- :active="request()->routeIs('programs')" 
-            :href="route('programs')"  --}}
+            :active="request()->routeIs('programs')" 
+            :href="route('programs')" 
             :icon="asset('assets/icons/program.svg')"
             label="Programs"
          />
@@ -61,24 +61,24 @@
 
          <!-- Survey -->
          <x-dropdown-link 
-            {{-- :active="request()->routeIs('survey')" 
-            :href="route('survey')"  --}}
+            :active="request()->routeIs('survey')" 
+            :href="route('survey')" 
             :icon="asset('assets/icons/survey.svg')"
             label="Survey"
          />
 
          <!-- Sections -->
          <x-dropdown-link 
-            {{-- :active="request()->routeIs('sections')" 
-            :href="route('sections')"  --}}
+            :active="request()->routeIs('sections')" 
+            :href="route('sections')" 
             :icon="asset('assets/icons/section.svg')"
             label="Sections"
          />
 
          <!-- Accounts -->
          <x-dropdown-link 
-            {{-- :active="request()->routeIs('accounts')" 
-            :href="route('accounts')"  --}}
+            :active="request()->routeIs('accounts')" 
+            :href="route('accounts')" 
             :icon="asset('assets/icons/account.svg')"
             label="Accounts"
          />
@@ -88,8 +88,8 @@
 
       <!-- Evaluation -->
       <x-nav-link 
-         {{-- :href="route('evaluation')" 
-         :active="request()->routeIs('evaluation')"  --}}
+         :href="route('evaluation')" 
+         :active="request()->routeIs('evaluation')" 
          :icon="asset('assets/icons/evaluation.svg')"
          label="Evaluation"
       />
@@ -106,24 +106,24 @@
          <x-slot name="content"> 
          <!-- Results -->
          <x-dropdown-link 
-            {{-- :active="request()->routeIs('results')" 
-            :href="route('results')"  --}}
+            :active="request()->routeIs('results')" 
+            :href="route('results')" 
             :icon="asset('assets/icons/result.svg')"
             label="Results"
          />
 
          <!-- Faculty Ranking -->
          <x-dropdown-link 
-            {{-- :active="request()->routeIs('ranking')" 
-            :href="route('ranking')"  --}}
+            :active="request()->routeIs('ranking')" 
+            :href="route('ranking')" 
             :icon="asset('assets/icons/ranking.svg')"
             label="Faculty Ranking"
          />
 
          <!-- Progress -->
          <x-dropdown-link 
-            {{-- :active="request()->routeIs('monitor')" 
-            :href="route('monitor')"  --}}
+            :active="request()->routeIs('monitor')" 
+            :href="route('monitor')" 
             :icon="asset('assets/icons/monitor.svg')"
             label="Progress"
          />
