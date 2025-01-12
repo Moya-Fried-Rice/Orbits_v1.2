@@ -29,16 +29,6 @@ class CourseSection extends Model
         'program_id',
     ];
 
-    // Define the relationship with Course model
-    public function course()
-    {
-        return $this->belongsTo(Course::class, 'course_id', 'course_id');
-    }
-
-    public function program()
-    {
-        return $this->belongsTo(Program::class, 'program_id', 'program_id');
-    }
 
     // Define the relationship with EvaluationPeriod model
     public function evaluationPeriod()
@@ -52,9 +42,21 @@ class CourseSection extends Model
         return $this->belongsToMany(Student::class, 'student_courses', 'course_section_id', 'student_id');
     }
 
-    public function faculties()
+    public function course()
     {
-        return $this->belongsTo(Faculty::class, 'faculty_id', 'faculty_id');
+        return $this->belongsTo(Course::class, 'course_id');
+    }
+
+    // Define the program relationship
+    public function program()
+    {
+        return $this->belongsTo(Program::class, 'program_id');
+    }
+
+    // Define the faculty relationship
+    public function faculty()
+    {
+        return $this->belongsTo(Faculty::class, 'faculty_id');
     }
     
 }

@@ -42,7 +42,7 @@ class SearchFaculties extends Component
 
         if ($faculty) {
             // Update the input field with the selected faculty's code
-            $this->searchFaculty = $faculty->first_name;
+            $this->searchFaculty = $faculty->first_name . ' ' . $faculty->last_name;
 
             // Optionally, clear the dropdown list
             $this->faculties = [];
