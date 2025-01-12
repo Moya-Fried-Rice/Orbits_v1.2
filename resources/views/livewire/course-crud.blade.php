@@ -128,10 +128,6 @@
             type="text" 
             id="course_name" 
             wire:model="course_name">
-
-        @error('course_name') 
-            <span class="text-sm text-red-500">{{ $message }}</span>
-        @enderror
     </x-add-modal-data>
 
     <!-- Course Code -->
@@ -141,10 +137,6 @@
             type="text" 
             id="course_code" 
             wire:model="course_code">
-
-        @error('course_code') 
-            <span class="text-sm text-red-500">{{ $message }}</span>
-        @enderror
     </x-add-modal-data>
 
     <!-- Course Description -->
@@ -152,11 +144,8 @@
         <textarea 
             class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
             id="course_description" 
+            rows="4"
             wire:model="course_description"></textarea>
-
-        @error('course_description') 
-            <span class="text-sm text-red-500">{{ $message }}</span>
-        @enderror
     </x-add-modal-data>
 
     <!-- Department -->
@@ -165,16 +154,13 @@
             class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200"
             id="department_id" 
             wire:model="department_id">
-                <option value="">Select a department</option>
-                @foreach ($this->getDepartments() as $department)
-                    <option value="{{ $department->department_id }}">{{ $department->department_name }}</option>
-                @endforeach
+            <option value="">Select a department</option>
+            @foreach ($this->getDepartments() as $department)
+                <option value="{{ $department->department_id }}">{{ $department->department_name }}</option>
+            @endforeach
         </select>
-
-        @error('department_id') 
-            <span class="text-sm text-red-500">{{ $message }}</span>
-        @enderror
     </x-add-modal-data>
+
 
 </x-edit-modal>
 
@@ -189,10 +175,6 @@
             type="text" 
             id="course_name" 
             wire:model="course_name">
-
-        @error('course_name') 
-            <span class="text-sm text-red-500">{{ $message }}</span>
-        @enderror
     </x-add-modal-data>
 
     <!-- Course Code -->
@@ -202,10 +184,6 @@
             type="text" 
             id="course_code" 
             wire:model="course_code">
-
-        @error('course_code') 
-            <span class="text-sm text-red-500">{{ $message }}</span>
-        @enderror
     </x-add-modal-data>
 
     <!-- Course Description -->
@@ -213,11 +191,8 @@
         <textarea 
             class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
             id="course_description" 
+            rows="4"
             wire:model="course_description"></textarea>
-
-        @error('course_description') 
-            <span class="text-sm text-red-500">{{ $message }}</span>
-        @enderror
     </x-add-modal-data>
 
     <!-- Department -->
@@ -231,10 +206,6 @@
                     <option value="{{ $department->department_id }}">{{ $department->department_name }}</option>
                 @endforeach
         </select>
-
-        @error('department_id') 
-            <span class="text-sm text-red-500">{{ $message }}</span>
-        @enderror
     </x-add-modal-data>
 
 </x-add-modal>

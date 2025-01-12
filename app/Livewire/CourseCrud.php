@@ -16,6 +16,23 @@ class CourseCrud extends Component
 {
     use WithPagination;
 
+    // Render everything
+    public function render()
+    {
+        $courses = Course::query()
+            ->when($this->search, function ($query) {
+                $query->where(function ($query) {
+                    $query->where('course_name', 'like', '%' . $this->search . '%')
+                        ->orWhere('course_code', 'like', '%' . $this->search . '%');
+                });
+            })
+            ->when($this->selectedDepartment, fn($query) => $query->where('department_id', $this->selectedDepartment))
+            ->orderBy($this->sortField, $this->sortDirection)
+            ->paginate(12);
+
+        return view('livewire.course-crud', compact('courses'));
+    }
+
     // Public properties for course data and modal states.
     public $course_id, $course_name, $course_description, $course_code, $department_id;
     public $showDeleteConfirmation = false;
@@ -27,7 +44,7 @@ class CourseCrud extends Component
     // Listen to dispatched events
     protected $listeners = [
         'departmentSelected' => 'departmentSearch',
-        'searchPerformed' => 'searchCourses'
+        'searchPerformed' => 'searchPerformed'
     ];
 
     // Validation rules
@@ -39,7 +56,7 @@ class CourseCrud extends Component
     ];
 
     // Search courses
-    public function searchCourses($searchTerm)
+    public function searchPerformed($searchTerm)
     {
         $this->search = $searchTerm;
         $this->resetPage();
@@ -112,7 +129,7 @@ class CourseCrud extends Component
     {
     
         // Check if any changes were made
-        if (!$this->isCourseUpdated()) {
+        if (!$this->isUpdated()) {
             // If no changes, show a message and return
             session()->flash('info', 'No changes were made to the course.');
             $this->showEditForm = false;
@@ -126,7 +143,7 @@ class CourseCrud extends Component
     }
 
     // Check if the course data has been updated
-    private function isCourseUpdated()
+    private function isUpdated()
     {
         $course = Course::find($this->course_id);
         return $course && (
@@ -156,7 +173,7 @@ class CourseCrud extends Component
     {
         try {
             // Only proceed with the update if changes were made
-            if (!$this->isCourseUpdated()) {
+            if (!$this->isUpdated()) {
                 session()->flash('info', 'No changes were made to the course.');
                 return;
             }
@@ -377,7 +394,7 @@ class CourseCrud extends Component
     private function logRemove($message, $course, $statusCode)
     {
         // Flash deleted id for restoration to the session
-        session()->put('deleted_course_id', $this->deleteId);
+        session()->put('deleted_record_id', $this->deleteId);
 
         // Flash success message to the session
         session()->flash('deleted', $message);
@@ -423,7 +440,7 @@ class CourseCrud extends Component
     public function undoDelete()
     {
         // Get the deleted course ID from the session
-        $courseId = session()->get('deleted_course_id');
+        $courseId = session()->get('deleted_record_id');
 
         if ($courseId) {
             try {
@@ -466,7 +483,7 @@ class CourseCrud extends Component
             $course->restore();
             
             // Clear the session for deleted course ID
-            session()->forget('deleted_course_id');
+            session()->forget('deleted_record_id');
 
             // Log the restoration success
             $this->logRestoration('Course successfully restored!', $course, 200);
@@ -709,22 +726,5 @@ class CourseCrud extends Component
     {
         // Reset specific input fields to their initial state
         $this->reset(['course_id', 'course_name', 'course_code', 'course_description', 'department_id']);
-    }
-
-    // Render everything
-    public function render()
-    {
-        $courses = Course::query()
-            ->when($this->search, function ($query) {
-                $query->where(function ($query) {
-                    $query->where('course_name', 'like', '%' . $this->search . '%')
-                        ->orWhere('course_code', 'like', '%' . $this->search . '%');
-                });
-            })
-            ->when($this->selectedDepartment, fn($query) => $query->where('department_id', $this->selectedDepartment))
-            ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate(12);
-
-        return view('livewire.course-crud', compact('courses'));
     }
 }
