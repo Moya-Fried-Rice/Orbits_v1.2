@@ -25,6 +25,7 @@ class CourseSection extends Model
         'course_id',
         'section',
         'period_id',
+        'faculty_id',
     ];
 
     // Define the relationship with Course model
@@ -44,4 +45,10 @@ class CourseSection extends Model
     {
         return $this->belongsToMany(Student::class, 'student_courses', 'course_section_id', 'student_id');
     }
+
+    public function faculties()
+    {
+        return $this->belongsTo(Faculty::class, 'faculty_id', 'faculty_id');
+    }
+    
 }
