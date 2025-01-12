@@ -11,7 +11,7 @@ class CreateProgramChairsTable extends Migration
         Schema::create('program_chairs', function (Blueprint $table) {
             $table->id('chair_id'); // Auto-increment primary key for program_chairs table
             $table->foreignId('user_id')->unique()->constrained('users', 'user_id')->onDelete('cascade'); // Foreign key to users table
-            $table->foreignId('department_id')->constrained('departments', 'department_id')->onDelete('cascade'); // Foreign key to departments table
+            $table->foreignId('department_id')->nullable()->unique()->constrained('departments', 'department_id')->onDelete('cascade'); // Foreign key to departments table
             $table->string('first_name'); // First name of the program chair
             $table->string('last_name'); // Last name of the program chair
             $table->string('profile_image')->nullable(); // Profile image of the program chair (nullable)

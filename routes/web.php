@@ -15,6 +15,13 @@ Route::get('/courses', function () {
 ->middleware(['auth', 'check_role:admin'])  // Filter role: only admin
 ->name('courses');  // Route name
 
+// Route to department page
+Route::get('/departments', function () {
+    return view('departments.departments');
+})
+->middleware(['auth', 'check_role:admin'])  // Filter role: only admin
+->name('departments');  // Route name
+
 
 // Route to logs page
 Route::get('/logs', function () {
