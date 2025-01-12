@@ -26,12 +26,18 @@ class CourseSection extends Model
         'section',
         'period_id',
         'faculty_id',
+        'program_id',
     ];
 
     // Define the relationship with Course model
     public function course()
     {
         return $this->belongsTo(Course::class, 'course_id', 'course_id');
+    }
+
+    public function program()
+    {
+        return $this->belongsTo(Program::class, 'program_id', 'program_id');
     }
 
     // Define the relationship with EvaluationPeriod model
