@@ -109,7 +109,7 @@
     <!-- Course Name -->
     <x-add-modal-data name="course_name" label="Course Name:">
         <input 
-            class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+            class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
             type="text" 
             id="course_name" 
             wire:model="course_name">
@@ -118,7 +118,7 @@
     <!-- Course Code -->
     <x-add-modal-data name="course_code" label="Course Code:">
         <input 
-            class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+            class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
             type="text" 
             id="course_code" 
             wire:model="course_code">
@@ -127,7 +127,7 @@
     <!-- Course Description -->
     <x-add-modal-data name="course_description" label="Course Description:">
         <textarea 
-            class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+            class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
             id="course_description" 
             rows="4"
             wire:model="course_description"></textarea>
@@ -136,7 +136,7 @@
     <!-- Department -->
     <x-add-modal-data name="department_id" label="Department:">
         <select 
-            class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200"
+            class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200"
             id="department_id" 
             wire:model="department_id">
             <option value="">Select a department</option>
@@ -156,7 +156,7 @@
     <!-- Course Name -->
     <x-add-modal-data name="course_name" label="Course Name:">
         <input 
-            class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+            class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
             type="text" 
             id="course_name" 
             wire:model="course_name">
@@ -165,7 +165,7 @@
     <!-- Course Code -->
     <x-add-modal-data name="course_code" label="Course Code:">
         <input 
-            class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+            class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
             type="text" 
             id="course_code" 
             wire:model="course_code">
@@ -174,7 +174,7 @@
     <!-- Course Description -->
     <x-add-modal-data name="course_description" label="Course Description:">
         <textarea 
-            class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+            class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
             id="course_description" 
             rows="4"
             wire:model="course_description"></textarea>
@@ -183,7 +183,7 @@
     <!-- Department -->
     <x-add-modal-data name="department_id" label="Department:">
         <select 
-            class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200"
+            class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200"
             id="department_id" 
             wire:model="department_id">
                 <option value="">Select a department</option>

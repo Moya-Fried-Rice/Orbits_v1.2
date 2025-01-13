@@ -99,7 +99,7 @@
         <!-- Department Code -->
         <x-add-modal-data name="department_code" label="Department Code:">
             <input 
-                class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 type="text" 
                 id="department_code" 
                 wire:model="department_code">
@@ -112,7 +112,7 @@
         <!-- Department Name -->
         <x-add-modal-data name="department_name" label="Department Name:">
             <input 
-                class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 type="text" 
                 id="department_name" 
                 wire:model="department_name">
@@ -125,7 +125,7 @@
         <!-- Department Description -->
         <x-add-modal-data name="department_description" label="Department Description:">
             <textarea 
-                class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 id="department_description" 
                 rows="4"
                 wire:model="department_description"></textarea>
@@ -143,7 +143,7 @@
         <!-- Department Code -->
         <x-add-modal-data name="department_code" label="Department Code:">
             <input 
-                class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 type="text" 
                 id="department_code" 
                 wire:model="department_code">
@@ -156,7 +156,7 @@
         <!-- Department Name -->
         <x-add-modal-data name="department_name" label="Department Name:">
             <input 
-                class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 type="text" 
                 id="department_name" 
                 wire:model="department_name">
@@ -169,7 +169,7 @@
         <!-- Department Description -->
         <x-add-modal-data name="department_description" label="Department Description:">
             <textarea 
-                class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 id="department_description" 
                 rows="4"
                 wire:model="department_description"></textarea>
