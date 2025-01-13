@@ -121,7 +121,7 @@
     <!-- Course Code -->
     <x-add-modal-data name="section" label="Section Code:">
         <input 
-            class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+            class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
             type="text" 
             id="section" 
             wire:model="section">
@@ -130,7 +130,7 @@
     <!-- Faculty (Editable) -->
     <x-add-modal-data name="faculty_id" label="Faculty:">
         <select 
-            class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200"
+            class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200"
             id="faculty_id" 
             wire:model="faculty_id">
             <option value="">Select a faculty</option>
@@ -149,7 +149,7 @@
     <!-- Course ID -->
     <x-add-modal-data name="course_id" label="Course:">
         <select 
-            class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200"
+            class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200"
             id="course_id" 
             wire:model="course_id">
                 <option value="">Select a course</option>
@@ -162,7 +162,7 @@
     <!-- Section -->
     <x-add-modal-data name="section" label="Section:">
         <input 
-            class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+            class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
             type="text" 
             id="section" 
             wire:model="section">
@@ -171,7 +171,7 @@
     <!-- Faculty -->
     <x-add-modal-data name="faculty_id" label="Faculty:">
         <select 
-            class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200"
+            class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200"
             id="faculty_id" 
             wire:model="faculty_id">
                 <option value="">Select a faculty</option>
@@ -184,7 +184,7 @@
     <!-- Program -->
     <x-add-modal-data name="program_id" label="Program:">
         <select 
-            class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200"
+            class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200"
             id="program_id" 
             wire:model="program_id">
                 <option value="">Select a program</option>

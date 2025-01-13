@@ -98,7 +98,7 @@
         <!-- Email -->
         <x-add-modal-data name="email" label="Email:">
             <input 
-                class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 type="email" 
                 id="email" 
                 wire:model="email">
@@ -107,7 +107,7 @@
         <!-- Role -->
         <x-add-modal-data name="role" label="Role:">
             <select 
-                class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 id="role" 
                 wire:model="role">
                 <option value="">Select a role</option>
@@ -121,9 +121,10 @@
         <!-- Password -->
         <x-add-modal-data name="password" label="Change Password:">
             <input 
-                class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 type="password" 
                 id="password" 
+                placeholder="New Password..."
                 wire:model="password">
         </x-add-modal-data>
 
