@@ -69,7 +69,9 @@
             <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $account->name }}</td>
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $account->email }}</td>
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $account->role }}</td>
+                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
+                    {{ ucwords(str_replace('_', ' ', $account->role)) }}
+                </td>                
                 <td class="py-2 whitespace-nowrap px-4">{{ $account->created_at->format('Y-m-d H:i') }}</td>
                 <td class="py-2 whitespace-nowrap px-4">{{ $account->updated_at->format('Y-m-d H:i') }}</td>
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
@@ -100,10 +102,6 @@
                 type="email" 
                 id="email" 
                 wire:model="email">
-
-            @error('email') 
-                <span class="text-sm text-red-500">{{ $message }}</span>
-            @enderror
         </x-add-modal-data>
 
         <!-- Role -->
@@ -114,25 +112,19 @@
                 wire:model="role">
                 <option value="">Select a role</option>
                 <option value="admin">Admin</option>
-                <option value="user">User</option>
+                <option value="student">Student</option>
+                <option value="faculty">Faculty</option>
+                <option value="program_chair">Program Chair</option>
             </select>
-
-            @error('role') 
-                <span class="text-sm text-red-500">{{ $message }}</span>
-            @enderror
         </x-add-modal-data>
 
         <!-- Password -->
-        <x-add-modal-data name="password" label="Password:">
+        <x-add-modal-data name="password" label="Change Password:">
             <input 
                 class="bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 type="password" 
                 id="password" 
                 wire:model="password">
-
-            @error('password') 
-                <span class="text-sm text-red-500">{{ $message }}</span>
-            @enderror
         </x-add-modal-data>
 
     </x-edit-modal>
