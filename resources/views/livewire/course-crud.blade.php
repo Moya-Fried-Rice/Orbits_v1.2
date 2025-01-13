@@ -1,12 +1,5 @@
 <div class="bg-white">
-    {{-- <div>
-        <h3>Session Data</h3>
-        <pre>
-            {{ print_r(session()->all(), true) }}
-        </pre>
-    </div> --}}
-    
-    <!-- Notification -->
+
     <x-system-notification />
     
     <div class="p-5 pb-0 flex flex-wrap justify-between items-center">
@@ -21,20 +14,12 @@
             <livewire:search-departments />
     
             <!-- Clear Button -->
-            <div class="flex flex-cols w-full sm:w-auto">
-                <button wire:click="clearFilters" class="w-full sm:w-auto px-4 py-2 rounded hover:bg-[#F8F8F8] transition duration-100">
-                    <i class="fa fa-eraser"></i> Clear
-                </button>
-            </div>
+            <x-clear-button />
     
         </div>
     
         <!-- Add Course Button -->
-        <div class="w-full sm:w-auto mt-4 sm:mt-0">
-            <button wire:click="add" class="w-full sm:w-auto bg-[#923534] text-white py-2 px-4 rounded flex items-center gap-1 transition duration-100 hover:transform hover:scale-105">
-                <img src="{{ asset('assets/icons/add.svg') }}" alt="Add">Course
-            </button>
-        </div>
+        <x-add-button add="Course" />
     
     </div>
     
