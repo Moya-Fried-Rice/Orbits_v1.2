@@ -12,8 +12,11 @@ $classes = ($active ?? false)
     <img src="{{ $icon }}" alt="Icon" class="icon">
     
     <!-- Navigation text with dynamic width based on 'showSidebar' -->
-    <span class="nav-text" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
+    <span class="static nav-text" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
         {{ $label }}
     </span>
     <x-tooltip label="{{ $label }}" />
 </a>
+ 
+
+{{-- NOTE: THIS IS NOT YET FIXED!!! --}}
