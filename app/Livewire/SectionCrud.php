@@ -23,23 +23,35 @@ class SectionCrud extends Component
         // Paginate CourseSection with filters and search
         $sections = CourseSection::query()
             // Apply search filter
+            ->leftJoin('courses', 'course_sections.course_id', '=', 'courses.course_id')
+            ->leftJoin('programs', 'course_sections.program_id', '=', 'programs.program_id')
+            ->leftJoin('faculties', 'course_sections.faculty_id', '=', 'faculties.faculty_id')
+            
+            // Select specific columns
+            ->select(
+                'course_sections.*',
+                'courses.course_name as course_name',
+                'programs.program_name as program_name',
+                DB::raw("CONCAT(faculties.first_name, ' ', faculties.last_name) as faculty_name")
+            )
+
             ->when($this->search, function ($query) {
-                $query->where('section', 'like', '%' . $this->search . '%');
+                $query->where('course_sections.section', 'like', '%' . $this->search . '%');
             })
             // Apply course filter
             ->when($this->selectedCourse, function ($query) {
-                $query->where('course_id', $this->selectedCourse);
+                $query->where('courses.course_id', $this->selectedCourse);
             })
             // Apply program filter
             ->when($this->selectedProgram, function ($query) {
-                $query->where('program_id', $this->selectedProgram);
+                $query->where('programs.program_id', $this->selectedProgram);
             })
             // Apply faculty filter
             ->when($this->selectedFaculty, function ($query) {
-                $query->where('faculty_id', $this->selectedFaculty);
+                $query->where('faculties.faculty_id', $this->selectedFaculty);
             })
             // Apply sorting
-            ->orderBy($this->sortField, $this->sortDirection)
+            ->orderByRaw("faculty_name IS NULL, $this->sortField $this->sortDirection")
             // Pagination
             ->paginate(12);
     

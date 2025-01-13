@@ -42,19 +42,19 @@
             <x-table-header
                 sortField="{{ $sortField }}"
                 sortDirection="{{ $sortDirection }}"
-                data="course_id"
+                data="course_name"
                 label="Course"/>
 
             <x-table-header
                 sortField="{{ $sortField }}"
                 sortDirection="{{ $sortDirection }}"
-                data="program_id"
+                data="program_name"
                 label="Programs"/>
 
             <x-table-header
                 sortField="{{ $sortField }}"
                 sortDirection="{{ $sortDirection }}"
-                data="faculty_id"
+                data="faculty_name"
                 label="Faculty"/>
 
             <x-table-header
@@ -83,7 +83,7 @@
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $section->course->course_name }}</td>
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $section->program->program_code }}</td>
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
-                    @if($section->faculty)
+                @if($section->faculty)
                     {{ $section->faculty->first_name }} {{ $section->faculty->last_name }}
                 @else
                     No faculty assigned
