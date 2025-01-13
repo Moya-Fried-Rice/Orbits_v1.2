@@ -14,6 +14,7 @@
       <x-dropdown 
          :icon="asset('assets/icons/data.svg')" 
          show="showData"
+         label="Data Management"
          :active="in_array(request()->route()->getName(), ['faculties', 'students', 'courses', 'programs', 'departments', 'survey', 'sections', 'accounts'])">
          <x-slot name="trigger">
          Data Management
@@ -98,6 +99,7 @@
       <x-dropdown 
          :icon="asset('assets/icons/report.svg')"
          show="showResults"
+         label="Reports"
          :active="in_array(request()->route()->getName(), ['results', 'ranking', 'monitor'])">
          <x-slot name="trigger">
          Reports
@@ -151,6 +153,7 @@
              <span class="nav-text text-left" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
                  Sign out
              </span>
+             <x-tooltip label="Sign out" />
          </button>
      </form>
 
