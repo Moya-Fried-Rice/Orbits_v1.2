@@ -70,7 +70,7 @@
                 <td class="py-2 whitespace-nowrap px-4">{{ $department->created_at->format('Y-m-d H:i') }}</td>
                 <td class="py-2 whitespace-nowrap px-4">{{ $department->updated_at->format('Y-m-d H:i') }}</td>
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
-                    <div class="flex items-center space-x-2">
+                    <div class="flex items-center justify-end space-x-2">
                         <button wire:click="edit({{ $department->department_id }})">
                             <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                         </button>

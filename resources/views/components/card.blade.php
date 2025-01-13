@@ -1,6 +1,6 @@
 @props(['count', 'label', 'icon'])
 
-<div class="bg-white rounded-lg p-6 flex flex-1 justify-between items-center relative overflow-hidden">
+<div class="bg-white p-6 flex flex-1 justify-between items-center relative overflow-hidden">
     <div class="relative z-10">
         <h3 class="text-4xl font-semibold">{{ $count }}</h3>
         <p class="text-xl">{{ $label }}</p>

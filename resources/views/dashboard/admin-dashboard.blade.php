@@ -11,7 +11,7 @@
 <div class="space-y-6">
 
     <!-- Evaluation Section -->
-    <div class="bg-white rounded-lg p-6">
+    <div class="bg-white p-6">
         Evaluation
     </div>
 
@@ -67,7 +67,7 @@
     lg:grid-cols-3 
     xl:grid-cols-4">
 
-        <div class="bg-white rounded-lg p-6
+        <div class="bg-white p-6
         sm:col-span-2
         md:col-span-2
         lg:col-span-1
@@ -75,7 +75,7 @@
 
         </div>
 
-        <div class="bg-white rounded-lg p-6
+        <div class="bg-white p-6
         sm:col-span-2
         md:col-span-2
         lg:col-span-2
@@ -83,7 +83,7 @@
 
         </div>
 
-        <div class="bg-white rounded-lg p-6
+        <div class="bg-white p-6
         sm:col-span-2
         md:col-span-2
         lg:col-span-3 
@@ -100,7 +100,7 @@
     lg:grid-cols-2 
     xl:grid-cols-2">
 
-        <div class="bg-white rounded-lg p-6
+        <div class="bg-white p-6
         sm:col-span-1
         md:col-span-1
         lg:col-span-2
@@ -108,7 +108,7 @@
 
         </div>
 
-        <div class="bg-white rounded-lg p-6
+        <div class="bg-white p-6
         sm:col-span-1
         md:col-span-1
         lg:col-span-2
