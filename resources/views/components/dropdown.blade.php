@@ -1,4 +1,4 @@
-@props(['active', 'icon', 'show'])
+@props(['active', 'icon', 'show', 'label'])
 
 @php
 // Determine the CSS classes based on the 'active' prop
@@ -18,6 +18,7 @@ $classes = ($active ?? false)
         </span>
         <!-- Chevron icon indicating dropdown state -->
         <i x-show="showSidebar" class="fas fa-chevron-right mr-2 transition-transform duration-100" :class="{'transform rotate-90': {{ $show }}, 'transform rotate-0': !{{ $show }}}"></i>
+        <x-tooltip label="{{ $label }}" />
     </div>
 
     <!-- Dropdown content -->

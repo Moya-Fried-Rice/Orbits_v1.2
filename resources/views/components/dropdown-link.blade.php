@@ -15,4 +15,5 @@ $classes = ($active ?? false)
     <span class="nav-text" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
         {{ $label }}
     </span>
+    <x-tooltip label="{{ $label }}" />
 </a>

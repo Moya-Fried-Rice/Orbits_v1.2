@@ -3,8 +3,8 @@
 @php
 // Determine the CSS classes to apply based on the 'active' prop
 $classes = ($active ?? false)
-            ? 'nav-btn bg-[#EFEFEF] group nav-btn-hover cursor-pointer'
-            : 'nav-btn group nav-btn-hover cursor-pointer';
+            ? 'nav-btn bg-[#EFEFEF] group nav-btn-hover cursor-pointer group'
+            : 'nav-btn group nav-btn-hover cursor-pointer group';
 @endphp
 
 <a {{ $attributes->merge(['class' => $classes]) }}>
@@ -15,4 +15,5 @@ $classes = ($active ?? false)
     <span class="nav-text" x-bind:class="{'w-44': showSidebar, 'w-0': !showSidebar}">
         {{ $label }}
     </span>
+    <x-tooltip label="{{ $label }}" />
 </a>
