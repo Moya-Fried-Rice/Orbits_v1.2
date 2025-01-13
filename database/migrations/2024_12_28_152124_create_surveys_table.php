@@ -11,7 +11,6 @@ class CreateSurveysTable extends Migration
         Schema::create('surveys', function (Blueprint $table) {
             $table->id('survey_id'); // Auto-increment primary key
             $table->string('survey_name')->unique(); // Name of the survey
-            $table->enum('target_role', ['student', 'peer', 'self', 'chair']); // Restricted to specific roles
             $table->timestamps(); // created_at, updated_at
             $table->softDeletes(); // Soft delete column (deleted_at)
         });        

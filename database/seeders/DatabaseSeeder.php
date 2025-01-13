@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             ProgramChairsTableSeeder::class,
             ProgramCoursesTableSeeder::class,
             SurveysTableSeeder::class,
+            SurveyRoleTableSeeder::class,
             QuestionCriteriaTableSeeder::class,
             QuestionsTableSeeder::class,
             StudentsTableSeeder::class,
