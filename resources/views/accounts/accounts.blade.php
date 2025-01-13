@@ -1,13 +1,22 @@
+{{-- Layout Template --}}
 @extends('layouts.master')
 
+@section('title')
+
+    <title>Orbits | Account Management</title>
+
+@endsection
+{{-- Content --}}
 @section('content')
 
-        <div class="h-20">
-            This is accounts
-        </div>
-    
+    {{-- Livewire Component --}}
+    @livewire('account-crud')
+
 @endsection
 
+{{-- Scripts --}}
 @section('scripts')
-<script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+
+    {{-- Scripts Here --}}
+    
 @endsection
