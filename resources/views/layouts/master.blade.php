@@ -11,7 +11,7 @@
     @yield('title')
     
 </head>
-<body class="bg-gray-100 m-0 p-0" x-data="{ showSidebar: false, showData: false, showResults: false }" x-cloak>
+<body class="bg-gray-100 m-0 p-0" x-data="{ showSidebar: true, showData: false, showResults: false }" x-cloak>
 
     <div class="flex flex-col h-screen">
         <!-- Navigation content (Navbar) -->
