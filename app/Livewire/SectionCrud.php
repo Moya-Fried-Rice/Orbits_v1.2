@@ -63,6 +63,8 @@ class SectionCrud extends Component
     protected $rules = [
         'section' => 'required|string|max:10',
         'faculty_id' => 'nullable|exists:faculties,faculty_id',  
+        'program_id' => 'required|exists:programs,program_id',  
+        'course_id' => 'required|exists:courses,course_id',
     ];
     
 
@@ -109,17 +111,17 @@ class SectionCrud extends Component
 
     public function getCourses()
     {
-        return Course::all();
+        return Course::orderBy('course_name', 'asc')->get();
     }
 
     public function getPrograms()
     {
-        return Program::all();
+        return Program::orderBy('program_name', 'asc')->get();
     }
 
     public function getFaculties()
     {
-        return Faculty::all();
+        return Faculty::orderBy('first_name', 'asc')->get();
     }
 
         // Clear session messages
@@ -148,6 +150,8 @@ class SectionCrud extends Component
             $this->course_section_id = $courseSection->course_section_id;
             $this->section = $courseSection->section;
             $this->faculty_id = $courseSection->faculty_id;
+            $this->course_id = $courseSection->course_id;
+            $this->program_id = $courseSection->program_id;
 
             // Show the edit form
             $this->showEditForm = true;
@@ -644,6 +648,16 @@ class SectionCrud extends Component
         try {
             // Validate inputs using the $rules property
             $this->validate($this->rules);
+
+            // Check if a section with the same name exists for the given course
+            $existingSection = CourseSection::where('section', $this->section)
+                ->where('course_id', $this->course_id)
+                ->first();
+
+            if ($existingSection) {
+                // Log error if section already exists for the course
+                return $this->logAddError('Section already exists!', $section, 409);
+            }
 
             // Attempt to create the section
             $section = $this->createSection();
