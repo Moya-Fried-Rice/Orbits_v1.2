@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Section extends Model
 {
     use HasFactory;
-
+    use SoftDeletes;
+    
     // Specify the primary key if it's not the default 'id'
     protected $primaryKey = 'section_id';
 
@@ -37,5 +39,10 @@ class Section extends Model
     public function evaluationPeriod()
     {
         return $this->belongsTo(EvaluationPeriod::class, 'period_id', 'period_id');
+    }
+
+    public function sectionCourses()
+    {
+        return $this->hasMany(CourseSection::class, 'section_id'); // Adjust the foreign key as needed
     }
 }

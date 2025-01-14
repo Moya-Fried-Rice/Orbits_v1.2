@@ -7,7 +7,7 @@
         <!-- Filters and Search Bar Section -->
         <div class="flex flex-wrap gap-4 items-center justify-start w-full sm:w-auto">
 
-            <!-- Search Bar -->
+            <!-- Search bar -->
             <livewire:search-bar />
 
             <!-- Search course -->
@@ -24,20 +24,44 @@
     </div>
 
     <!-- Section List -->
-    <x-table :action="false">
+    <x-table :action="true">
         <x-slot name="header">
 
             <x-table-header
                 sortField="{{ $sortField }}"
                 sortDirection="{{ $sortDirection }}"
-                data="section"
-                label="Section Name"/>
-
+                data="section_code"
+                label="Section Code"/>
+                
             <x-table-header
                 sortField="{{ $sortField }}"
                 sortDirection="{{ $sortDirection }}"
                 data="program_name"
-                label="Program"/>
+                label="Program Code"/>
+
+            <x-table-header
+                sortField="{{ $sortField }}"
+                sortDirection="{{ $sortDirection }}"
+                data="year_level"
+                label="Year Level"/>
+
+            <x-table-header
+                sortField="{{ $sortField }}"
+                sortDirection="{{ $sortDirection }}"
+                data="section_number"
+                label="Section Number"/>
+
+            <x-table-header
+                sortField="{{ $sortField }}"
+                sortDirection="{{ $sortDirection }}"
+                data="created_at"
+                label="Created At"/>
+            
+            <x-table-header
+                sortField="{{ $sortField }}"
+                sortDirection="{{ $sortDirection }}"
+                data="updated_at"
+                label="Updated At"/>
 
         </x-slot>
 
@@ -49,8 +73,26 @@
             @else
             @foreach ($sections as $section)
             <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $section->section_name }}</td>
+                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $section->section_code }}</td>
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $section->program->program_code }}</td>
+                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $this->ordinal($section->year_level) }} Year</td>
+                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $section->section_number }}</td>
+                <td class="py-2 whitespace-nowrap px-4">
+                    {{ $section->created_at ? $section->created_at->format('Y-m-d H:i') : 'N/A' }}
+                </td>
+                <td class="py-2 whitespace-nowrap px-4">
+                    {{ $section->updated_at ? $section->updated_at->format('Y-m-d H:i') : 'N/A' }}
+                </td>
+                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
+                    <div class="flex items-center justify-end space-x-2">
+                        <button wire:click="edit({{ $section->section_id }})">
+                            <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                        </button>
+                        <button wire:click="delete({{ $section->section_id }})">
+                            <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                        </button>
+                    </div>
+                </td>                
             </tr>            
             @endforeach
             @endif
@@ -62,22 +104,60 @@
         {{ $sections->links() }}
     </div>
 
+    {{-- Modal Delete --}}
+    <x-delete-modal label="section"/>
+
     {{-- Modal Add --}}
     <x-add-modal label="section">
 
         <!-- Program -->
         <x-add-modal-data name="program_id" label="Program:">
-            <x-select-program />
+            <select 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200"
+                id="program_id" 
+                wire:model.live="program_id">
+                <option value="">Select a program</option>
+
+                @foreach ($this->getDepartments() as $department)
+                    <optgroup label="{{ $department->department_name }}"> 
+                        @foreach ($department->programs as $program) <!-- Assuming programs is a relationship -->
+                            <option value="{{ $program->program_id }}">{{ $program->program_name }}</option>
+                        @endforeach
+                    </optgroup>
+                @endforeach
+            </select> 
         </x-add-modal-data>
 
-        <!-- Section -->
-        <x-add-modal-data name="section_name" label="Section Name:">
+        <div class="flex space-x-4">
+        <!-- Year Level -->
+        <x-add-modal-data name="year_level" label="Year Level:">
             <input 
                 class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
-                type="text" 
-                id="section_name" 
-                wire:model="section_name">
+                type="number" 
+                id="year_level" 
+                min="1"
+                max="15"
+                wire:model.live="year_level">
         </x-add-modal-data>
+
+        <!-- Section Number -->
+        <x-add-modal-data name="section_number" label="Section Number:">
+            <input 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                type="number" 
+                id="section_number" 
+                min="1"
+                max="15"
+                wire:model.live="section_number">
+        </x-add-modal-data>
+
+        <x-add-modal-data name="section_code" label="Section Code:">
+            <div class="px-4 w-full p-2">
+                {{ $section_output }}
+            </div>
+        </x-add-modal-data>
+
+        </div>
 
     </x-add-modal>
 </div>
