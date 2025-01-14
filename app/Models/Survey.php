@@ -34,7 +34,7 @@ class Survey extends Model
     }
 
     // Relationship with Evaluation model (Survey can be used in many evaluations)
-    public function evaluations()
+    public function evaluationsPeriod()
     {
         return $this->belongsToMany(EvaluationPeriod::class, 'survey_period', 'survey_id', 'period_id')
                     ->withTimestamps()
