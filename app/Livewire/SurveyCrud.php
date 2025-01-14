@@ -3,11 +3,14 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use App\Models\Survey;
 
 class SurveyCrud extends Component
 {
     public function render()
     {
-        return view('livewire.survey-crud');
+        $surveys = Survey::all();
+        
+        return view('livewire.survey-crud', compact('surveys'));
     }
 }
