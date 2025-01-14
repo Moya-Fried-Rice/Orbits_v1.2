@@ -41,12 +41,12 @@ class Survey extends Model
                     ->withPivot('deleted_at');
     }
 
-    public function surveyRoles()
+    public function roles()
     {
-        return $this->hasMany(SurveyRole::class, 'survey_id', 'survey_id');
+        return $this->belongsToMany(Role::class, 'survey_roles', 'survey_id', 'role_id');
     }
 
-    public function criteria()
+    public function criterias()
     {
         return $this->belongsToMany(QuestionCriteria::class, 'survey_criteria', 'survey_id', 'criteria_id')
                     ->withTimestamps();
