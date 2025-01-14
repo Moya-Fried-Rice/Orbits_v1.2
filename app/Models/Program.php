@@ -39,7 +39,8 @@ class Program extends Model
     // Define the many-to-many relationship with Courses (Programs can have many courses)
     public function courses()
     {
-        return $this->belongsToMany(Course::class, 'program_courses', 'program_id', 'course_id');
+        return $this->belongsToMany(Course::class, 'course_program', 'program_id', 'course_id')
+                    ->withTimestamps();
     }
 
     // Define the relationship with the Student model (Program has many students)

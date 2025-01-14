@@ -36,11 +36,24 @@ class Survey extends Model
     // Relationship with Evaluation model (Survey can be used in many evaluations)
     public function evaluations()
     {
-        return $this->hasMany(Evaluation::class, 'survey_id', 'survey_id');
+        return $this->belongsToMany(EvaluationPeriod::class, 'survey_period', 'survey_id', 'period_id')
+                    ->withTimestamps()
+                    ->withPivot('deleted_at');
     }
 
     public function surveyRoles()
     {
         return $this->hasMany(SurveyRole::class, 'survey_id', 'survey_id');
     }
+
+    public function criteria()
+    {
+        return $this->belongsToMany(QuestionCriteria::class, 'survey_criteria', 'survey_id', 'criteria_id')
+                    ->withTimestamps();
+    }
+
+    // public function surveyPeriods()
+    // {
+    //     return $this->hasMany(SurveyPeriod::class, 'survey_id', 'survey_id');
+    // }
 }

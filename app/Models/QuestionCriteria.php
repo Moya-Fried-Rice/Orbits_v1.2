@@ -35,8 +35,9 @@ class QuestionCriteria extends Model
     }
 
     // Define the relationship with the Survey model (QuestionCriteria belongs to Survey)
-    public function survey()
+    public function surveys()
     {
-        return $this->belongsTo(Survey::class, 'survey_id', 'survey_id');
+        return $this->belongsToMany(Survey::class, 'survey_criteria', 'criteria_id', 'survey_id')
+                    ->withTimestamps();
     }
 }

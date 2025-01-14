@@ -43,5 +43,10 @@ class EvaluationPeriod extends Model
         return $this->hasMany(Evaluation::class, 'period_id', 'period_id');
     }
 
-    // You can add any custom methods or additional relationships here
+    public function surveys()
+    {
+        return $this->belongsToMany(Survey::class, 'survey_period', 'period_id', 'survey_id')
+                    ->withTimestamps()
+                    ->withPivot('deleted_at');
+    }
 }
