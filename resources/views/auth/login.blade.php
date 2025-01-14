@@ -83,7 +83,8 @@ style="background-size: cover; background-position: center; background-attachmen
         "No peeking...",
         "Top-secret.",
         "Not your cat's name.",
-        "Faker what was that?"
+        "Faker what was that?",
+        "Shhh... Don't tell."
     ];
 
     // Randomly set placeholders
