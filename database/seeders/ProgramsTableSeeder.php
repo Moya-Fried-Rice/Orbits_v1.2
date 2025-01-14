@@ -82,7 +82,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
-            'abbreviation' => 'EDUC',
+            'abbreviation' => 'ECED',
             'program_id' => 8,
             'program_code' => 'BECE',
             'program_name' => 'Bachelor of Early Childhood Education',
@@ -92,7 +92,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
-            'abbreviation' => 'EDUC',
+            'abbreviation' => 'SED',
             'program_id' => 9,
             'program_code' => 'BSE',
             'program_name' => 'Bachelor in Secondary Education',
@@ -112,7 +112,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
-            'abbreviation' => 'ACCT',
+            'abbreviation' => 'ACC',
             'program_id' => 11,
             'program_code' => 'BSA',
             'program_name' => 'BS Accountancy',
@@ -242,7 +242,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
-            'abbreviation' => 'ENG',
+            'abbreviation' => 'CE',
             'program_id' => 24,
             'program_code' => 'BSCE',
             'program_name' => 'BS Civil Engineering',
@@ -252,7 +252,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
-            'abbreviation' => 'ENG',
+            'abbreviation' => 'CPE',
             'program_id' => 25,
             'program_code' => 'BSCPE',
             'program_name' => 'BS Computer Engineering',
@@ -272,7 +272,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
-            'abbreviation' => 'ENG',
+            'abbreviation' => 'EE',
             'program_id' => 27,
             'program_code' => 'BSECE',
             'program_name' => 'BS in Electronics Engineering',
@@ -282,7 +282,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
-            'abbreviation' => 'ENG',
+            'abbreviation' => 'IE',
             'program_id' => 28,
             'program_code' => 'BSIE',
             'program_name' => 'Bachelor of Science in Industrial Engineering',
@@ -292,7 +292,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
-            'abbreviation' => 'ENG',
+            'abbreviation' => 'ME',
             'program_id' => 29,
             'program_code' => 'BSME',
             'program_name' => 'BS Mechanical Engineering',

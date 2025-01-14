@@ -18,7 +18,11 @@ return new class extends Migration
             $table->integer('year_level'); // Year level (e.g., 1st year, 2nd year, etc.)
             $table->integer('section_number'); // Section number (e.g., 102 for 1st year, 2nd section)
             $table->timestamps();
-        });              
+            $table->softDeletes(); // Add soft delete column (deleted_at)
+            
+            // Add a unique constraint for program_id, year_level, and section_number
+            $table->unique(['program_id', 'year_level', 'section_number'], 'unique_program_year_section');
+        });                
     }
 
     /**
