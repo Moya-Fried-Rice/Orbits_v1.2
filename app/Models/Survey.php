@@ -38,4 +38,9 @@ class Survey extends Model
     {
         return $this->hasMany(Evaluation::class, 'survey_id', 'survey_id');
     }
+
+    public function surveyRoles()
+    {
+        return $this->hasMany(SurveyRole::class, 'survey_id', 'survey_id');
+    }
 }
