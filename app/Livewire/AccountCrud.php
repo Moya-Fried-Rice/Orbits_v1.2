@@ -35,7 +35,7 @@ class AccountCrud extends Component
                         ->orWhere('users.email', 'like', '%' . $this->search . '%');
                 });
             })
-            ->when($this->selectedRole, fn($query) => $query->where('role_id', $this->selectedRole))
+            ->when($this->selectedRole, fn($query) => $query->where('roles.role_id', $this->selectedRole))
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate(12);
 
