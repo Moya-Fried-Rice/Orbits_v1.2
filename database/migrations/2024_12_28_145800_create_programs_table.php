@@ -12,6 +12,7 @@ class CreateProgramsTable extends Migration
             $table->id('program_id'); // Auto-increment primary key for programs table
             $table->string('program_code')->unique(); // Unique code for the program (e.g., "CS101")
             $table->string('program_name')->unique(); // Name of the program (e.g., "Computer Science")
+            $table->string('abbreviation')->nullable(); // Course name
             $table->text('program_description'); // A detailed description of the program
             $table->foreignId('department_id')->constrained('departments', 'department_id')->onDelete('cascade'); // Foreign key to the departments table
             $table->timestamps(); // created_at, updated_at
