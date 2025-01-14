@@ -25,9 +25,9 @@ class RoleMiddleware
             }
 
             // Check if the user has one of the allowed roles
-            if (!in_array($user->role, $roles)) {
+            if (!in_array($user->role_id, $roles)) {
                 // Log the error for debugging
-                Log::warning('Access denied for user with insufficient role.', ['user_id' => $user->id, 'role' => $user->role, 'ip' => $request->ip()]);
+                Log::warning('Access denied for user with insufficient role.', ['user_id' => $user->id, 'role' => $user->role_id, 'ip' => $request->ip()]);
                 
                 // Abort with 403 Forbidden if the user does not have one of the allowed roles
                 abort(403, 'Access denied');

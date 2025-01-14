@@ -18,11 +18,14 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('role', ['admin', 'faculty', 'student', 'program_chair'])
-            ->default('student') // Set default role to 'student'
+            $table->unsignedBigInteger('role_id')
+            ->default(1) // Set default role to 'student'
             ->nullable(false); // Ensure this column cannot be null
             $table->rememberToken();
             $table->timestamps();
+
+            $table->foreign('role_id')->references('role_id')->on('roles')->onDelete('cascade');
+
         });
     }
 

@@ -18,7 +18,7 @@ class AdminsTableSeeder extends Seeder
             'email' => 'appleadmin@gmail.com',
             'created_at' => now(),  // Use `now()` instead of hardcoding the date
             'updated_at' => now(),
-            'role' => 'admin',
+            'role_id' => 4,
         ]);
 
         // Step 2: Create an Admin record and link it to the User

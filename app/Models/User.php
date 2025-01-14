@@ -20,7 +20,7 @@ class User extends Authenticatable
         'user_id',
         'email',
         'password',
-        'role',
+        'role_id',
     ];
 
     protected $primaryKey = 'user_id';
@@ -65,5 +65,10 @@ class User extends Authenticatable
     public function admin()
     {
         return $this->hasOne(Admin::class, 'user_id', 'admin_id');
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'role_id');
     }
 }

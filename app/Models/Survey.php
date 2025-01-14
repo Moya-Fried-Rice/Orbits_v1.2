@@ -23,7 +23,6 @@ class Survey extends Model
     // Define the fillable attributes (to prevent mass assignment issues)
     protected $fillable = [
         'survey_name',
-        'target_role', // Can be 'student', 'peer', 'self', or 'chair'
     ];
 
     // Define the relationships (if any)

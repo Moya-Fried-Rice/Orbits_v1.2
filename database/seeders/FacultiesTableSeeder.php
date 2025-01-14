@@ -27,7 +27,7 @@ class FacultiesTableSeeder extends Seeder
                 'email' => $faker->unique()->safeEmail,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-                'role' => 'faculty',
+                'role_id' => 2,
             ]);
 
             // Step 2: Create a Faculty record and link it to the User

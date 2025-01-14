@@ -10,85 +10,85 @@ Route::get('/', function () {
 // Route to course page
 Route::get('/courses', function () {
     return view('courses.courses');
-})->middleware(['auth', 'check_role:admin'])->name('courses');
+})->middleware(['auth', 'check_role:4'])->name('courses');
 
 // Route to department page
 Route::get('/departments', function () {
     return view('departments.departments');
-})->middleware(['auth', 'check_role:admin'])->name('departments');
+})->middleware(['auth', 'check_role:4'])->name('departments');
 
 // Route to logs page
 Route::get('/logs', function () {
     return view('logs.logs');
-})->middleware(['auth', 'check_role:admin'])->name('logs');
+})->middleware(['auth', 'check_role:4'])->name('logs');
 
 // Route to faculties page
 Route::get('/faculties', function () {
     return view('faculties.faculties');
-})->middleware(['auth', 'check_role:admin'])->name('faculties');
+})->middleware(['auth', 'check_role:4'])->name('faculties');
 
 // Route to student page
 Route::get('/students', function () {
     return view('students.students');
-})->middleware(['auth', 'check_role:admin'])->name('students');
+})->middleware(['auth', 'check_role:4'])->name('students');
 
 // Route to program page
 Route::get('/programs', function () {
     return view('programs.programs');
-})->middleware(['auth', 'check_role:admin'])->name('programs');
+})->middleware(['auth', 'check_role:4'])->name('programs');
 
 // Route to survey page
 Route::get('/survey', function () {
     return view('survey.survey');
-})->middleware(['auth', 'check_role:admin'])->name('survey');
+})->middleware(['auth', 'check_role:4'])->name('survey');
 
 // Route to section page
 Route::get('/sections', function () {
     return view('sections.sections');
-})->middleware(['auth', 'check_role:admin'])->name('sections');
+})->middleware(['auth', 'check_role:4'])->name('sections');
 
 // Route to accounts page
 Route::get('/accounts', function () {
     return view('accounts.accounts');
-})->middleware(['auth', 'check_role:admin'])->name('accounts');
+})->middleware(['auth', 'check_role:4'])->name('accounts');
 
 // Route to accounts page
 Route::get('/evaluation', function () {
     return view('evaluation.evaluation');
-})->middleware(['auth', 'check_role:admin'])->name('evaluation');
+})->middleware(['auth', 'check_role:4'])->name('evaluation');
 
 // Route to results page
 Route::get('/results', function () {
     return view('results.results');
-})->middleware(['auth', 'check_role:admin'])->name('results');
+})->middleware(['auth', 'check_role:4'])->name('results');
 
 // Route to monitor page
 Route::get('/monitor', function () {
     return view('monitor.monitor');
-})->middleware(['auth', 'check_role:admin'])->name('monitor');
+})->middleware(['auth', 'check_role:4'])->name('monitor');
 
 // Route to ranking page
 Route::get('/ranking', function () {
     return view('ranking.ranking');
-})->middleware(['auth', 'check_role:admin'])->name('ranking');
+})->middleware(['auth', 'check_role:4'])->name('ranking');
 
 // Route to dashboard with conditioning
 Route::get('/dashboard', function () {
     $user = auth()->user();
-    switch ($user->role) {
-        case 'admin':
+    switch ($user->role_id) {
+        case '4':
             return view('dashboard.admin-dashboard');
-        case 'student':
+        case '1':
             return view('dashboard.student-dashboard');
-        case 'faculty':
+        case '2':
             return view('dashboard.faculty-dashboard');
-        case 'program_chair':
+        case '3':
             return view('dashboard.program-chair-dashboard');
         default:
             abort(403, 'Unauthorized');
     }
 })
-->middleware(['auth', 'check_role:admin,student,faculty,program_chair']) // Filter role: all
+->middleware(['auth', 'check_role:4,1,2,3']) // Filter role: all
 ->name('dashboard'); // Route name
     
 

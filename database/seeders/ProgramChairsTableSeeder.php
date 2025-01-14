@@ -25,7 +25,7 @@ class ProgramChairsTableSeeder extends Seeder
                 'email' => $faker->unique()->safeEmail,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-                'role' => 'program_chair',
+                'role_id' => 3,
             ]);
 
             // Step 2: Create a Program Chair record and link it to the User
