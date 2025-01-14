@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\CourseSection;
 use App\Models\Course;
+use App\Models\Department;
 use App\Models\Faculty;
 use App\Models\Program;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -136,6 +137,11 @@ class SectionCrud extends Component
         return Faculty::orderBy('first_name', 'asc')->get();
     }
 
+    public function getDepartments()
+    {
+        return Department::all();
+    }
+
         // Clear session messages
     public function clearMessage()
     {
@@ -255,7 +261,7 @@ class SectionCrud extends Component
             return $this->logEdit('Course section successfully updated!', $courseSection, 200);
         } catch (ValidationException $e) {
             // Handle validation errors (e.g., invalid inputs)
-            return $this->logEditError('Invalid inputs!', $courseSection, 422);
+            return $this->logEditError('Invalid inputs!' . $e, $courseSection, 422);
         } catch (QueryException $e) {
             // Handle database-related errors
             if ($e->errorInfo[1] == 1062) {
@@ -273,22 +279,27 @@ class SectionCrud extends Component
     {
         // Retrieve the course section by its ID
         $courseSection = CourseSection::find($this->course_section_id);
-
+    
         // If the course section doesn't exist, throw an exception
         if (!$courseSection) {
             throw new ModelNotFoundException('Course section not found!');
         }
-
+    
         // Store old values to log changes later
         $this->oldValues = $courseSection->getOriginal();
-
-        // Update the course section properties with new values
-        $courseSection->faculty_id = $this->faculty_id;
+    
+        // Check if faculty_id is empty and set it to NULL if so
+        $courseSection->faculty_id = ($this->faculty_id === '' || $this->faculty_id === 'null') ? NULL : $this->faculty_id;
+    
+        // Update other properties
         $courseSection->section = $this->section;
-
+    
+        // Save the updated course section
+        $courseSection->save();
+    
         // Return the updated course section object
         return $courseSection;
-    }
+    }    
 
     // Log successful course section edit along with changes
     private function logEdit($message, $courseSection, $statusCode)
