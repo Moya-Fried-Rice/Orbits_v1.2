@@ -42,7 +42,7 @@
             <x-table-header
                 sortField="{{ $sortField }}"
                 sortDirection="{{ $sortDirection }}"
-                data="role"
+                data="role_name"
                 label="Role"/>
 
             <x-table-header
@@ -70,7 +70,7 @@
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $account->name }}</td>
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $account->email }}</td>
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
-                    {{ ucwords(str_replace('_', ' ', $account->role)) }}
+                    {{ ucwords(str_replace('_', ' ', $account->role->role_name)) }}
                 </td>                
                 <td class="py-2 whitespace-nowrap px-4">{{ $account->created_at->format('Y-m-d H:i') }}</td>
                 <td class="py-2 whitespace-nowrap px-4">{{ $account->updated_at->format('Y-m-d H:i') }}</td>
@@ -108,13 +108,13 @@
         <x-add-modal-data name="role" label="Role:">
             <select 
                 class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
-                id="role" 
-                wire:model="role">
+                id="role_id" 
+                wire:model="role_id">
                 <option value="">Select a role</option>
-                <option value="admin">Admin</option>
-                <option value="student">Student</option>
-                <option value="faculty">Faculty</option>
-                <option value="program_chair">Program Chair</option>
+                <option value="4">Admin</option>
+                <option value="1">Student</option>
+                <option value="2">Faculty</option>
+                <option value="3">Program Chair</option>
             </select>
         </x-add-modal-data>
 

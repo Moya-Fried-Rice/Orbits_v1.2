@@ -32,7 +32,7 @@ class StudentsTableSeeder extends Seeder
                 'email' => $faker->unique()->safeEmail,  // Unique email
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-                'role' => 'student',
+                'role_id' => 1,
             ]);
 
             // Step 3: Create a Student record and link it to the User

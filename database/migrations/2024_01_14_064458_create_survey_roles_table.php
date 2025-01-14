@@ -15,13 +15,13 @@ class CreateSurveyRolesTable extends Migration
     {
         // Create the survey_roles table
         Schema::create('survey_roles', function (Blueprint $table) {
-            $table->id('role_id');
             $table->unsignedBigInteger('survey_id');
-            $table->string('role');
+            $table->unsignedBigInteger('role_id');
             $table->timestamps();
 
             // Foreign key constraint
             $table->foreign('survey_id')->references('survey_id')->on('surveys')->onDelete('cascade');
+            $table->foreign('role_id')->references('role_id')->on('roles')->onDelete('cascade');
         });
     }
 

@@ -19,20 +19,30 @@ class AccountCrud extends Component
     public function render()
     {
         $accounts = User::query()
+
+            //Join  
+            ->leftJoin('roles', 'roles.role_id', '=', 'users.role_id')
+
+            // Select specific columns
+            ->select(
+                'users.*',
+                'roles.role_name',
+            )
+
             ->when($this->search, function ($query) {
                 $query->where(function ($query) {
-                    $query->where('name', 'like', '%' . $this->search . '%')
-                        ->orWhere('email', 'like', '%' . $this->search . '%');
+                    $query->where('users.name', 'like', '%' . $this->search . '%')
+                        ->orWhere('users.email', 'like', '%' . $this->search . '%');
                 });
             })
-            ->when($this->selectedRole, fn($query) => $query->where('role', $this->selectedRole))
+            ->when($this->selectedRole, fn($query) => $query->where('role_id', $this->selectedRole))
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate(12);
 
         return view('livewire.account-crud', compact('accounts'));
     }
 
-    public $user_id, $name, $role, $password, $email;
+    public $user_id, $name, $role_id, $password, $email;
     public $showDeleteConfirmation = false;
     public $showEditForm = false, $showEditConfirmation = false;
     public $showAddForm = false, $showAddConfirmation = false;
@@ -47,7 +57,7 @@ class AccountCrud extends Component
         'user_id' => 'required|integer|exists:users,user_id',
         'email' => 'required|email',
         'password' => 'nullable|min:8',
-        'role' => 'required|string|in:admin,student,faculty,program_chair',
+        'role_id' => 'required|integer|exists:roles,role_id',
     ];
     
     public function searchPerformed($searchTerm)
@@ -98,7 +108,7 @@ class AccountCrud extends Component
             $this->user_id = $user->user_id;
             $this->name = $user->name;
             $this->email = $user->email;
-            $this->role = $user->role;
+            $this->role_id = $user->role_id;
             // Keep password as null or don't populate if it's being updated
             $this->password = null;
 
@@ -137,7 +147,7 @@ class AccountCrud extends Component
         return $user && (
             $user->name !== $this->name ||
             $user->email !== $this->email ||
-            $user->role !== $this->role ||
+            $user->role_id !== $this->role_id ||
             ($this->password && !Hash::check($this->password, $user->password))
         );
     }
@@ -224,7 +234,7 @@ class AccountCrud extends Component
         // Update the user properties with new values
         $user->name = $this->name;
         $user->email = $this->email;
-        $user->role = $this->role;
+        $user->role_id = $this->role_id;
 
         // Check if password has been changed
         if ($this->password) {
@@ -364,7 +374,7 @@ class AccountCrud extends Component
     private function resetInputFields()
     {
         // Reset specific input fields to their initial state
-        $this->reset(['user_id', 'name', 'email', 'role', 'password']);
+        $this->reset(['user_id', 'name', 'email', 'role_id', 'password']);
     }
 
 }

@@ -22,7 +22,7 @@ class SectionCrud extends Component
     {
         // Paginate CourseSection with filters and search
         $sections = CourseSection::query()
-            // Apply search filter
+            // Join
             ->leftJoin('courses', 'course_sections.course_id', '=', 'courses.course_id')
             ->leftJoin('programs', 'course_sections.program_id', '=', 'programs.program_id')
             ->leftJoin('faculties', 'course_sections.faculty_id', '=', 'faculties.faculty_id')
