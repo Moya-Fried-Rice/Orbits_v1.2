@@ -24,6 +24,7 @@ class Program extends Model
     protected $fillable = [
         'program_code',
         'program_name',
+        'abbreviation',
         'program_description',
         'department_id',
     ];

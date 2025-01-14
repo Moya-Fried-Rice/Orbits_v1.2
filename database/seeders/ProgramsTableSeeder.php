@@ -12,6 +12,7 @@ class ProgramsTableSeeder extends Seeder
     {
         DB::table('programs')->insert([
             [
+            'abbreviation' => 'MT',
             'program_id' => 1,
             'program_code' => 'BSMT',
             'program_name' => 'BS Medical Technology',
@@ -21,6 +22,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'PH',
             'program_id' => 2,
             'program_code' => 'BS-PHAR',
             'program_name' => 'BS Pharmacy',
@@ -30,6 +32,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'RT',
             'program_id' => 3,
             'program_code' => 'BS-RADTECH',
             'program_name' => 'BS Radiologic Technology',
@@ -39,6 +42,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'BIO',
             'program_id' => 4,
             'program_code' => 'BS-BIO',
             'program_name' => 'BS Biology',
@@ -48,6 +52,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'BACOMM',
             'program_id' => 5,
             'program_code' => 'B-COM',
             'program_name' => 'Bachelor of Arts in Communication',
@@ -57,6 +62,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'ABFS',
             'program_id' => 6,
             'program_code' => 'AB-FS',
             'program_name' => 'AB Foreign Service',
@@ -66,6 +72,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'ABLS',
             'program_id' => 7,
             'program_code' => 'AB-LS',
             'program_name' => 'AB Legal Studies',
@@ -75,6 +82,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'EDUC',
             'program_id' => 8,
             'program_code' => 'BECE',
             'program_name' => 'Bachelor of Early Childhood Education',
@@ -84,6 +92,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'EDUC',
             'program_id' => 9,
             'program_code' => 'BSE',
             'program_name' => 'Bachelor in Secondary Education',
@@ -93,6 +102,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'PSYCH',
             'program_id' => 10,
             'program_code' => 'BS-PSYCH',
             'program_name' => 'BS Psychology',
@@ -102,6 +112,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'ACCT',
             'program_id' => 11,
             'program_code' => 'BSA',
             'program_name' => 'BS Accountancy',
@@ -111,6 +122,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'HRM',
             'program_id' => 12,
             'program_code' => 'BA-HRM',
             'program_name' => 'BS Business Administration major in Human Resource Development Management',
@@ -120,6 +132,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'MA',
             'program_id' => 13,
             'program_code' => 'BA-MA',
             'program_name' => 'BS Business Administration major in Management Accounting',
@@ -129,6 +142,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'MM',
             'program_id' => 14,
             'program_code' => 'BA-MM',
             'program_name' => 'BS Business Administration major in Marketing Management',
@@ -138,6 +152,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'OM',
             'program_id' => 15,
             'program_code' => 'BA-OM',
             'program_name' => 'BS Business Administration major in Operations Management',
@@ -147,6 +162,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'CA',
             'program_id' => 16,
             'program_code' => 'BSCA',
             'program_name' => 'BS Customs Administration',
@@ -156,6 +172,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'ENTREP',
             'program_id' => 17,
             'program_code' => 'BS-ENTR-AI',
             'program_name' => 'BS Entrepreneurship with specialization in Aesthetics Industry Management',
@@ -165,6 +182,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'REM',
             'program_id' => 18,
             'program_code' => 'BSREM',
             'program_name' => 'BS Real Estate Management',
@@ -174,6 +192,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'ARCH',
             'program_id' => 19,
             'program_code' => 'BS-ARCH',
             'program_name' => 'Bachelor of Science in Architecture',
@@ -183,6 +202,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'CS',
             'program_id' => 20,
             'program_code' => 'BSCS',
             'program_name' => 'BS Computer Science',
@@ -192,6 +212,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'IT',
             'program_id' => 21,
             'program_code' => 'BSIT',
             'program_name' => 'BS Information Technology',
@@ -201,6 +222,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'LIS',
             'program_id' => 22,
             'program_code' => 'LIS',
             'program_name' => 'Bachelor of Library and Information Science',
@@ -210,6 +232,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'ENG',
             'program_id' => 23,
             'program_code' => 'BSAE',
             'program_name' => 'Bachelor of Science in Aeronautical Engineering',
@@ -219,6 +242,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'ENG',
             'program_id' => 24,
             'program_code' => 'BSCE',
             'program_name' => 'BS Civil Engineering',
@@ -228,6 +252,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'ENG',
             'program_id' => 25,
             'program_code' => 'BSCPE',
             'program_name' => 'BS Computer Engineering',
@@ -237,6 +262,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'ET',
             'program_id' => 26,
             'program_code' => 'BET-CTM',
             'program_name' => 'Bachelor of Engineering Technology',
@@ -246,6 +272,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'ENG',
             'program_id' => 27,
             'program_code' => 'BSECE',
             'program_name' => 'BS in Electronics Engineering',
@@ -255,6 +282,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'ENG',
             'program_id' => 28,
             'program_code' => 'BSIE',
             'program_name' => 'Bachelor of Science in Industrial Engineering',
@@ -264,6 +292,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'ENG',
             'program_id' => 29,
             'program_code' => 'BSME',
             'program_name' => 'BS Mechanical Engineering',
@@ -273,6 +302,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'FA',
             'program_id' => 30,
             'program_code' => 'BFA',
             'program_name' => 'Bachelor of Fine Arts',
@@ -282,6 +312,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'MMA',
             'program_id' => 31,
             'program_code' => 'BMMA',
             'program_name' => 'Bachelor of Multimedia Arts',
@@ -291,6 +322,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'PHOTO',
             'program_id' => 32,
             'program_code' => 'B-PHOTO',
             'program_name' => 'Bachelor in Photography',
@@ -300,6 +332,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'TM',
             'program_id' => 33,
             'program_code' => 'BS-ITTM',
             'program_name' => 'BS International Travel and Tourism Management',
@@ -309,6 +342,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'TM',
             'program_id' => 34,
             'program_code' => 'BS-ITTM-HW',
             'program_name' => 'BS International Travel and Tourism Management (Health and Wellness)',
@@ -318,6 +352,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'HM',
             'program_id' => 35,
             'program_code' => 'BSHM',
             'program_name' => 'BS International Hospitality Management',
@@ -327,6 +362,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'ND',
             'program_id' => 36,
             'program_code' => 'BSND',
             'program_name' => 'BS Nutrition and Dietetics',
@@ -336,6 +372,7 @@ class ProgramsTableSeeder extends Seeder
             'updated_at' => Carbon::now(),
             ],
             [
+            'abbreviation' => 'NURS',
             'program_id' => 37,
             'program_code' => 'BSN',
             'program_name' => 'BS Nursing',

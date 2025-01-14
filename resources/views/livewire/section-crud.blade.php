@@ -11,13 +11,7 @@
             <livewire:search-bar />
 
             <!-- Search course -->
-            <livewire:search-courses />
-
-            <!-- Search course -->
             <livewire:search-programs />
-
-            <!-- Search course -->
-            <livewire:search-faculties />
 
             <!-- Clear Button -->
             <x-clear-button />
@@ -30,6 +24,99 @@
     </div>
 
     <!-- Section List -->
+    <x-table :action="false">
+        <x-slot name="header">
+
+            <x-table-header
+                sortField="{{ $sortField }}"
+                sortDirection="{{ $sortDirection }}"
+                data="section"
+                label="Section Name"/>
+
+            <x-table-header
+                sortField="{{ $sortField }}"
+                sortDirection="{{ $sortDirection }}"
+                data="program_name"
+                label="Program"/>
+
+        </x-slot>
+
+        <x-slot name="body">
+            @if($sections->isEmpty())
+            <tr>
+                <td colspan="2" class="text-center py-4">No sections found.</td>
+            </tr>
+            @else
+            @foreach ($sections as $section)
+            <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
+                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $section->section_name }}</td>
+                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $section->program->program_code }}</td>
+            </tr>            
+            @endforeach
+            @endif
+        </x-slot>
+    </x-table>
+
+    <!-- Pagination -->
+    <div class="p-5">
+        {{ $sections->links() }}
+    </div>
+
+    {{-- Modal Add --}}
+    <x-add-modal label="section">
+
+        <!-- Program -->
+        <x-add-modal-data name="program_id" label="Program:">
+            <x-select-program />
+        </x-add-modal-data>
+
+        <!-- Section -->
+        <x-add-modal-data name="section_name" label="Section Name:">
+            <input 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                type="text" 
+                id="section_name" 
+                wire:model="section_name">
+        </x-add-modal-data>
+
+    </x-add-modal>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+{{-- <div class="bg-white">
+
+    <x-system-notification />
+
+    <div class="p-5 pb-0 flex flex-wrap justify-between items-center">
+
+        <div class="flex flex-wrap gap-4 items-center justify-start w-full sm:w-auto">
+
+            <livewire:search-bar />
+
+            <livewire:search-courses />
+
+            <livewire:search-programs />
+
+            <livewire:search-faculties />
+
+            <x-clear-button />
+
+        </div>
+
+        <x-add-button add="Section" />
+
+    </div>
+
     <x-table :action="true">
         <x-slot name="header">
 
@@ -107,18 +194,14 @@
         </x-slot>
     </x-table>
 
-    <!-- Pagination -->
     <div class="p-5">
         {{ $sections->links() }}
     </div>
 
-{{-- Modal Delete --}}
 <x-delete-modal label="section"/>
 
-{{-- Modal Edit --}}
 <x-edit-modal label="course section">
 
-    <!-- Course Code -->
     <x-add-modal-data name="section" label="Section Code:">
         <input 
             class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
@@ -127,7 +210,6 @@
             wire:model="section">
     </x-add-modal-data>
 
-    <!-- Faculty (Editable) -->
     <x-add-modal-data name="faculty_id" label="Faculty:">
 
         <x-select-faculty />
@@ -137,24 +219,20 @@
 </x-edit-modal>
 
 
-{{-- Modal Add --}}
 <x-add-modal label="section">
 
-    <!-- Course ID -->
     <x-add-modal-data name="course_id" label="Course:">
        
         <x-select-course />
 
     </x-add-modal-data>
 
-    <!-- Program -->
     <x-add-modal-data name="program_id" label="Program:">
            
         <x-select-program />
 
     </x-add-modal-data>
 
-    <!-- Section -->
     <x-add-modal-data name="section" label="Section:">
         <input 
             class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
@@ -163,11 +241,10 @@
             wire:model="section">
     </x-add-modal-data>
 
-    <!-- Faculty -->
     <x-add-modal-data name="faculty_id" label="Faculty:">
         
         <x-select-faculty />
 
     </x-add-modal-data>
 
-</x-add-modal>
+</x-add-modal> --}}

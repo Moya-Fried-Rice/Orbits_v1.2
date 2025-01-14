@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             CoursesTableSeeder::class,
             EvaluationPeriodsTableSeeder::class,
             ProgramsTableSeeder::class,
+            SectionsTableSeeder::class,
             CourseSectionsTableSeeder::class,
             ProgramChairsTableSeeder::class,
             ProgramCoursesTableSeeder::class,
