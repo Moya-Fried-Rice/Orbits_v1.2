@@ -26,6 +26,7 @@
     <!-- Student List -->
     <x-table :action="true">
         <x-slot name="header">
+
             <x-table-header
                 sortField="{{ $sortField }}"
                 sortDirection="{{ $sortDirection }}"
@@ -69,6 +70,7 @@
                 label="Updated At"/>
 
         </x-slot>
+
         <x-slot name="body">
             @if($students->isEmpty())
             <tr>
@@ -78,29 +80,16 @@
             @foreach ($students as $student)
             <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
                 <td class="py-2 whitespace-nowrap px-4">
-                    <div class="relative">
-                        <!-- Loading Spinner (Initially visible) -->
-                        <div class="spinner flex text-xs" id="spinner-{{ $student->student_id }}">
-                            Loading...
-                        </div> 
+                    <svg height="32" width="32" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Rounded circle background -->
+                        <rect x="0" y="0" width="32" height="32" fill="grey" rx="32" ry="32" />
                         
-                        <!-- Profile Image (Initially hidden) -->
-                        <img 
-                            id="profile-img-{{ $student->student_id }}"
-                            
-                            onload="
-                            document.getElementById('spinner-{{ $student->student_id }}').style.display='none'; 
-                            this.style.display='block';" 
-
-                            onerror="
-                            this.style.display='none'; 
-                            document.getElementById('spinner-{{ $student->student_id }}').style.display='none';"
-
-                            src="{{ $student->profile_image }}" 
-                            alt="Profile Image" 
-                            class="hidden w-8 h-8 rounded-full object-cover">
-                    </div>                    
-                </td>
+                        <!-- Centered initials -->
+                        <text x="50%" y="50%" font-size="12" text-anchor="middle" dominant-baseline="middle" fill="white">
+                            {{ strtoupper(substr($student->first_name, 0, 1)) . strtoupper(substr($student->last_name, 0, 1)) }}
+                        </text>
+                    </svg>                      
+                </td>                
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $student->first_name }}</td>
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $student->last_name }}</td>
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $student->program->program_code }}</td>
@@ -122,6 +111,7 @@
             @endif
         </x-slot>
     </x-table>
+
     <!-- Pagination -->
     <div class="p-5">
         {{ $students->links() }}
