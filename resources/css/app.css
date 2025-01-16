@@ -57,3 +57,45 @@
 ::-webkit-scrollbar-thumb:hover {
     background: #838383;
 }
+.spinner > svg {
+    animation: rotate 2s linear infinite;
+}
+
+.spinner > svg circle {
+    fill: none;
+    stroke: #923534;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-dasharray: 80; /* Adjust the dash length */
+    stroke-dashoffset: 80; /* Start with the full dash hidden */
+    animation: spinner 2s linear infinite;
+}
+
+/* Loading Spinner
+<div class="spinner flex" id="spinner-{{ $student->student_id }}">
+    <svg height="30" width="30">
+        <circle r="13" cx="15" cy="15"/>
+    </svg>
+</div> 
+*/
+
+@keyframes spinner {
+    0% {
+        stroke-dashoffset: 80;
+    }
+    50% {
+        stroke-dashoffset: 0;
+    }
+    100% {
+        stroke-dashoffset: -80;
+    }
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
