@@ -20,7 +20,7 @@ class StudentsTableSeeder extends Seeder
         $faker = Faker::create(); // Create an instance of Faker
 
         // Insert fake data into the 'students' table
-        foreach (range(1, 50) as $index) {  // Adjust the range based on how many students you want to generate
+        foreach (range(1, 200) as $index) {  // Adjust the range based on how many students you want to generate
             // Step 1: Generate first name and last name
             $firstName = $faker->firstName;
             $lastName = $faker->lastName;
@@ -43,7 +43,7 @@ class StudentsTableSeeder extends Seeder
                 'last_name' => $lastName,  // Store last name separately
                 'program_id' => $faker->numberBetween(1, 10),  // Random program ID (adjust range as needed)
                 'phone_number' => $faker->phoneNumber,  // Random phone number
-                'profile_image' => $faker->imageUrl(400, 400, 'people'),  // Random profile image URL
+                'profile_image' => 'https://avatar.iran.liara.run/username?username=' . $firstName . '+' . $lastName,  // Random profile image URL
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);
