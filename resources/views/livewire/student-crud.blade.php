@@ -80,15 +80,7 @@
             @foreach ($students as $student)
             <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
                 <td class="py-2 whitespace-nowrap px-4">
-                    <svg height="32" width="32" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Rounded circle background -->
-                        <rect x="0" y="0" width="32" height="32" fill="grey" rx="32" ry="32" />
-                        
-                        <!-- Centered initials -->
-                        <text x="50%" y="50%" font-size="12" text-anchor="middle" dominant-baseline="middle" fill="white">
-                            {{ strtoupper(substr($student->first_name, 0, 1)) . strtoupper(substr($student->last_name, 0, 1)) }}
-                        </text>
-                    </svg>                      
+                    <img src="{{ $student->profile_image }}" class="w-8 h-8 rounded-full" alt="Profile">                      
                 </td>                
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $student->first_name }}</td>
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $student->last_name }}</td>

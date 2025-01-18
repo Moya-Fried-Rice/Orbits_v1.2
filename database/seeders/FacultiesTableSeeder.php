@@ -38,7 +38,7 @@ class FacultiesTableSeeder extends Seeder
                 'last_name' => $lastName,   // Store the last name
                 'department_id' => rand(1, 7),  // Assuming you have 7 departments
                 'phone_number' => $faker->phoneNumber,
-                'profile_image' => $faker->imageUrl(200, 200, 'people'),
+                'profile_image' => "assets/profiles/default.jpg",  // Random profile image URL
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);

@@ -43,7 +43,7 @@ class StudentsTableSeeder extends Seeder
                 'last_name' => $lastName,  // Store last name separately
                 'program_id' => $faker->numberBetween(1, 10),  // Random program ID (adjust range as needed)
                 'phone_number' => $faker->phoneNumber,  // Random phone number
-                'profile_image' => 'https://avatar.iran.liara.run/username?username=' . $firstName . '+' . $lastName,  // Random profile image URL
+                'profile_image' => "assets/profiles/default.jpg",  // Random profile image URL
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);
