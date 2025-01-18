@@ -21,68 +21,69 @@
          </x-slot>
 
          <x-slot name="content"> 
-         <!-- Faculties -->
-         <x-dropdown-link
-            :active="request()->routeIs('faculties')" 
-            :href="route('faculties')" 
-            :icon="asset('assets/icons/faculty.svg')"
-            label="Faculties"
-         />
-
-         <!-- Students -->
-         <x-dropdown-link 
-            :active="request()->routeIs('students')" 
-            :href="route('students')" 
-            :icon="asset('assets/icons/student.svg')"
-            label="Students"
-         />
-         <!-- Courses -->
-         <x-dropdown-link 
-            :active="request()->routeIs('courses')" 
-            :href="route('courses')" 
-            :icon="asset('assets/icons/course.svg')"
-            label="Courses"
-         />
-
-         <!-- Programs -->
-         <x-dropdown-link 
-            :active="request()->routeIs('programs')" 
-            :href="route('programs')" 
-            :icon="asset('assets/icons/program.svg')"
-            label="Programs"
-         />
-
-         <!-- Departments -->
-         <x-dropdown-link 
-            :href="route('departments')" 
+             <!-- Departments -->
+            <x-dropdown-link 
             :active="request()->routeIs('departments')" 
+            :href="route('departments')" 
             :icon="asset('assets/icons/department.svg')"
             label="Departments"
-         />
+            />
 
-         <!-- Survey -->
-         <x-dropdown-link 
-            :active="request()->routeIs('survey')" 
-            :href="route('survey')" 
-            :icon="asset('assets/icons/survey.svg')"
-            label="Survey"
-         />
+            <!-- Programs -->
+            <x-dropdown-link 
+               :active="request()->routeIs('programs')" 
+               :href="route('programs')" 
+               :icon="asset('assets/icons/program.svg')"
+               label="Programs"
+            />
 
-         <!-- Sections -->
-         <x-dropdown-link 
-            :active="request()->routeIs('sections')" 
-            :href="route('sections')" 
-            :icon="asset('assets/icons/section.svg')"
-            label="Sections"
-         />
+            <!-- Courses -->
+            <x-dropdown-link 
+               :active="request()->routeIs('courses')" 
+               :href="route('courses')" 
+               :icon="asset('assets/icons/course.svg')"
+               label="Courses"
+            />
 
-         <!-- Accounts -->
-         <x-dropdown-link 
-            :active="request()->routeIs('accounts')" 
-            :href="route('accounts')" 
-            :icon="asset('assets/icons/account.svg')"
-            label="Accounts"
-         />
+            <!-- Sections -->
+            <x-dropdown-link 
+               :active="request()->routeIs('sections')" 
+               :href="route('sections')" 
+               :icon="asset('assets/icons/section.svg')"
+               label="Sections"
+            />
+
+            <!-- Faculties -->
+            <x-dropdown-link
+               :active="request()->routeIs('faculties')" 
+               :href="route('faculties')" 
+               :icon="asset('assets/icons/faculty.svg')"
+               label="Faculties"
+            />
+
+            <!-- Students -->
+            <x-dropdown-link 
+               :active="request()->routeIs('students')" 
+               :href="route('students')" 
+               :icon="asset('assets/icons/student.svg')"
+               label="Students"
+            />
+
+            <!-- Survey -->
+            <x-dropdown-link 
+               :active="request()->routeIs('survey')" 
+               :href="route('survey')" 
+               :icon="asset('assets/icons/survey.svg')"
+               label="Survey"
+            />
+
+            <!-- Accounts -->
+            <x-dropdown-link 
+               :active="request()->routeIs('accounts')" 
+               :href="route('accounts')" 
+               :icon="asset('assets/icons/account.svg')"
+               label="Accounts"
+            />
          </x-slot>
 
       </x-dropdown>
