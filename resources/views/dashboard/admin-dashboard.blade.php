@@ -8,9 +8,110 @@
 
 @section('content')
 
-<div class="space-y-6">
+<div class="bg-white">
 
-    <!-- Evaluation Section -->
+    <x-system-notification />
+    
+    <div class="p-5 pb-0 ">
+        <span class="space-x-2 opacity-50 hover:opacity-100 transition-all ease-in cursor-pointer group">
+            <i class="fa-solid fa-arrow-left-long"></i><span class="font-medium group-hover:ml-4 transition-all ease-out">Back</span>
+        </span>
+    </div>
+
+    <div class="p-5 pb-0 flex flex-wrap justify-between relative">
+        <div class="flex items-center flex-col sm:flex-row w-full sm:w-auto">
+            <!-- Profile Image -->
+            <img src="{{ asset('assets/profiles/default.jpg') }}" alt="Delete" class="rounded-full w-40 h-40 sm:w-52 sm:h-52">
+            
+            <div class="ml-0 sm:ml-5 flex-col flex gap-5 w-full">
+                <!-- Name and Action Buttons -->
+                <div class="py-2 flex justify-between w-full items-center border-b border-[#DDD] gap-5 sm:mt-0 mt-5">
+                    <span class="font-silka font-semibold text-[#2A2723] text-xl sm:text-3xl">Benjamin Moore</span>
+                    <div class="flex items-center justify-end space-x-2">
+                        <button wire:click="edit()">
+                            <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                        </button>
+                        <button wire:click="delete()">
+                            <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Profile Details -->
+                <div class="text-gray-600">
+                    <span class="flex items-center gap-2 justify-start"><img class="w-5" src="{{ asset('assets/icons/message.svg') }}" alt="Email">: <span>abcjvhert@gmail.com</span></span>
+                    <span class="flex items-center gap-2 justify-start"><img class="w-5" src="{{ asset('assets/icons/call.svg') }}" alt="Number">: <span>09156578280</span></span>
+                    <span class="flex items-center gap-2 justify-start"><img class="w-5" src="{{ asset('assets/icons/course.svg') }}" alt="Course">: <span>BS Computer Science - BSCS</span></span>
+                </div>
+
+                <!-- Add Button -->
+                <x-add-button add="Enroll Course" />
+                
+            </div>
+        </div>
+    </div>
+
+
+    <x-table :action="true">
+        <x-slot name="header">
+
+            <x-table-header
+            sortField=""
+            sortDirection=""
+            data=""
+            label="Section"/>
+
+            <x-table-header
+            sortField=""
+            sortDirection=""
+            data=""
+            label="Course Code"/>
+
+            <x-table-header
+            sortField=""
+            sortDirection=""
+            data=""
+            label="Course Name"/>
+
+            <x-table-header
+            sortField=""
+            sortDirection=""
+            data=""
+            label="Faculty"/>
+
+            <x-table-header
+            sortField=""
+            sortDirection=""
+            data=""
+            label="CREATED AT"/>
+
+        </x-slot>
+
+        <x-slot name="body">
+            <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
+                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">CS101</td>
+                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">NSTPN02G</td>
+                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">National Service Training Program 2</td>
+                <td class="py-2 whitespace-nowrap px-4">James White</td>
+                <td class="py-2 whitespace-nowrap px-4">2024-12-02 11:05</td>
+                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
+                    <div class="flex items-center justify-end space-x-2">
+                        <button wire:click="delete()">
+                            <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </x-slot>
+    </x-table>
+
+
+
+
+
+
+
+    {{-- <!-- Evaluation Section -->
     <div class="bg-white p-6">
         Evaluation
     </div>
@@ -116,195 +217,14 @@
 
         </div>
 
-    </div>
+    </div> --}}
 
 </div>
-
-{{-- <div class="container">
-        
-    <!-- Courses -->
-    <div class="courses">
-        <h3>Courses</h3>
-        @foreach ($courses as $course)
-            <div>
-                <strong>Course Name:</strong> {{ $course->course_name }}<br>
-                <strong>Description:</strong> {{ $course->course_description }}<br>
-                <strong>Course Code:</strong> {{ $course->course_code }}<br>
-                <strong>Department ID:</strong> {{ $course->department_id }}<br><br>
-            </div>
-        @endforeach
-    </div>
-
-    <!-- Course Sections -->
-    <div class="course-sections">
-        <h3>Course Sections</h3>
-        @foreach ($courseSections as $section)
-            <div>
-                <strong>Course ID:</strong> {{ $section->course_id }}<br>
-                <strong>Section:</strong> {{ $section->section }}<br>
-                <strong>Period ID:</strong> {{ $section->period_id }}<br><br>
-            </div>
-        @endforeach
-    </div>
-
-    <!-- Departments -->
-    <div class="departments">
-        <h3>Departments</h3>
-        @foreach ($departments as $department)
-            <div>
-                <strong>Department Name:</strong> {{ $department->department_name }}<br>
-                <strong>Description:</strong> {{ $department->department_description }}<br>
-                <strong>Department Code:</strong> {{ $department->department_code }}<br><br>
-            </div>
-        @endforeach
-    </div>
-
-    <!-- Evaluation Periods -->
-    <div class="evaluation-periods">
-        <h3>Evaluation Periods</h3>
-        @foreach ($evaluationPeriods as $period)
-            <div>
-                <strong>Semester:</strong> {{ $period->semester }}<br>
-                <strong>Academic Year:</strong> {{ $period->academic_year }}<br>
-                <strong>Start Date:</strong> {{ $period->start_date }}<br>
-                <strong>End Date:</strong> {{ $period->end_date }}<br>
-                <strong>Status:</strong> {{ $period->status }}<br>
-                <strong>Student Scoring:</strong> {{ $period->student_scoring }}<br>
-                <strong>Self Scoring:</strong> {{ $period->self_scoring }}<br>
-                <strong>Peer Scoring:</strong> {{ $period->peer_scoring }}<br>
-                <strong>Chair Scoring:</strong> {{ $period->chair_scoring }}<br>
-                <strong>Disseminated:</strong> {{ $period->disseminated }}<br>
-                <strong>Is Completed:</strong> {{ $period->is_completed }}<br><br>
-            </div>
-        @endforeach
-    </div>
-
-    <!-- Faculties -->
-    <div class="faculties">
-        <h3>Faculties</h3>
-        @foreach ($faculties as $faculty)
-            <div>
-                <strong>Username:</strong> {{ $faculty->username }}<br>
-                <strong>Email:</strong> {{ $faculty->email }}<br>
-                <strong>First Name:</strong> {{ $faculty->first_name }}<br>
-                <strong>Last Name:</strong> {{ $faculty->last_name }}<br>
-                <strong>Department ID:</strong> {{ $faculty->department_id }}<br>
-                <strong>Phone Number:</strong> {{ $faculty->phone_number }}<br>
-                <strong>Profile Image:</strong> <img src="{{ $faculty->profile_image }}" alt="Profile Image" width="50"><br><br>
-            </div>
-        @endforeach
-    </div>
-
-    <!-- Programs -->
-    <div class="programs">
-        <h3>Programs</h3>
-        @foreach ($programs as $program)
-            <div>
-                <strong>Program Code:</strong> {{ $program->program_code }}<br>
-                <strong>Program Name:</strong> {{ $program->program_name }}<br>
-                <strong>Description:</strong> {{ $program->program_description }}<br>
-                <strong>Department ID:</strong> {{ $program->department_id }}<br><br>
-            </div>
-        @endforeach
-    </div>
-
-    <!-- Program Chairs -->
-    <div class="program-chairs">
-        <h3>Program Chairs</h3>
-        @foreach ($programChairs as $chair)
-            <div>
-                <strong>Username:</strong> {{ $chair->username }}<br>
-                <strong>Email:</strong> {{ $chair->email }}<br>
-                <strong>First Name:</strong> {{ $chair->first_name }}<br>
-                <strong>Last Name:</strong> {{ $chair->last_name }}<br>
-                <strong>Department ID:</strong> {{ $chair->department_id }}<br>
-                <strong>Profile Image:</strong> <img src="{{ $chair->profile_image }}" alt="Profile Image" width="50"><br><br>
-            </div>
-        @endforeach
-    </div>
-
-    <!-- Program Courses -->
-    <div class="program-courses">
-        <h3>Program Courses</h3>
-        @foreach ($programCourses as $programCourse)
-            <div>
-                <strong>Program ID:</strong> {{ $programCourse->program_id }}<br>
-                <strong>Course ID:</strong> {{ $programCourse->course_id }}<br><br>
-            </div>
-        @endforeach
-    </div>
-
-    <!-- Questions -->
-    <div class="questions">
-        <h3>Questions</h3>
-        @foreach ($questions as $question)
-            <div>
-                <strong>Question Text:</strong> {{ $question->question_text }}<br>
-                <strong>Question Code:</strong> {{ $question->question_code }}<br>
-                <strong>Criteria ID:</strong> {{ $question->criteria_id }}<br><br>
-            </div>
-        @endforeach
-    </div>
-
-    <!-- Question Criteria -->
-    <div class="question-criteria">
-        <h3>Question Criteria</h3>
-        @foreach ($questionCriterias as $criteria)
-            <div>
-                <strong>Description:</strong> {{ $criteria->description }}<br>
-                <strong>Survey ID:</strong> {{ $criteria->survey_id }}<br><br>
-            </div>
-        @endforeach
-    </div>
-
-    <!-- Students -->
-    <div class="students">
-        <h3>Students</h3>
-        @foreach ($students as $student)
-            <div>
-                <strong>Username:</strong> {{ $student->username }}<br>
-                <strong>Email:</strong> {{ $student->email }}<br>
-                <strong>First Name:</strong> {{ $student->first_name }}<br>
-                <strong>Last Name:</strong> {{ $student->last_name }}<br>
-                <strong>Program ID:</strong> {{ $student->program_id }}<br>
-                <strong>Phone Number:</strong> {{ $student->phone_number }}<br>
-                <strong>Profile Image:</strong> <img src="{{ $student->profile_image }}" alt="Profile Image" width="50"><br><br>
-            </div>
-        @endforeach
-    </div>
-
-    <!-- Student Courses -->
-    <div class="student-courses">
-        <h3>Student Courses</h3>
-        @foreach ($studentCourses as $studentCourse)
-            <div>
-                <strong>Student ID:</strong> {{ $studentCourse->student_id }}<br>
-                <strong>Course Section ID:</strong> {{ $studentCourse->course_section_id }}<br><br>
-            </div>
-        @endforeach
-    </div>
-
-    <!-- Surveys -->
-    <div class="surveys">
-        <h3>Surveys</h3>
-        @foreach ($surveys as $survey)
-            <div>
-                <strong>Survey Name:</strong> {{ $survey->survey_name }}<br>
-                <strong>Target Role:</strong> {{ $survey->target_role }}<br><br>
-            </div>
-        @endforeach
-    </div>
-
-</div> --}}
-
 @endsection
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-
-
-
 
 
 @endsection
