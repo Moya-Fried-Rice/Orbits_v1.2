@@ -39,7 +39,6 @@ class ProgramChairsTableSeeder extends Seeder
                     'last_name' => $lastName,   // Store the last name
                     // Assign a unique department_id if a department exists, otherwise null
                     'department_id' => $index <= 7 ? $index : null,  // For demo, assuming the first 7 rows get department IDs
-                    'profile_image' => $faker->imageUrl(200, 200, 'people'),
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),
                 ]

@@ -21,7 +21,7 @@ class CreateStudentsTable extends Migration
             $table->string('first_name'); // First name of the student
             $table->string('last_name'); // Last name of the student
             $table->string('phone_number')->nullable(); // Optional phone number
-            $table->string('profile_image')->nullable(); // Optional profile image path
+            $table->string('profile_image')->default('default_images/default_profile.png'); // Optional profile image path
             $table->softDeletes(); // Soft delete column (deleted_at)
             $table->timestamps(); // created_at, updated_at
         });        

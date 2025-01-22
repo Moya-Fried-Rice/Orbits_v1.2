@@ -8,11 +8,16 @@
         </span>
     </div> --}}
 
-    <div class="p-5 pb-0 flex flex-wrap justify-between relative">
+    <div class="p-5 pb-0 flex flex-wrap items-center justify-start relative">
+        
+        <img src="{{ asset('storage/' . $student->profile_image) }}" alt="Profile Image" class="
+        ring-1 ring-[#DDD] ring-offset-8 ring-offset-[#F8F8F8]
+         object-cover rounded-full w-40 h-40 sm:w-52 sm:h-52">
+
         <div class="flex items-center flex-col sm:flex-row w-full sm:w-auto">
             <!-- Profile Image -->
-            <img src="{{ asset('assets/profiles/default.jpg') }}" alt="Profile Image" class="rounded-full w-40 h-40 sm:w-52 sm:h-52">
             
+
             <div class="ml-0 sm:ml-5 flex-col flex gap-5 w-full">
                 <!-- Name and Action Buttons -->
                 <div class="py-2 flex justify-between w-full items-center border-b border-[#DDD] gap-5 sm:mt-0 mt-5">

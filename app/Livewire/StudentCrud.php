@@ -13,10 +13,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Hash;
+use Livewire\WithFileUploads;
 
 class StudentCrud extends Component
 {
     use WithPagination;
+    use WithFileUploads;
 
     public function render()
     {
@@ -49,7 +51,7 @@ class StudentCrud extends Component
         'last_name' => 'required|string|max:50',
         'program_id' => 'required|integer|exists:programs,program_id',
         'phone_number' => 'nullable|string|max:15|regex:/^\+?[0-9]*$/',
-        'profile_image' => 'nullable|image|max:2048', // Maximum size of 2MB
+        'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // Maximum size of 2MB
     ];
 
     // Listen to dispatched events
@@ -194,7 +196,7 @@ class StudentCrud extends Component
 
         } catch (ValidationException $e) {
             // Log validation error with the initialized $student
-            return $this->logAddError('Invalid inputs!' . $e, $student, 422);
+            return $this->logAddError('Invalid inputs!', $student, 422);
 
         } catch (QueryException $e) {
             // Handle duplicate entry error
@@ -210,6 +212,7 @@ class StudentCrud extends Component
     // Function to create the student entry in the database
     private function createStudent()
     {
+        $imagePath = $this->profile_image->store('profile_images', 'public');
         // Ensure a user is created or exists in the `users` table
         $user = User::create([
             'name' => $this->first_name . ' ' . $this->last_name,
@@ -220,12 +223,12 @@ class StudentCrud extends Component
 
         // Create the student record and link it to the user's ID
         return Student::create([
-            'user_id' => $user->user_id, // Link the `user_id` from `users` table
+            'user_id' => $user->user_id,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'program_id' => $this->program_id,
             'phone_number' => $this->phone_number,
-            'profile_image' => $this->profile_image,
+            'profile_image' => $imagePath,
         ]);
     }
 
