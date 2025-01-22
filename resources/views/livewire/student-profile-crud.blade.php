@@ -73,24 +73,33 @@
         </x-slot>
 
         <x-slot name="body">
-            @foreach($student->courseSections as $courseSection)
-            <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $courseSection->section->section_code }}</td>
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $courseSection->course->course_code }}</td>
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $courseSection->course->course_name }}</td>
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
-                    {{ $courseSection->faculty ? $courseSection->faculty->faculty_name : 'No Faculty Assigned' }}
-                </td>
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $courseSection->created_at }}</td>
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
-                    <div class="flex items-center justify-end space-x-2">
-                        <button wire:click="delete()">
-                            <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
-                        </button>
-                    </div>
-                </td>
-            </tr>
-            @endforeach
+            @if($student->courseSections->isEmpty())
+                <tr>
+                    <td colspan="6" class="text-center py-2 px-4">
+                        No courses assigned.
+                    </td>
+                </tr>
+            @else
+                @foreach($student->courseSections as $courseSection)
+                    <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
+                        <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $courseSection->section->section_code }}</td>
+                        <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $courseSection->course->course_code }}</td>
+                        <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $courseSection->course->course_name }}</td>
+                        <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
+                            {{ $courseSection->faculty ? $courseSection->faculty->faculty_name : 'No Faculty Assigned' }}
+                        </td>
+                        <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $courseSection->created_at }}</td>
+                        <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
+                            <div class="flex items-center justify-end space-x-2">
+                                <button wire:click="delete()">
+                                    <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                @endforeach
+            @endif
+
         </x-slot>
     </x-table>
 </div>
