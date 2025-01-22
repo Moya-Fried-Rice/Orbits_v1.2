@@ -32,6 +32,10 @@ Route::get('/students', function () {
     return view('students.students');
 })->middleware(['auth', 'check_role:4'])->name('students');
 
+    Route::match(['get', 'post'], '/student/{student_name}', function (Illuminate\Http\Request $request, $student_name) {
+        return 'Displaying details for ' . $student_name;
+    })->middleware(['auth', 'check_role:4'])->name('student.post');
+
 // Route to program page
 Route::get('/programs', function () {
     return view('programs.programs');
