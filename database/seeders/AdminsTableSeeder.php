@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Admin;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AdminsTableSeeder extends Seeder
 {
@@ -23,6 +24,7 @@ class AdminsTableSeeder extends Seeder
 
         // Step 2: Create an Admin record and link it to the User
         Admin::create([
+            'uuid' => (string) Str::uuid(),
             'user_id' => $user->user_id, // Ensure correct user_id is used (auto-incremented)
             'first_name' => 'Apple',
             'last_name' => 'Tree',

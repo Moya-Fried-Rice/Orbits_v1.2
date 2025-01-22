@@ -15,6 +15,7 @@ class CreateFacultiesTable extends Migration
     {
         Schema::create('faculties', function (Blueprint $table) {
             $table->id('faculty_id'); // Auto-increment primary key
+            $table->uuid('uuid')->nullable(false);
             $table->foreignId('user_id')->unique()->constrained('users', 'user_id')->onDelete('cascade'); // Foreign key to the users table
             $table->foreignId('department_id')->constrained('departments', 'department_id')->onDelete('cascade'); // Foreign key to departments table
             $table->string('first_name'); // First name
