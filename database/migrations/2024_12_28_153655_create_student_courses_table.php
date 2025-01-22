@@ -18,6 +18,7 @@ class CreateStudentCoursesTable extends Migration
             $table->foreignId('course_section_id')->constrained('course_sections', 'course_section_id')->onDelete('cascade'); // Foreign key to course_sections table
             $table->timestamps(); // created_at, updated_at
             $table->softDeletes(); // Soft delete column (deleted_at)
+            $table->unique(['student_id', 'course_section_id'], 'student_course_unique'); // Composite unique constraint
         });        
     }
 
