@@ -212,7 +212,13 @@ class StudentCrud extends Component
     // Function to create the student entry in the database
     private function createStudent()
     {
-        $imagePath = $this->profile_image->store('profile_images', 'public');
+        if ($this->profile_image) {
+            $imagePath = $this->profile_image->store('profile_images', 'public');
+        } else {
+            // If no image is provided, use a default image path
+            $imagePath = 'default_images/default_profile.png'; // Provide the path to a default image
+        }
+
         // Ensure a user is created or exists in the `users` table
         $user = User::create([
             'name' => $this->first_name . ' ' . $this->last_name,
@@ -320,7 +326,8 @@ class StudentCrud extends Component
             'last_name',
             'program_id',
             'phone_number',
-            'profile_image'
+            'profile_image',
+            'email'
         ]);
     }
 }
