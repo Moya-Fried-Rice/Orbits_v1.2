@@ -5,7 +5,7 @@
     <div class="p-5 pb-0 flex flex-wrap justify-between items-center">
 
         <!-- Filters and Search Bar Section -->
-        <div class="flex flex-wrap gap-4 items-center justify-start w-full sm:w-auto">
+        <div class="flex flex-wrap gap-4 items-center justify-start w-full md:w-auto">
     
             <!-- Search Bar -->
             <livewire:search-bar />
