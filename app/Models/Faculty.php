@@ -32,7 +32,11 @@ class Faculty extends Authenticatable
         'profile_image',
     ];
 
-    // Define the relationships (if any)
+    // faculty_name
+    public function getFacultyNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
 
     // Relationship with Department model (Faculty belongs to Department)
     public function department()

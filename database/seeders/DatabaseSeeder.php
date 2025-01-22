@@ -31,7 +31,6 @@ class DatabaseSeeder extends Seeder
             QuestionCriteriaTableSeeder::class,
             QuestionsTableSeeder::class,
             StudentsTableSeeder::class,
-            StudentCoursesTableSeeder::class,
             SurveyCriteriaTableSeeder::class,
             SurveyPeriodTableSeeder::class,
         ]);

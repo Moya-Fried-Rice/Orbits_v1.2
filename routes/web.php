@@ -33,7 +33,7 @@ Route::get('/students', function () {
 })->middleware(['auth', 'check_role:4'])->name('students');
 
     Route::get('/student/{uuid}', function (string $uuid) {
-        return 'Displaying details for ' . $uuid;
+        return view('students.student-profile', ['uuid' => $uuid]);
     })->middleware(['auth', 'check_role:4'])->name('student.update');
 
 // Route to program page

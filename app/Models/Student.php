@@ -22,6 +22,8 @@ class Student extends Authenticatable
 
     // Define the fillable attributes (to prevent mass assignment issues)
     protected $fillable = [
+        'uuid',
+        'user_id',
         'first_name',
         'last_name',
         'program_id',
@@ -45,7 +47,7 @@ class Student extends Authenticatable
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 
     // Custom password setter (for hashing)

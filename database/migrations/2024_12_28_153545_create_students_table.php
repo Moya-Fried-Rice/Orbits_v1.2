@@ -15,7 +15,7 @@ class CreateStudentsTable extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id('student_id'); // Auto-increment primary key
-            $table->uuid('uuid')->nullable(false);
+            $table->uuid('uuid')->default(DB::raw('UUID()'))->nullable(false);
             $table->foreignId('user_id')->unique()->constrained('users', 'user_id')->onDelete('cascade'); // Foreign key to users table
             $table->foreignId('program_id')->constrained('programs', 'program_id')->onDelete('cascade'); // Foreign key to programs table
             $table->string('first_name'); // First name of the student

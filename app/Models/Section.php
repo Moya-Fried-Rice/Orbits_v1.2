@@ -45,4 +45,11 @@ class Section extends Model
     {
         return $this->hasMany(CourseSection::class, 'section_id'); // Adjust the foreign key as needed
     }
+
+    // section_code
+    public function getSectionCodeAttribute()
+    {
+        return $this->program->abbreviation . $this->year_level . '0' . $this->section_number;
+    }
+
 }

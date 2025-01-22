@@ -37,14 +37,19 @@ class CourseSection extends Model
     }
 
     // Define the relationship with Student model through the pivot table
-    public function students()
-    {
-        return $this->belongsToMany(Student::class, 'student_courses', 'course_section_id', 'student_id');
-    }
+    // public function students()
+    // {
+    //     return $this->belongsToMany(Student::class, 'student_courses', 'course_section_id', 'student_id');
+    // }
 
     public function course()
     {
         return $this->belongsTo(Course::class, 'course_id');
+    }
+
+    public function section()
+    {
+        return $this->belongsTo(Section::class, 'section_id');
     }
 
     // Define the program relationship

@@ -20,9 +20,12 @@ class StudentsTableSeeder extends Seeder
     {
         $faker = Faker::create(); // Create an instance of Faker
 
+        // Step 1: Generate sample course section IDs (adjust to match your database)
+        $courseSectionIds = DB::table('course_sections')->pluck('course_section_id')->toArray();
+
         // Insert fake data into the 'students' table
         foreach (range(1, 200) as $index) {  // Adjust the range based on how many students you want to generate
-            // Step 1: Generate first name and last name
+            // Generate first name and last name
             $firstName = $faker->firstName;
             $lastName = $faker->lastName;
 
@@ -37,7 +40,7 @@ class StudentsTableSeeder extends Seeder
             ]);
 
             // Step 3: Create a Student record and link it to the User
-            DB::table('students')->insert([
+            $studentId = DB::table('students')->insertGetId([
                 'uuid' => (string) Str::uuid(),
                 'student_id' => $index,  // Auto-increment primary key
                 'user_id' => $user->user_id,  // Link the student to the created user
@@ -49,6 +52,17 @@ class StudentsTableSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);
+
+            // Step 4: Assign 8 random course sections to the student
+            $assignedCourseSections = $faker->randomElements($courseSectionIds, 8); // Select 8 random course sections
+            foreach ($assignedCourseSections as $courseSectionId) {
+                DB::table('student_courses')->insert([
+                    'student_id' => $studentId,  // Link to the created student
+                    'course_section_id' => $courseSectionId,  // Link to a course section
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+            }
         }
     }
 }
