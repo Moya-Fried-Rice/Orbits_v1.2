@@ -7,6 +7,7 @@ use Faker\Factory as Faker;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\User;
+use Illuminate\Support\Str;
 
 class FacultiesTableSeeder extends Seeder
 {
@@ -32,6 +33,7 @@ class FacultiesTableSeeder extends Seeder
 
             // Step 2: Create a Faculty record and link it to the User
             DB::table('faculties')->insert([
+                'uuid' => (string) Str::uuid(),
                 'faculty_id' => $index, // Auto-increment primary key for faculties
                 'user_id' => $user->user_id, // Link to the created user's user_id
                 'first_name' => $firstName, // Store the first name
