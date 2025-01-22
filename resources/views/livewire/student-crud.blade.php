@@ -90,12 +90,11 @@
                 <td class="py-2 whitespace-nowrap px-4">{{ $student->updated_at->format('Y-m-d H:i') }}</td>
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
                     <div class="flex items-center justify-end space-x-2">
-                        <button wire:click="edit({{ $student->student_id }})">
-                            <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
-                        </button>
-                        <button wire:click="delete({{ $student->student_id }})">
-                            <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
-                        </button>
+                        <form method="POST" action="{{ route('student.post', ['student_name' => $student->first_name . '.' . $student->last_name]) }}">
+                            @csrf
+                            <input type="hidden" name="student_id" value="{{ $student->student_id }}">
+                            <button type="submit" class="bg-[#F8F8F8] text-[#2A2723] px-3 py-1 text-sm transition duration-100 border hover:border-[#923534]">View Profile</button>
+                        </form>
                     </div>
                 </td>
             </tr>            
