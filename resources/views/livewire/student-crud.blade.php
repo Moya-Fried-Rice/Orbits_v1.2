@@ -145,6 +145,7 @@
             class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 hover:border-[#923534] transition-all duration-200" 
             type="file" 
             id="profile_image" 
+            accept="image/jpeg, image/png, image/jpg, image/gif, image/webp"
             wire:model="profile_image">
     </x-add-modal-data>
 

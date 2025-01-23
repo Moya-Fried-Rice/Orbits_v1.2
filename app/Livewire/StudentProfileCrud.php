@@ -14,25 +14,24 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Hash;
 use Livewire\WithFileUploads;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\UploadedFile;
 
 class StudentProfileCrud extends Component
 {
     use WithFileUploads;
 
     public $uuid;
-    public $student;
-
-    public function mount($uuid)
-    {
-        $this->uuid = $uuid;
-        // Eager load the course sections for the student
-        $this->student = Student::with('courseSections')->where('uuid', $uuid)->first();
-    }
 
     public function render()
     {
-        return view('livewire.student-profile-crud');
+        $uuid = $this->uuid; // Ensure the $uuid variable is defined
+
+        // Eager load the course sections for the student
+        $student = Student::with('courseSections')->where('uuid', $uuid)->first();
+
+        return view('livewire.student-profile-crud', compact('student'));
     }
+
 
     // Public properties for course data and modal states.
     public $student_id, $first_name, $last_name, $program_id, $phone_number, $profile_image, $email;
@@ -47,8 +46,8 @@ class StudentProfileCrud extends Component
         'first_name' => 'required|string|max:50',
         'last_name' => 'required|string|max:50',
         'program_id' => 'required|integer|exists:programs,program_id',
-        'phone_number' => 'nullable|string|max:15|regex:/^\+?[0-9]*$/',
-        'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // Maximum size of 2MB
+        'phone_number' => 'nullable|string|max:20|regex:/^(\+?\d{1,3})?[\s\-\.]?(\(\d{1,4}\)[\s\-\.]?)?\d{1,4}[\s\-\.]?\d{1,4}[\s\-\.]?\d{1,9}$/',
+        'profile_image' => 'nullable|max:2048', // Maximum size of 2MB
     ];
 
     // Fetch all programs for dropdown
@@ -80,7 +79,7 @@ class StudentProfileCrud extends Component
             $student = Student::findOrFail($id);
 
             // Populate input fields with student data
-            $this->student_id = $student->id;
+            $this->student_id = $student->student_id;
             $this->first_name = $student->first_name;
             $this->last_name = $student->last_name;
             $this->program_id = $student->program_id;
@@ -102,13 +101,13 @@ class StudentProfileCrud extends Component
     public function updateConfirmation()
     {
         // Check if any changes were made
-        // if (!$this->isUpdated()) {
-        //     // If no changes, show a message and return
-        //     session()->flash('info', 'No changes were made to the student.');
-        //     $this->showEditForm = false;
-        //     $this->showEditConfirmation = false;
-        //     return;
-        // }
+        if (!$this->isUpdated()) {
+            // If no changes, show a message and return
+            session()->flash('info', 'No changes were made to the student.');
+            $this->showEditForm = false;
+            $this->showEditConfirmation = false;
+            return;
+        }
 
         // Close the edit form and show confirmation if there are changes
         $this->showEditForm = false;
@@ -123,7 +122,7 @@ class StudentProfileCrud extends Component
             $student->first_name !== $this->first_name ||
             $student->last_name !== $this->last_name ||
             $student->program_id !== $this->program_id ||
-            $student->phone_number !== $this->phone_number ||
+            $student->phone_number !== $this->phone_number || 
             $student->profile_image !== $this->profile_image
         );
     }
@@ -147,10 +146,10 @@ class StudentProfileCrud extends Component
     {
         try {
             // Only proceed with the update if changes were made
-            // if (!$this->isUpdated()) {
-            //     session()->flash('info', 'No changes were made to the student.');
-            //     return;
-            // }
+            if (!$this->isUpdated()) {
+                session()->flash('info', 'No changes were made to the student.');
+                return;
+            }
 
             // Validate and update the student
             $this->validateQueryEdit();
@@ -180,7 +179,7 @@ class StudentProfileCrud extends Component
             return $this->logEdit('Student successfully updated!', $student, 200);
         } catch (ValidationException $e) {
             // Handle validation errors (e.g., invalid inputs)
-            return $this->logEditError('Invalid inputs!', $student, 422);
+            return $this->logEditError('Invalid inputs!' . $e, $student, 422);
         } catch (QueryException $e) {
             // Handle database-related errors
             if ($e->errorInfo[1] == 1062) {
@@ -212,10 +211,26 @@ class StudentProfileCrud extends Component
         $student->last_name = $this->last_name;
         $student->program_id = $this->program_id;
         $student->phone_number = $this->phone_number;
-        $student->profile_image = $this->profile_image;
+        
+        if ($this->profile_image instanceof UploadedFile) {
+            $imagePath = $this->validateAndStoreImage($this->profile_image);
+            $student->profile_image = $imagePath;
+        }
 
         // Return the updated student object
         return $student;
+    }
+
+    private function validateAndStoreImage(UploadedFile $file)
+    {
+        // Validate the file type
+        $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'];
+        if (!in_array($file->getMimeType(), $allowedMimeTypes)) {
+            throw new \Exception('Invalid file type. Allowed types are: jpeg, png, jpg, gif, webp.');
+        }
+
+        // Store the image
+        return $file->store('profile_images', 'public');
     }
 
     // Log successful student edit along with changes
@@ -286,6 +301,11 @@ class StudentProfileCrud extends Component
         $this->showEditConfirmation = false;
         $this->resetErrorBag(); // Reset error bag
     }
+
+
+
+
+    
 
     // Log unexpected system errors
     private function logSystemError($message, Exception $e)
