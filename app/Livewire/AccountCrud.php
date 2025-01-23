@@ -37,7 +37,7 @@ class AccountCrud extends Component
             })
             ->when($this->selectedRole, fn($query) => $query->where('roles.role_id', $this->selectedRole))
             ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate(12);
+            ->paginate(11);
 
         return view('livewire.account-crud', compact('accounts'));
     }
