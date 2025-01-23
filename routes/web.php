@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Models\Student;
+use App\Models\Faculty;
+use App\Models\ProgramChair;
 
 // Route home direct to login
 Route::get('/', function () {
@@ -34,7 +37,7 @@ Route::get('/students', function () {
 
     Route::get('/student/{uuid}', function (string $uuid) {
         return view('students.student-profile', ['uuid' => $uuid]);
-    })->middleware(['auth', 'check_role:4'])->name('student.update');
+    })->middleware(['auth', 'check_role:4', 'verify_uuid:' . Student::class])->name('student.update');
 
 // Route to program page
 Route::get('/programs', function () {
