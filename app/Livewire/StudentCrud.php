@@ -285,6 +285,238 @@ class StudentCrud extends Component
     }
     //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
+
+
+
+
+
+
+
+
+
+
+
+    public function delete($id)
+    {
+        $this->deleteId = $id;
+        $this->showDeleteConfirmation = true;
+    }
+    
+    // Step 2: Confirm/Cancel delete
+    
+    // If confirmed
+    public function confirmDelete()
+    {
+        $this->remove(); // Proceed to delete student from database
+        $this->resetDeleteState(); // Close confirmation modal and reset state
+    }
+    
+    // If canceled
+    public function cancelDelete()
+    {
+        $this->resetDeleteState(); // Close confirmation modal and reset state
+    }
+    
+    // Reset delete state to prepare for next action
+    private function resetDeleteState()
+    {
+        $this->showDeleteConfirmation = false;
+        $this->deleteId = null;
+    }
+    
+    // Main method to handle deletion
+    public function remove()
+    {
+        try {
+            $this->validateQueryRemove();
+        } catch (Exception $e) {
+            $this->logSystemError('An error occurred while deleting the student.', $e);
+        } finally {
+            session()->forget('deleteId');
+        }
+    }
+    
+    // Validate and process deletion
+    public function validateQueryRemove()
+    {
+        try {
+            // Retrieve student by ID
+            $student = Student::find($this->deleteId);
+    
+            if (!$student) {
+                return $this->logRemoveError('Student not found!', $student, 404);
+            }
+    
+            // Check for related records (dependencies) that prevent deletion
+            if ($student->courseSection()->exists()) { 
+                return $this->logRemoveError('Cannot delete the student due to existing dependencies.', $student, 400);
+            }
+    
+            // Soft delete the student
+            $this->deleteStudent($student);
+
+        } catch (QueryException $e) {
+            // Handle database query exceptions
+            return $this->logRemoveError('Database error: ' . $e->getMessage(), $student, 500);
+        }
+    }
+    
+    // Soft delete the student and log success
+    private function deleteStudent($student)
+    {
+        $student->delete();  // Perform soft delete
+
+        // Log the successful deletion
+        return $this->logRemove('Student successfully deleted!', $student, 200);
+
+        return redirect()->route('students');
+    }
+    
+    // Log successful student removal
+    private function logRemove($message, $student, $statusCode)
+    {
+        // Flash deleted id for restoration to the session
+        session()->put('deleted_record_id', $this->deleteId);
+    
+        // Flash success message to the session
+        session()->flash('deleted', $message);
+    
+        // Log the activity using Spatie Activitylog
+        activity()
+            ->performedOn($student)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'status' => 'success',  // Status: success
+                'student_name' => $student->first_name . ' ' . $student->last_name, // Log student name for reference
+                'status_code' => $statusCode, // HTTP status code (e.g., 200 for successful removal)
+            ])
+            ->event('Student Removed') // Event: Student Removed
+            ->log($message); // Log the custom success message
+    }
+    
+    // Log an error when student removal fails
+    private function logRemoveError($message, $student, $statusCode)
+    {
+        // Flash error message to the session
+        session()->flash('error', $message);
+    
+        // Log the activity using Spatie Activitylog
+        activity()
+            ->performedOn($student)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'status' => 'error',  // Status: error
+                'student_name' => $student->first_name . ' ' . $student->last_name, // Log student name for reference
+                'status_code' => $statusCode, // HTTP status code (e.g., 400, 422 for failure cases)
+            ])
+            ->event('Failed to Remove Student') // Event: Failed to Remove Student
+            ->log($message); // Log the custom error message
+    }
+
+
+
+
+
+
+    // Method for restoring deleted student
+    public function undoDelete()
+    {
+        // Get the deleted student ID from the session
+        $studentId = session()->get('deleted_record_id');
+
+        if ($studentId) {
+            try {
+                // Retrieve the student including trashed ones
+                $student = Student::withTrashed()->findOrFail($studentId);
+
+                // Check if the student is already active or needs restoration
+                $this->checkIfRestored($student);
+            } catch (ModelNotFoundException $e) {
+                // Log error if student is not found
+                $this->logSystemError('Student not found for restoration!', $e);
+            } catch (Exception $e) {
+                // Log any other exceptions
+                $this->logSystemError('Failed to restore student', $e);
+            }
+        } else {
+            // Handle case where no deleted student is found in session
+            session()->flash('error', 'No student available to restore!');
+        }
+    }
+
+    // Check if the student is already restored
+    private function checkIfRestored($student)
+    {
+        if (!$student->trashed()) {
+            // Log if the student is already active
+            $this->logRestorationError('Student is already active', $student);
+            return;
+        } else {
+            // Restore the student if they are trashed
+            $this->restoreStudent($student);
+        }
+    }
+
+    // Restore the student
+    private function restoreStudent($student)
+    {
+        try {
+            // Attempt to restore the student
+            $student->restore();
+            
+            // Clear the session for deleted student ID
+            session()->forget('deleted_record_id');
+
+            // Log the restoration success
+            $this->logRestoration('Student successfully restored!', $student, 200);
+        } catch (Exception $e) {
+            // Log any errors during the restoration process
+            $this->logRestorationError('Failed to restore student', $student, 500);
+        }
+    }
+
+    // Log the student restoration
+    private function logRestoration($message, $student, $statusCode)
+    {
+        session()->flash('success', $message);
+
+        // Log activity using Spatie Activitylog
+        activity()
+            ->performedOn($student)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'status' => 'success',
+                'student_name' => $student->student_name,
+                'status_code' => $statusCode,
+            ])
+            ->event('Restore')
+            ->log('Student restored');
+    }
+
+    // Log restoration error
+    private function logRestorationError($message, $student, $statusCode)
+    {
+        session()->flash('error', $message);
+
+        // Log activity using Spatie Activitylog
+        activity()
+            ->performedOn($student)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'status' => 'error',
+                'student_name' => $student->student_name,
+                'status_code' => $statusCode,
+            ])
+            ->event('Restore')
+            ->log('Failed to restore student');
+    }
+
+
+
+
+
+
+
     // Log unexpected system errors
     private function logSystemError($message, Exception $e)
     {

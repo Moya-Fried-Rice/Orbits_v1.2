@@ -26,9 +26,6 @@
                         <button wire:click="edit({{ $student->student_id }})">
                             <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                         </button>
-                        <button wire:click="delete({{ $student->student_id }})">
-                            <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
-                        </button>
                     </div>
                 </div>
     
@@ -105,7 +102,7 @@
     </div>
 
 {{-- Modal Delete --}}
-<x-delete-modal label="course"/>
+<x-delete-modal label="student"/>
 
 <x-edit-modal label="student">
 

@@ -96,6 +96,9 @@
                         >
                             View Profile
                         </a>
+                        <button wire:click="delete({{ $student->student_id }})" class="w-8 h-8">
+                            <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                        </button>
                     </div>                    
                 </td>
             </tr>            
@@ -109,7 +112,10 @@
         {{ $students->links() }}
     </div>
 
-    <!-- Modal Add -->
+{{-- Modal Delete --}}
+<x-delete-modal label="student"/>
+
+<!-- Modal Add -->
 <x-add-modal label="student">
 
     <!-- First Name -->
