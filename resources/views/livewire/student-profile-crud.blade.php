@@ -12,21 +12,21 @@
         
         <img src="{{ asset('storage/' . $student->profile_image) }}" alt="Profile Image" class="
         ring-1 ring-[#DDD] ring-offset-8 ring-offset-[#F8F8F8]
-         object-cover rounded-full w-40 h-40 sm:w-52 sm:h-52">
+         object-cover rounded-full w-40 h-40 md:w-52 md:h-52">
 
-        <div class="flex items-center flex-col sm:flex-row w-full sm:w-auto">
+        <div class="flex items-center flex-col md:flex-row w-full md:w-auto">
             <!-- Profile Image -->
             
 
-            <div class="ml-0 sm:ml-5 flex-col flex gap-5 w-full">
+            <div class="ml-0 md:ml-5 flex-col flex gap-5 w-full">
                 <!-- Name and Action Buttons -->
-                <div class="py-2 flex justify-between w-full items-center border-b border-[#DDD] gap-5 sm:mt-0 mt-5">
-                    <span class="font-silka font-semibold text-[#2A2723] text-xl sm:text-3xl">{{ $student->first_name }} {{ $student->last_name }}</span>
+                <div class="py-2 flex justify-between w-full items-center border-b border-[#DDD] gap-5 md:mt-0 mt-5">
+                    <span class="font-silka font-semibold text-[#2A2723] text-xl md:text-3xl">{{ $student->first_name }} {{ $student->last_name }}</span>
                     <div class="flex items-center justify-end space-x-2">
                         <button wire:click="edit({{ $student->student_id }})">
                             <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                         </button>
-                        <button wire:click="delete()">
+                        <button wire:click="delete({{ $student->student_id }})">
                             <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                         </button>
                     </div>
@@ -104,6 +104,9 @@
         </x-table>
     </div>
 
+{{-- Modal Delete --}}
+<x-delete-modal label="course"/>
+
 <x-edit-modal label="student">
 
     <!-- First Name -->
@@ -139,6 +142,7 @@
             class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 hover:border-[#923534] transition-all duration-200" 
             type="file" 
             id="profile_image" 
+            accept="image/jpeg, image/png, image/jpg, image/gif, image/webp"
             wire:model="profile_image">
     </x-add-modal-data>
 
