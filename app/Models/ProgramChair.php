@@ -40,7 +40,7 @@ class ProgramChair extends Authenticatable
     }
 
     // Relationship with Programs (ProgramChair can have many programs)
-    public function programs()
+    public function program()
     {
         return $this->hasMany(Program::class, 'department_id', 'department_id');
     }

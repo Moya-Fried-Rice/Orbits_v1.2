@@ -41,7 +41,7 @@ class Section extends Model
         return $this->belongsTo(EvaluationPeriod::class, 'period_id', 'period_id');
     }
 
-    public function sectionCourses()
+    public function courseSection()
     {
         return $this->hasMany(CourseSection::class, 'section_id'); // Adjust the foreign key as needed
     }

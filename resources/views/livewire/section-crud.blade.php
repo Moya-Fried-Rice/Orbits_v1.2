@@ -121,7 +121,7 @@
 
                 @foreach ($this->getDepartments() as $department)
                     <optgroup label="{{ $department->department_name }}"> 
-                        @foreach ($department->programs as $program) <!-- Assuming programs is a relationship -->
+                        @foreach ($department->program as $program) <!-- Assuming programs is a relationship -->
                             <option value="{{ $program->program_id }}">{{ $program->program_name }}</option>
                         @endforeach
                     </optgroup>

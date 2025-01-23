@@ -45,13 +45,13 @@ class Faculty extends Authenticatable
     }
     
     // Many-to-many relationship with CourseSection (Faculty can teach many course sections)
-    public function courseSections()
+    public function courseSection()
     {
         return $this->hasMany(CourseSection::class, 'faculty_id', 'faculty_id');
     }
 
     // Relationship with PeerEvaluation (Faculty can be evaluated by peers)
-    public function peerEvaluations()
+    public function peerEvaluation()
     {
         return $this->hasMany(PeerEvaluation::class, 'faculty_id', 'faculty_id');
     }

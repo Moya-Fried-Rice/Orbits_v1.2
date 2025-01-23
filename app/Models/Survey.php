@@ -28,7 +28,7 @@ class Survey extends Model
     // Define the relationships (if any)
 
     // Relationship with Question model (Survey can have many questions)
-    public function questions()
+    public function question()
     {
         return $this->hasMany(Question::class, 'survey_id', 'survey_id');
     }
@@ -41,12 +41,12 @@ class Survey extends Model
                     ->withPivot('deleted_at');
     }
 
-    public function roles()
+    public function role()
     {
         return $this->belongsToMany(Role::class, 'survey_roles', 'survey_id', 'role_id');
     }
 
-    public function criterias()
+    public function criteria()
     {
         return $this->belongsToMany(QuestionCriteria::class, 'survey_criteria', 'survey_id', 'criteria_id')
                     ->withTimestamps();

@@ -29,13 +29,13 @@ class QuestionCriteria extends Model
     // Define the relationships (if any)
 
     // Define the relationship with the Question model (QuestionCriteria has many Questions)
-    public function questions()
+    public function question()
     {
         return $this->hasMany(Question::class, 'criteria_id', 'criteria_id');
     }
 
     // Define the relationship with the Survey model (QuestionCriteria belongs to Survey)
-    public function surveys()
+    public function survey()
     {
         return $this->belongsToMany(Survey::class, 'survey_criteria', 'criteria_id', 'survey_id')
                     ->withTimestamps();

@@ -73,14 +73,14 @@
             </x-slot>
 
             <x-slot name="body">
-                @if($student->courseSections->isEmpty())
+                @if($student->courseSection->isEmpty())
                     <tr>
                         <td colspan="6" class="text-center py-2 px-4">
                             No courses assigned.
                         </td>
                     </tr>
                 @else
-                    @foreach($student->courseSections as $courseSection)
+                    @foreach($student->courseSection as $courseSection)
                         <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
                             <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $courseSection->section->section_code }}</td>
                             <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $courseSection->course->course_code }}</td>
