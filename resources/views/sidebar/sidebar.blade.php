@@ -21,13 +21,32 @@
          </x-slot>
 
          <x-slot name="content"> 
-             <!-- Departments -->
-            <x-dropdown-link 
-            :active="request()->routeIs('departments')" 
-            :href="route('departments')" 
-            :icon="asset('assets/icons/department.svg')"
-            label="Departments"
+
+            <!-- Faculties -->
+            <x-dropdown-link
+               :active="request()->routeIs('faculties')" 
+               :href="route('faculties')" 
+               :icon="asset('assets/icons/faculty.svg')"
+               label="Faculties"
             />
+
+            <!-- Students -->
+            <x-dropdown-link 
+               :active="request()->routeIs('students')" 
+               :href="route('students')" 
+               :icon="asset('assets/icons/student.svg')"
+               label="Students"
+            />
+
+            <!-- Sections -->
+            <x-dropdown-link 
+               :active="request()->routeIs('sections')" 
+               :href="route('sections')" 
+               :icon="asset('assets/icons/section.svg')"
+               label="Sections"
+            />
+
+            <hr>
 
             <!-- Programs -->
             <x-dropdown-link 
@@ -45,29 +64,15 @@
                label="Courses"
             />
 
-            <!-- Sections -->
+             <!-- Departments -->
             <x-dropdown-link 
-               :active="request()->routeIs('sections')" 
-               :href="route('sections')" 
-               :icon="asset('assets/icons/section.svg')"
-               label="Sections"
+            :active="request()->routeIs('departments')" 
+            :href="route('departments')" 
+            :icon="asset('assets/icons/department.svg')"
+            label="Departments"
             />
 
-            <!-- Faculties -->
-            <x-dropdown-link
-               :active="request()->routeIs('faculties')" 
-               :href="route('faculties')" 
-               :icon="asset('assets/icons/faculty.svg')"
-               label="Faculties"
-            />
-
-            <!-- Students -->
-            <x-dropdown-link 
-               :active="request()->routeIs('students')" 
-               :href="route('students')" 
-               :icon="asset('assets/icons/student.svg')"
-               label="Students"
-            />
+            <hr>
 
             <!-- Survey -->
             <x-dropdown-link 
