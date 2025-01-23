@@ -5,7 +5,7 @@
         wire:click="sortBy('{{ $data }}')" 
         class="items-center border border-[#DDD] text-left py-2 px-4 whitespace-nowrap font-light cursor-pointer hover:bg-blue-50 transition-colors duration-100"
     @else 
-        class="items-center border border-[#DDD] text-left py-2 px-4 whitespace-nowrap font-light"
+        class="items-center border border-[#DDD] text-left py-2 px-4 whitespace-nowrap font-light hover:bg-blue-50 transition-colors duration-100"
     @endif
 >
     <div class="flex items-center gap-2 justify-between" style="user-select: none;">
