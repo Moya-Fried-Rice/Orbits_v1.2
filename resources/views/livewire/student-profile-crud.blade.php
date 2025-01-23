@@ -8,11 +8,11 @@
         </span>
     </div> --}}
 
-    <div class="p-5 pb-0 flex flex-wrap items-center md:justify-start justify-center relative">
+    <div class="p-5 pb-0 gap-5 flex flex-wrap items-center md:justify-start justify-center relative">
         
         <img src="{{ asset('storage/' . $student->profile_image) }}" alt="Profile Image" class="
         ring-1 ring-[#DDD] ring-offset-8 ring-offset-[#F8F8F8]
-         object-cover rounded-full w-40 h-40 md:w-52 md:h-52">
+         object-cover rounded-full w-40 h-40 md:w-48 md:h-48">
 
         <div class="flex items-center flex-col md:flex-row w-full md:w-auto">
             <!-- Profile Image -->
