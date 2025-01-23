@@ -29,7 +29,7 @@ class CourseCrud extends Component
             })
             ->when($this->selectedDepartment, fn($query) => $query->where('department_id', $this->selectedDepartment))
             ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate(12);
+            ->paginate(10);
 
         return view('livewire.course-crud', compact('courses'));
     }

@@ -26,7 +26,7 @@ class DepartmentCrud extends Component
                 });
             })
             ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate(12);
+            ->paginate(10);
     
         return view('livewire.department-crud', compact('departments'));
     }    

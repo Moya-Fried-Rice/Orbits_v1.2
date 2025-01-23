@@ -29,7 +29,7 @@ class ProgramCrud extends Component
                       ->orWhere('program_code', 'like', '%' . $this->search . '%'); // Search by program code
             })
             ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate(12); // Adjust pagination as needed
+            ->paginate(10); // Adjust pagination as needed
 
         return view('livewire.program-crud', compact('programs'));
     }
