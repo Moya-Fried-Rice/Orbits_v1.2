@@ -28,6 +28,7 @@
         <x-slot name="header">
 
             <x-table-header
+                :allowSort="false"
                 sortField="{{ $sortField }}"
                 sortDirection="{{ $sortDirection }}"
                 data="profile_image"

@@ -68,7 +68,7 @@
         <x-slot name="body">
             @if($sections->isEmpty())
             <tr>
-                <td colspan="2" class="text-center py-4">No sections found.</td>
+                <td colspan="7" class="text-center py-4">No sections found.</td>
             </tr>
             @else
             @foreach ($sections as $section)
