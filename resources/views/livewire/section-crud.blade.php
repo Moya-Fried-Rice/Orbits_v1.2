@@ -129,35 +129,34 @@
             </select> 
         </x-add-modal-data>
 
-        <div class="flex space-x-4">
-        <!-- Year Level -->
-        <x-add-modal-data name="year_level" label="Year Level:">
-            <input 
-                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
-                type="number" 
-                id="year_level" 
-                min="1"
-                max="15"
-                wire:model.live="year_level">
-        </x-add-modal-data>
+        <div class="flex w-full gap-5">
+            <!-- Year Level -->
+            <x-add-modal-data name="year_level" label="Year Level:">
+                <input 
+                    class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                    type="number" 
+                    id="year_level" 
+                    min="1"
+                    max="15"
+                    wire:model.live="year_level">
+            </x-add-modal-data>
 
-        <!-- Section Number -->
-        <x-add-modal-data name="section_number" label="Section Number:">
-            <input 
-                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
-                type="number" 
-                id="section_number" 
-                min="1"
-                max="15"
-                wire:model.live="section_number">
-        </x-add-modal-data>
+            <!-- Section Number -->
+            <x-add-modal-data name="section_number" label="Section Number:">
+                <input 
+                    class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                    type="number" 
+                    id="section_number" 
+                    min="1"
+                    max="15"
+                    wire:model.live="section_number">
+            </x-add-modal-data>
 
-        <x-add-modal-data name="section_code" label="Section Code:">
-            <div class="px-4 w-full p-2">
-                {{ $section_output }}
-            </div>
-        </x-add-modal-data>
-
+            <x-add-modal-data name="section_code" label="Section Code:">
+                <div class="px-4 w-full p-2">
+                    {{ $section_output }}
+                </div>
+            </x-add-modal-data>
         </div>
 
     </x-add-modal>

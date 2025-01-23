@@ -8,7 +8,7 @@
         </span>
     </div> --}}
 
-    <div class="p-5 pb-0 flex flex-wrap items-center justify-start relative">
+    <div class="p-5 pb-0 flex flex-wrap items-center md:justify-start justify-center relative">
         
         <img src="{{ asset('storage/' . $student->profile_image) }}" alt="Profile Image" class="
         ring-1 ring-[#DDD] ring-offset-8 ring-offset-[#F8F8F8]
@@ -23,7 +23,7 @@
                 <div class="py-2 flex justify-between w-full items-center border-b border-[#DDD] gap-5 sm:mt-0 mt-5">
                     <span class="font-silka font-semibold text-[#2A2723] text-xl sm:text-3xl">{{ $student->first_name }} {{ $student->last_name }}</span>
                     <div class="flex items-center justify-end space-x-2">
-                        <button wire:click="edit()">
+                        <button wire:click="edit({{ $student->student_id }})">
                             <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                         </button>
                         <button wire:click="delete()">
@@ -45,62 +45,122 @@
         </div>
     </div>    
 
-<div class="pb-5">
-    <x-table :action="true">
-        <x-slot name="header">
+    <div class="pb-5">
+        <x-table :action="true">
+            <x-slot name="header">
 
-            <x-table-header
-            :allowSort="false"
-            label="Section"
-            />
+                <x-table-header
+                :allowSort="false"
+                label="Section"
+                />
 
-            <x-table-header
-            :allowSort="false"
-            label="Course Code"/>
+                <x-table-header
+                :allowSort="false"
+                label="Course Code"/>
 
-            <x-table-header
-            :allowSort="false"
-            label="Course Name"/>
+                <x-table-header
+                :allowSort="false"
+                label="Course Name"/>
 
-            <x-table-header
-            :allowSort="false"
-            label="Faculty"/>
+                <x-table-header
+                :allowSort="false"
+                label="Faculty"/>
 
-            <x-table-header
-            :allowSort="false"
-            label="Created At"/>
+                <x-table-header
+                :allowSort="false"
+                label="Created At"/>
 
-        </x-slot>
+            </x-slot>
 
-        <x-slot name="body">
-            @if($student->courseSections->isEmpty())
-                <tr>
-                    <td colspan="6" class="text-center py-2 px-4">
-                        No courses assigned.
-                    </td>
-                </tr>
-            @else
-                @foreach($student->courseSections as $courseSection)
-                    <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
-                        <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $courseSection->section->section_code }}</td>
-                        <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $courseSection->course->course_code }}</td>
-                        <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $courseSection->course->course_name }}</td>
-                        <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
-                            {{ $courseSection->faculty ? $courseSection->faculty->faculty_name : 'No Faculty Assigned' }}
-                        </td>
-                        <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $courseSection->created_at }}</td>
-                        <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
-                            <div class="flex items-center justify-end space-x-2">
-                                <button wire:click="delete()">
-                                    <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
-                                </button>
-                            </div>
+            <x-slot name="body">
+                @if($student->courseSections->isEmpty())
+                    <tr>
+                        <td colspan="6" class="text-center py-2 px-4">
+                            No courses assigned.
                         </td>
                     </tr>
-                @endforeach
-            @endif
+                @else
+                    @foreach($student->courseSections as $courseSection)
+                        <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
+                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $courseSection->section->section_code }}</td>
+                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $courseSection->course->course_code }}</td>
+                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $courseSection->course->course_name }}</td>
+                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
+                                {{ $courseSection->faculty ? $courseSection->faculty->faculty_name : 'No Faculty Assigned' }}
+                            </td>
+                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $courseSection->created_at }}</td>
+                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
+                                <div class="flex items-center justify-end space-x-2">
+                                    <button wire:click="delete()">
+                                        <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                @endif
 
-        </x-slot>
-    </x-table>
-</div>
+            </x-slot>
+        </x-table>
+    </div>
+
+<x-edit-modal label="student">
+
+    <!-- First Name -->
+    <div class="flex w-full gap-5">
+        <x-add-modal-data name="first_name" label="First Name:">
+            <input 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 hover:border-[#923534] transition-all duration-200" 
+                type="text" 
+                id="first_name" 
+                wire:model="first_name">
+        </x-add-modal-data>
+
+        <!-- Last Name -->
+        <x-add-modal-data name="last_name" label="Last Name:">
+            <input 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 hover:border-[#923534] transition-all duration-200" 
+                type="text" 
+                id="last_name" 
+                wire:model="last_name">
+        </x-add-modal-data>
+    </div>
+    
+    <!-- Program -->
+    <x-add-modal-data name="program_id" label="Program:">
+
+        <x-select-program/>
+
+    </x-add-modal-data>
+
+    <!-- Profile Image -->
+    <x-add-modal-data name="profile_image" label="Profile Image:">
+        <input 
+            class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 hover:border-[#923534] transition-all duration-200" 
+            type="file" 
+            id="profile_image" 
+            wire:model="profile_image">
+    </x-add-modal-data>
+
+    <!-- Email -->
+    {{-- <x-add-modal-data name="email" label="Email:">
+        <input 
+            class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 hover:border-[#923534] transition-all duration-200" 
+            type="text" 
+            id="email" 
+            wire:model="email">
+    </x-add-modal-data> --}}
+
+    <!-- Phone Number -->
+    <x-add-modal-data name="phone_number" label="Phone Number:">
+        <input 
+            class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 hover:border-[#923534] transition-all duration-200" 
+            type="text" 
+            id="phone_number" 
+            wire:model="phone_number">
+    </x-add-modal-data>
+
+</x-edit-modal>
+
+
 </div>
