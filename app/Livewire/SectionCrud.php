@@ -30,7 +30,7 @@ class SectionCrud extends Component
                 $query->having('section_code', 'like', '%' . $this->search . '%'); // Use HAVING for virtual column filtering
             })
             ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate(10); // Adjust pagination as needed
+            ->paginate(11); // Adjust pagination as needed
     
         return view('livewire.section-crud', compact('sections'));
     }
