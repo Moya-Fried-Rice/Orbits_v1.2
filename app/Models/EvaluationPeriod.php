@@ -38,12 +38,12 @@ class EvaluationPeriod extends Model
     // Define the relationships (if any)
 
     // Define the one-to-many relationship with the Evaluation model
-    public function evaluations()
+    public function evaluation()
     {
         return $this->hasMany(Evaluation::class, 'period_id', 'period_id');
     }
 
-    public function surveys()
+    public function survey()
     {
         return $this->belongsToMany(Survey::class, 'survey_period', 'period_id', 'survey_id')
                     ->withTimestamps()

@@ -27,7 +27,7 @@ class StudentProfileCrud extends Component
         $uuid = $this->uuid; // Ensure the $uuid variable is defined
 
         // Eager load the course sections for the student
-        $student = Student::with('courseSections')->where('uuid', $uuid)->first();
+        $student = Student::with('courseSection')->where('uuid', $uuid)->first();
 
         return view('livewire.student-profile-crud', compact('student'));
     }

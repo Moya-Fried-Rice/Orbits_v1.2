@@ -28,25 +28,25 @@ class Department extends Model
     ];
 
     // Define the relationship with Course model
-    public function courses()
+    public function course()
     {
         return $this->hasMany(Course::class, 'department_id', 'department_id');
     }
 
     // Define the relationship with Faculty model
-    public function faculties()
+    public function faculty()
     {
         return $this->hasMany(Faculty::class, 'department_id', 'department_id');
     }
 
     // Define the relationship with Program model
-    public function programs()
+    public function program()
     {
         return $this->hasMany(Program::class, 'department_id', 'department_id');
     }
 
     // Define the relationship with ProgramChair model
-    public function programChairs()
+    public function programChair()
     {
         return $this->hasOne(ProgramChair::class, 'department_id', 'department_id');
     }

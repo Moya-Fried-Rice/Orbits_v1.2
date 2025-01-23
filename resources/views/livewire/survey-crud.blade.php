@@ -22,15 +22,15 @@
             </div>
             <div class="bg-[#F8F8F8] border-t border-[#D4D4D4] flex">
                 <div class="border-r border-[#D4D4D4] py-2 px-4 w-24 justify-center flex flex-col items-center text-center">
-                    <span class="text-black">{{ $survey->roles->count() }}</span>
+                    <span class="text-black">{{ $survey->role->count() }}</span>
                     <span class="text-xs">Roles</span>
                 </div>
                 <div class="py-2 px-4 w-24 justify-center flex flex-col items-center text-center">
-                    <span class="text-black">{{ $survey->criterias->count() }}</span>
+                    <span class="text-black">{{ $survey->criteria->count() }}</span>
                     <span class="text-xs">Criterias</span>
                 </div>
                 <div class="border-l border-[#D4D4D4] py-2 px-4 w-24 justify-center flex flex-col items-center text-center">
-                    <span class="text-black">{{ $survey->criterias->flatMap->questions->count() }}</span>
+                    <span class="text-black">{{ $survey->criteria->flatMap->question->count() }}</span>
                     <span class="text-xs">Questions</span>
                 </div>
             </div>                 

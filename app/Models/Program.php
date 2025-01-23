@@ -38,19 +38,19 @@ class Program extends Model
     }
 
     // Define the many-to-many relationship with Courses (Programs can have many courses)
-    public function courses()
+    public function course()
     {
         return $this->belongsToMany(Course::class, 'course_program', 'program_id', 'course_id')
                     ->withTimestamps();
     }
 
     // Define the relationship with the Student model (Program has many students)
-    public function students()
+    public function student()
     {
         return $this->hasMany(Student::class, 'program_id', 'program_id');
     }
 
-    public function programs()
+    public function program()
     {
         return $this->hasMany(Student::class, 'course_section_id', 'course_section_id');
     }

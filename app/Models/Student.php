@@ -40,7 +40,7 @@ class Student extends Authenticatable
     }
 
     // Many-to-many relationship with CourseSection model (Student has many CourseSections)
-    public function courseSections()
+    public function courseSection()
     {
         return $this->belongsToMany(CourseSection::class, 'student_courses', 'student_id', 'course_section_id');
     }

@@ -35,14 +35,14 @@ class Course extends Model
     }
 
     // Define the relationship with CourseSection model
-    public function courseSections()
+    public function courseSection()
     {
         return $this->hasMany(CourseSection::class, 'course_id', 'course_id');
     }
 
-    public function programs()
-    {
-        return $this->belongsToMany(Program::class, 'course_program', 'course_id', 'program_id')
-                    ->withTimestamps();
-    }
+    // public function program()
+    // {
+    //     return $this->belongsToMany(Program::class, 'course_program', 'course_id', 'program_id')
+    //                 ->withTimestamps();
+    // }
 }
