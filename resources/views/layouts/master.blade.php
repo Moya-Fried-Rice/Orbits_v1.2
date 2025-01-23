@@ -39,6 +39,9 @@
             <div class="w-full flex-1 overflow-auto relative">
                 <div class="w-full h-full p-5 overflow-auto text-[#666]">
                     @yield('content')
+                    <span class="text-xs opacity-50 flex justify-center p-2">
+                       Copyright © 2025 Orbits v1.1.0 - Supernova. All rights reserved.
+                    </span>
                 </div>
             </div>
         </div>

@@ -194,3 +194,5 @@
     </x-add-modal-data>
 
 </x-add-modal>
+
+</div>
