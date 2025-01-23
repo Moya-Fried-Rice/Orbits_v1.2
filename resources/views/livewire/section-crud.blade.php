@@ -85,10 +85,13 @@
                 </td>
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
                     <div class="flex items-center justify-end space-x-2">
-                        <button wire:click="edit({{ $section->section_id }})">
-                            <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
-                        </button>
-                        <button wire:click="delete({{ $section->section_id }})">
+                        <a 
+                            href="" 
+                            class="bg-[#F8F8F8] text-[#2A2723] px-3 py-1 text-sm transition duration-100 border hover:border-[#923534]"
+                        >
+                            View Courses
+                        </a>
+                        <button wire:click="delete({{ $section->section_id }})" class="w-8 h-8">
                             <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                         </button>
                     </div>
