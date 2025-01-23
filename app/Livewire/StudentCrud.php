@@ -32,7 +32,7 @@ class StudentCrud extends Component
                 $query->having('full_name', 'like', '%' . $this->search . '%'); // Use HAVING for full_name virtual column filtering
             })
             ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate(12); // Adjust pagination as needed
+            ->paginate(10); // Adjust pagination as needed
 
         return view('livewire.student-crud', compact('students'));
     }
