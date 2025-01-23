@@ -90,10 +90,13 @@
                 <td class="py-2 whitespace-nowrap px-4">{{ $faculty->updated_at->format('Y-m-d H:i') }}</td>
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
                     <div class="flex items-center justify-end space-x-2">
-                        <button wire:click="edit({{ $faculty->faculty_id }})">
-                            <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
-                        </button>
-                        <button wire:click="delete({{ $faculty->faculty_id }})">
+                        <a 
+                            href="" 
+                            class="bg-[#F8F8F8] text-[#2A2723] px-3 py-1 text-sm transition duration-100 border hover:border-[#923534]"
+                        >
+                            View Profile
+                        </a>
+                        <button wire:click="delete({{ $faculty->faculty_id }})" class="w-8 h-8">
                             <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                         </button>
                     </div>

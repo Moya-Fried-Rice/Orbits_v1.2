@@ -23,7 +23,7 @@
                 <div class="py-2 flex justify-between w-full items-center border-b border-[#DDD] gap-5 md:mt-0 mt-5">
                     <span class="font-silka font-semibold text-[#2A2723] text-xl md:text-3xl">{{ $student->first_name }} {{ $student->last_name }}</span>
                     <div class="flex items-center justify-end space-x-2">
-                        <button wire:click="edit({{ $student->student_id }})">
+                        <button wire:click="edit({{ $student->student_id }})"  class="w-8 h-8">
                             <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                         </button>
                     </div>
@@ -88,7 +88,7 @@
                             <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $courseSection->created_at }}</td>
                             <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
                                 <div class="flex items-center justify-end space-x-2">
-                                    <button wire:click="delete()">
+                                    <button wire:click="delete()"  class="w-8 h-8">
                                         <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                                     </button>
                                 </div>
