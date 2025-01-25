@@ -56,7 +56,7 @@ class StudentProfileCrud extends Component
         'last_name' => 'required|string|max:50',
         'program_id' => 'required|integer|exists:programs,program_id',
         'phone_number' => 'nullable|string|max:20|regex:/^(\+?\d{1,3})?[\s\-\.]?(\(\d{1,4}\)[\s\-\.]?)?\d{1,4}[\s\-\.]?\d{1,4}[\s\-\.]?\d{1,9}$/',
-        'profile_image' => 'nullable|max:2048', 
+        'profile_image' => 'nullable|max:1024', 
     ];
 
     public function getDepartments()
@@ -217,7 +217,10 @@ class StudentProfileCrud extends Component
             return $this->logEdit('Student successfully updated!', $student, 200);
         } catch (ValidationException $e) {
             // Handle validation errors (e.g., invalid inputs)
-            return $this->logEditError('Invalid inputs!', $student, 422);
+            $errors = $e->validator->errors()->all();
+            $errorMessages = implode(' | ', $errors);
+
+            return $this->logEditError('Invalid inputs: ' . $errorMessages, $student, 422);
         } catch (QueryException $e) {
             // Handle database-related errors
             if ($e->errorInfo[1] == 1062) {
@@ -411,7 +414,7 @@ class StudentProfileCrud extends Component
         $course = new StudentCourse([
             'course_section_id' => $this->course_section_id,
         ]);
-
+        
         try {
 
             // Attempt to create the course
@@ -422,7 +425,10 @@ class StudentProfileCrud extends Component
 
         } catch (ValidationException $e) {
             // Log validation error with the initialized $course
-            return $this->logAddError('Invalid inputs!' . $e, $course, 422);
+            $errors = $e->validator->errors()->all();
+            $errorMessages = implode(' | ', $errors);
+
+            return $this->logAddError('Invalid inputs: ' . $errorMessages, $course, 422);
 
         } catch (QueryException $e) {
             // Handle duplicate entry error

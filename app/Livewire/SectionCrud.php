@@ -355,7 +355,10 @@ class SectionCrud extends Component
 
         } catch (ValidationException $e) {
             // Log validation error with the initialized $section
-            return $this->logAddError('Invalid inputs!', $section, 422);
+            $errors = $e->validator->errors()->all();
+            $errorMessages = implode(' | ', $errors);
+
+            return $this->logAddError('Invalid inputs: ' . $errorMessages, $section, 422);
 
         } catch (QueryException $e) {
             // Handle duplicate entry error

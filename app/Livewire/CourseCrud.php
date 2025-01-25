@@ -229,7 +229,10 @@ class CourseCrud extends Component
             return $this->logEdit('Course successfully updated!', $course, 200);
         } catch (ValidationException $e) {
             // Handle validation errors (e.g., invalid inputs)
-            return $this->logEditError('Invalid inputs!', $course, 422);
+            $errors = $e->validator->errors()->all();
+            $errorMessages = implode(' | ', $errors);
+
+            return $this->logEditError('Invalid inputs: ' . $errorMessages, $course, 422);
         } catch (QueryException $e) {
             // Handle database-related errors
             if ($e->errorInfo[1] == 1062) {
@@ -659,8 +662,10 @@ class CourseCrud extends Component
 
         } catch (ValidationException $e) {
             // Log validation error with the initialized $course
-            return $this->logAddError('Invalid inputs!', $course, 422);
+            $errors = $e->validator->errors()->all();
+            $errorMessages = implode(' | ', $errors);
 
+            return $this->logAddError('Invalid inputs: ' . $errorMessages, $course, 422);
         } catch (QueryException $e) {
             // Handle duplicate entry error
             if ($e->errorInfo[1] == 1062) {

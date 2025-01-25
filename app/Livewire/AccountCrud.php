@@ -204,7 +204,10 @@ class AccountCrud extends Component
             return $this->logEdit('User successfully updated!', $user, 200);
         } catch (ValidationException $e) {
             // Handle validation errors (e.g., invalid inputs)
-            return $this->logEditError('Invalid inputs!', $user, 422);
+            $errors = $e->validator->errors()->all();
+            $errorMessages = implode(' | ', $errors);
+
+            return $this->logEditError('Invalid inputs: ' . $errorMessages, $user, 422);
         } catch (QueryException $e) {
             // Handle database-related errors
             if ($e->errorInfo[1] == 1062) {

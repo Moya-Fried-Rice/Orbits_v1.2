@@ -223,7 +223,10 @@ class StudentCrud extends Component
 
         } catch (ValidationException $e) {
             // Log validation error with the initialized $student
-            return $this->logAddError('Invalid inputs!', $student, 422);
+            $errors = $e->validator->errors()->all();
+            $errorMessages = implode(' | ', $errors);
+
+            return $this->logAddError('Invalid inputs: ' . $errorMessages, $student, 422);
 
         } catch (QueryException $e) {
             // Handle duplicate entry error
