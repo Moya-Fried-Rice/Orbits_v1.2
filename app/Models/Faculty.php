@@ -16,9 +16,6 @@ class Faculty extends Authenticatable
     public $timestamps = true;
 
     protected $fillable = [
-        'username',
-        'password',
-        'email',
         'first_name',
         'last_name',
         'department_id',
@@ -43,6 +40,6 @@ class Faculty extends Authenticatable
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 }
