@@ -27,10 +27,7 @@ class StudentProfileCrud extends Component
 
     public function render()
     {
-        $uuid = $this->uuid; // Ensure the $uuid variable is defined
-
-        // Eager load the course sections for the student
-        $student = Student::with('courseSection')->where('uuid', $uuid)->first();
+        $student = $this->getStudentByUuid($this->uuid);
 
         return view('livewire.student-profile-crud', compact('student'));
     }
@@ -47,7 +44,7 @@ class StudentProfileCrud extends Component
     }
 
     // Public properties for course data and modal states.
-    public $student_id, $first_name, $last_name, $program_id, $phone_number, $profile_image, $email;
+    public $student_id, $first_name, $last_name, $program_id, $phone_number, $profile_image, $email, $course_section_id, $studentCourse;
     public $showDeleteConfirmation = false;
     public $showEditForm = false, $showEditConfirmation = false;
     public $showAddForm = false, $showAddConfirmation = false;
@@ -70,7 +67,7 @@ class StudentProfileCrud extends Component
     }
 
     // Fetch all departments for dropdown 
-        public function getDepartments()
+    public function getDepartments()
     {
         return Department::all();
     }
@@ -331,28 +328,149 @@ class StudentProfileCrud extends Component
 
 
 
+    public function add()
+    {
+        $this->resetErrorBag(); // Reset any validation errors
+        $this->resetInputFields(); // Reset all input fields to their initial state
+        $this->showAddForm = true; // Show the add form modal for the user to enter data
+    }
 
+    // Function to store the course information
+    public function store()
+    {
+        try {
+            // Attempt to validate and create the course
+            $this->validateQueryStore();
+        } catch (Exception $e) {
+            // If an unexpected error occurs, log the system error
+            $this->logSystemError('An error occurred while storing the course.', $e);
+        } finally {
+            // Reset input fields after the operation, regardless of success or failure
+            $this->resetInputFields();
+        }
+    }
 
+    // Function to show the confirmation modal after clicking "Store"
+    public function storeConfirmation() 
+    {
+        if ($this->isPopulated()) {
+            $this->showAddForm = false; // Close the add form modal
+            $this->showAddConfirmation = true; // Show the confirmation modal
+        } else {
+            session()->flash('info', 'Please fill in all required fields before proceeding.'); // Error message
+            $this->showAddForm = false; // Close the add form modal
+        }
+    }    
 
+    // Function to check if form is empty
+    public function isPopulated()
+    {
+        return !empty($this->course_section_id);
+    }
 
+    // Function that is called if the user confirms to store the course
+    public function confirmStore() 
+    {
+        $this->store(); // Call the store method to save the new course
+        $this->showAddConfirmation = false; // Close the confirmation modal
+        $this->showAddForm = false; // Close the add form modal
+        $this->resetInputFields(); // Reset the input fields after storing the course
+    }
 
+    // Function that is called if the user cancels the store action
+    public function cancelStore() 
+    {
+        $this->showAddConfirmation = false; // Close the confirmation modal
+        $this->showAddForm = true; // Show the add form modal again
+        $this->resetErrorBag(); // Reset any validation errors
+    }
 
+    // Function to validate inputs and handle course creation
+    public function validateQueryStore() 
+    {
+        // Initialize $course with the intended input values
+        $course = new StudentCourse([
+            'course_section_id' => $this->course_section_id,
+        ]);
 
+        try {
 
+            // Attempt to create the course
+            $course = $this->createCourse();
 
+            // Log success and return a success response
+            return $this->logAdd('Course Section successfully added!', $course, 201);
 
+        } catch (ValidationException $e) {
+            // Log validation error with the initialized $course
+            return $this->logAddError('Invalid inputs!' . $e, $course, 422);
 
+        } catch (QueryException $e) {
+            // Handle duplicate entry error
+            if ($e->errorInfo[1] == 1062) {
+                return $this->logAddError('Student already enrolled!', $course, 400);
+            }
 
+            // Handle other SQL errors
+            return $this->logAddError('Database error: ' . $e->getMessage(), $course, 500);
+        }
+    }
 
+    // Function to create the course entry in the database
+    private function createCourse()
+    {
+        $student = $this->getStudentByUuid($this->uuid);
+        return StudentCourse::create([
+            'course_section_id' => $this->course_section_id,
+            'student_id' => $student->student_id,  // Assuming 'id' is the field that holds the student's ID
+        ]);
+    }
     
-    
-    
-    
-    
-    
-    
-    
-    
+
+    // Function to log a successful course creation
+    private function logAdd($message, $course, $statusCode)
+    {
+        // Flash success message to the session for user feedback
+        session()->flash('success', $message);
+        
+        // Log the activity using Spatie Activitylog
+        activity()
+            ->performedOn($course) // Attach the log to the course object
+            ->causedBy(auth()->user()) // Associate the logged action with the authenticated user
+            ->withProperties([ // Add any additional properties to log
+                'status' => 'success', // Mark the status as success
+                'course_section_id' => $this->course_section_id,  // Log the course name for reference
+                'status_code' => $statusCode, // Log the HTTP status code (e.g., 201 for created)
+            ])
+            ->event('Course Created') // Set the event name as "Course Created"
+            ->log($message); // Log the custom success message
+    }
+
+    // Function to log an error when course creation fails
+    private function logAddError($message, $statusCode)
+    {
+        // Flash error message to the session for user feedback
+        session()->flash('error', $message);
+        
+        // Log the activity using Spatie Activitylog
+        activity()
+            ->causedBy(auth()->user()) // Associate the logged action with the authenticated user
+            ->withProperties([ // Add any additional properties to log
+                'status' => 'error', // Mark the status as error
+                'status_code' => $statusCode, // Log the HTTP status code (e.g., 422 for validation errors)
+            ])
+            ->event('Failed to Add Course') // Set the event name as "Failed to Add Course"
+            ->log($message); // Log the custom error message
+    }
+
+    // Function to close the add course form and reset everything
+    public function closeAdd() 
+    {
+        $this->showAddForm = false; // Close the add form modal
+        $this->showAddConfirmation = false; // Close the confirmation modal
+        $this->resetInputFields(); // Reset input fields
+        $this->resetErrorBag(); // Reset any validation errors
+    }
     
     
 
