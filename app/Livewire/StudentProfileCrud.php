@@ -1,95 +1,119 @@
 <?php
 
 namespace App\Livewire;
+
+use Illuminate\Support\Facades\Auth;
+
 use Livewire\Component;
-use App\Models\User;
 use App\Models\Student;
 use App\Models\Department;
 use App\Models\Section;
 use App\Models\StudentCourse;
-use Spatie\Activitylog\Traits\LogsActivity;
+
 use Exception;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Hash;
-use Livewire\WithFileUploads;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+
+use Livewire\WithFileUploads;
 use Illuminate\Http\UploadedFile;
 
 class StudentProfileCrud extends Component
 {
     use WithFileUploads;
 
+    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // Properties
     public $uuid;
-
-    public function render()
-    {
-        $student = $this->getStudentByUuid($this->uuid);
-
-        return view('livewire.student-profile-crud', compact('student'));
-    }
-
-    protected function getStudentByUuid($uuid)
-    {
-        // Return the student with enrolled courses and course sections
-        return Student::with('studentCourse.courseSection')->where('uuid', $uuid)->first();
-    }
-
-    // Public properties for course data and modal states.
-    public $student_id, $first_name, $last_name, $program_id, $phone_number, $profile_image, $email, $course_section_id, $studentCourse;
+    public $student_id, $first_name, $last_name, $program_id, $phone_number, $profile_image, $email;
+    public $course_section_id, $studentCourse;
     public $showDeleteConfirmation = false;
     public $showEditForm = false, $showEditConfirmation = false;
     public $showAddForm = false, $showAddConfirmation = false;
     public $search = null, $deleteId, $selectedProgram = null;
     public $sortField = 'created_at', $sortDirection = 'asc';
+    private $oldValues;
 
-    // Validation
+    public function render()
+    {
+        // Retrieve the student data based on the provided UUID
+        $student = $this->getStudentByUuid($this->uuid);
+
+        // Render the view with the student data
+        return view('livewire.student-profile-crud', compact('student'));
+    }
+
+    // Function to get student details by UUID, including associated course sections
+    protected function getStudentByUuid($uuid)
+    {
+        // Return the student record along with its associated course section
+        return Student::with('studentCourse.courseSection')->where('uuid', $uuid)->first();
+    }
+
+    // Validation rules for updating student profile
     protected $rules = [
         'first_name' => 'required|string|max:50',
         'last_name' => 'required|string|max:50',
         'program_id' => 'required|integer|exists:programs,program_id',
         'phone_number' => 'nullable|string|max:20|regex:/^(\+?\d{1,3})?[\s\-\.]?(\(\d{1,4}\)[\s\-\.]?)?\d{1,4}[\s\-\.]?\d{1,4}[\s\-\.]?\d{1,9}$/',
-        'profile_image' => 'nullable|max:2048', // Maximum size of 2MB
+        'profile_image' => 'nullable|max:2048', 
     ];
 
-    // Fetch all programs for dropdown
-    public function getPrograms()
-    {
-        return Program::all();
-    }
-
-    // Fetch all departments for dropdown 
     public function getDepartments()
     {
+        // Retrieve all departments
         return Department::all();
     }
 
     public function getSections()
     {
+        // Get the student by UUID to find the program ID
         $student = $this->getStudentByUuid($this->uuid);
         $programId = $student->program_id;
 
+        // Retrieve sections related to the student's program
         return Section::whereHas('courseSection.course.programCourse.program', function ($query) use ($programId) {
-            $query->where('programs.program_id', $programId);
+            $query->where('programs.program_id', $programId); // Filter sections based on the program ID
         })->get();
     }
 
-
-    // Clear session messages
     public function clearMessage()
     {
+        // Clear any session messages such as success, error, or info
         session()->forget(['success', 'error', 'info', 'deleted']);
     }
 
+    private function resetInputFields()
+    {
+        // Reset all form input fields to their initial values
+        $this->reset([
+            'first_name',
+            'last_name',
+            'program_id',
+            'phone_number',
+            'profile_image',
+            'email',
+            'course_section_id'
+        ]);
+    }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
+
+
+
+
+
+
+
+
+
+    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
     // Method to edit student data
     public function edit($id)
     {
-        $this->resetErrorBag(); // Reset any previous errors
+        $this->resetErrorBag();
 
         try {
-            // Attempt to find the student by ID
             $student = Student::findOrFail($id);
 
             // Populate input fields with student data
@@ -212,11 +236,6 @@ class StudentProfileCrud extends Component
         // Retrieve the student by its ID
         $student = Student::find($this->student_id);
 
-        // If the student doesn't exist, throw an exception
-        if (!$student) {
-            throw new ModelNotFoundException('Student not found!');
-        }
-
         // Store old values to log changes later
         $this->oldValues = $student->getOriginal();
 
@@ -259,7 +278,7 @@ class StudentProfileCrud extends Component
         // Log the activity
         activity()
             ->performedOn($student)
-            ->causedBy(auth()->user())
+            ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',
                 'first_name' => $this->first_name,
@@ -297,7 +316,7 @@ class StudentProfileCrud extends Component
 
         activity()
             ->performedOn($student)
-            ->causedBy(auth()->user())
+            ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',
                 'first_name' => $this->first_name,
@@ -315,12 +334,19 @@ class StudentProfileCrud extends Component
         $this->showEditConfirmation = false;
         $this->resetErrorBag(); // Reset error bag
     }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
 
 
 
 
 
+
+
+
+
+    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // Method for adding course section
     public function add()
     {
         $this->resetErrorBag(); // Reset any validation errors
@@ -444,7 +470,7 @@ class StudentProfileCrud extends Component
         // Log the activity using Spatie Activitylog
         activity()
             ->performedOn($course) // Attach the log to the course object
-            ->causedBy(auth()->user()) // Associate the logged action with the authenticated user
+            ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'success', // Mark the status as success
                 'course_section_id' => $this->course_section_id,  // Log the course name for reference
@@ -462,7 +488,7 @@ class StudentProfileCrud extends Component
         
         // Log the activity using Spatie Activitylog
         activity()
-            ->causedBy(auth()->user()) // Associate the logged action with the authenticated user
+            ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'error', // Mark the status as error
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 422 for validation errors)
@@ -479,7 +505,7 @@ class StudentProfileCrud extends Component
         $this->resetInputFields(); // Reset input fields
         $this->resetErrorBag(); // Reset any validation errors
     }
-    
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
 
 
@@ -490,7 +516,8 @@ class StudentProfileCrud extends Component
 
 
 
-    // Method to initiate deletion process ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // Method for deleting course section
     public function delete($id)
     {
         $this->deleteId = $id;
@@ -571,7 +598,7 @@ class StudentProfileCrud extends Component
         // Log the activity using Spatie Activitylog
         activity()
             ->performedOn($course)
-            ->causedBy(auth()->user())
+            ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',  // Status: success
                 'student_course' => $course->courseSection->section->section_code, // Log course name for reference\
@@ -589,7 +616,7 @@ class StudentProfileCrud extends Component
         // Log the activity using Spatie Activitylog
         activity()
             ->performedOn($course)
-            ->causedBy(auth()->user())
+            ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',  // Status: error
                 'student_course' => $course->courseSection->section->section_code, // Log course name for reference\
@@ -598,10 +625,19 @@ class StudentProfileCrud extends Component
             ->event('Failed to Remove Course') // Event: Failed to Remove Course
             ->log($message); // Log the custom error message
     }
-    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
 
-    // Method for restoring deleted course ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+
+
+
+
+
+
+
+    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // Method for restoring deleted course
     public function undoDelete()
     {
         // Get the deleted course ID from the session
@@ -632,7 +668,7 @@ class StudentProfileCrud extends Component
     {
         if (!$course->trashed()) {
             // Log if the course is already active
-            $this->logRestorationError('Course is already active', $course);
+            $this->logRestorationError('Course is already active', $course, 409);
             return;
         } else {
             // Restore the course if it’s trashed
@@ -666,7 +702,7 @@ class StudentProfileCrud extends Component
         // Log activity using Spatie Activitylog
         activity()
             ->performedOn($course)
-            ->causedBy(auth()->user())
+            ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',
                 'student_course' => $course->courseSection->section->section_code,
@@ -684,7 +720,7 @@ class StudentProfileCrud extends Component
         // Log activity using Spatie Activitylog
         activity()
             ->performedOn($course)
-            ->causedBy(auth()->user())
+            ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',
                 'student_course' => $course->courseSection->section->section_code,
@@ -693,15 +729,18 @@ class StudentProfileCrud extends Component
             ->event('Restore')
             ->log('Failed to restore course');
     }
-    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
 
 
 
 
 
-    
 
+
+
+
+    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
     // Log unexpected system errors
     private function logSystemError($message, Exception $e)
     {
@@ -715,7 +754,7 @@ class StudentProfileCrud extends Component
 
         // Log the activity using Spatie Activitylog
         activity()
-            ->causedBy(auth()->user()) // Associate the logged action with the authenticated user
+            ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Log essential error information
                 'error_message' => $errorMessage, // Error message
                 'error_code' => $errorCode, // Error code
@@ -724,30 +763,6 @@ class StudentProfileCrud extends Component
             ])
             ->event('System Error') // Event name for clarity
             ->log($message); // Log the custom error message
-
-        // Optionally, log the error to the Laravel log file as well
-        \Log::error($message, [
-            'exception' => [
-                'message' => $errorMessage,
-                'code' => $errorCode,
-                'trace' => $errorTrace
-            ]
-        ]);
     }
-
-    private function resetInputFields()
-    {
-        // Reset specific input fields to their initial state
-        $this->reset([
-            'first_name',
-            'last_name',
-            'program_id',
-            'phone_number',
-            'profile_image',
-            'email'
-        ]);
-    }
-
-
-
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 }

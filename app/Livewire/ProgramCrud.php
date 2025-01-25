@@ -5,17 +5,27 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Program;
 use App\Models\Department;
-use Spatie\Activitylog\Traits\LogsActivity;
-use Livewire\WithPagination;
+
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
 
+use Livewire\WithPagination;
+
 class ProgramCrud extends Component
 {
     use WithPagination;
 
+    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // Properties
+    public $program_code, $program_name, $abbreviation, $program_description, $department_id;
+    public $showDeleteConfirmation = false;
+    public $showEditForm = false, $showEditConfirmation = false;
+    public $showAddForm = false, $showAddConfirmation = false;
+    public $search = null, $deleteId, $selectedDepartment = null;
+    public $sortField = 'created_at', $sortDirection = 'asc';
+    
     public function render()
     {
         $programs = Program::query()
@@ -33,14 +43,6 @@ class ProgramCrud extends Component
 
         return view('livewire.program-crud', compact('programs'));
     }
-
-    // Public properties for program data and modal states.
-    public $program_code, $program_name, $abbreviation, $program_description, $department_id;
-    public $showDeleteConfirmation = false;
-    public $showEditForm = false, $showEditConfirmation = false;
-    public $showAddForm = false, $showAddConfirmation = false;
-    public $search = null, $deleteId, $selectedDepartment = null;
-    public $sortField = 'created_at', $sortDirection = 'asc';
 
     // Validation rules
     protected $rules = [
@@ -98,4 +100,5 @@ class ProgramCrud extends Component
     {
         session()->forget(['success', 'error', 'info', 'deleted']);
     }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 }

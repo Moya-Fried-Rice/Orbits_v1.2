@@ -1,21 +1,31 @@
 <?php
 
 namespace App\Livewire;
+
 use Livewire\Component;
 use App\Models\Faculty;
 use App\Models\Department;
-use Spatie\Activitylog\Traits\LogsActivity;
-use Livewire\WithPagination;
+
 use Exception;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+
+use Livewire\WithPagination;
 
 class FacultyCrud extends Component
 {
     use WithPagination;
 
+    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // Properties
+    public $first_name, $last_name, $department_id, $phone_number, $profile_image, $username, $password, $email;
+    public $showDeleteConfirmation = false;
+    public $showEditForm = false, $showEditConfirmation = false;
+    public $showAddForm = false, $showAddConfirmation = false;
+    public $search = null, $deleteId, $selectedDepartment = null;
+    public $sortField = 'created_at', $sortDirection = 'asc';
+    
     public function render()
     {
         $faculties = Faculty::query()
@@ -32,14 +42,6 @@ class FacultyCrud extends Component
 
         return view('livewire.faculty-crud', compact('faculties'));
     }
-
-    // Public properties for faculty data and modal states.
-    public $first_name, $last_name, $department_id, $phone_number, $profile_image, $username, $password, $email;
-    public $showDeleteConfirmation = false;
-    public $showEditForm = false, $showEditConfirmation = false;
-    public $showAddForm = false, $showAddConfirmation = false;
-    public $search = null, $deleteId, $selectedDepartment = null;
-    public $sortField = 'created_at', $sortDirection = 'asc';
 
     // Validation
     protected $rules = [
@@ -100,4 +102,5 @@ class FacultyCrud extends Component
     {
         session()->forget(['success', 'error', 'info', 'deleted']);
     }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 }
