@@ -72,23 +72,31 @@
                     </tr>
                 @else
                     @foreach($student->studentCourse as $studentCourse)
+                        @php
+                            $course = $studentCourse->courseSection->course;
+                            $section = $studentCourse->courseSection->section;
+                            $faculty = $studentCourse->courseSection->facultyCourse->first()->faculty ?? null;
+                        @endphp
                         <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
-                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $studentCourse->courseSection->section->section_code }}</td>
-                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $studentCourse->courseSection->course->course_code }}</td>
-                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $studentCourse->courseSection->course->course_name }}</td>
+                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $section->section_code }}</td>
+                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->course_code }}</td>
+                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->course_name }}</td>
                             <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
-                                {{ $studentCourse->courseSection->facultyCourse->first()->faculty->faculty_name ?? 'No Faculty Assigned' }}
+                                {{ $faculty ? $faculty->faculty_name : 'No Faculty Assigned' }}
                             </td>
-                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $studentCourse->courseSection->created_at }}</td>
+                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
+                                {{ $studentCourse->courseSection->created_at->format('F j, Y') }}
+                            </td>
                             <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
                                 <div class="flex items-center justify-end space-x-2">
-                                    <button wire:click="delete({{ $studentCourse->student_course_id }})"  class="w-8 h-8">
+                                    <button wire:click="delete({{ $studentCourse->student_course_id }})" class="w-8 h-8">
                                         <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                                     </button>
                                 </div>
                             </td>
                         </tr>
                     @endforeach
+            
                 @endif
             </x-slot>
         </x-table>
@@ -97,6 +105,7 @@
 {{-- Modal Delete --}}
 <x-delete-modal label="student"/>
 
+{{-- Modal Edit --}}
 <x-edit-modal label="student">
 
     <!-- First Name -->
