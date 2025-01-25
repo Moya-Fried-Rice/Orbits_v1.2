@@ -19,7 +19,7 @@ class SurveyCrud extends Component
     }
 
     public function test() {
-        $test = Faculty::with('courseSection')->get();
+        $test = Faculty::with('facultyCourse')->get();
 
         return $test;
     }

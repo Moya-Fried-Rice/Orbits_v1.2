@@ -28,9 +28,9 @@ class Faculty extends Authenticatable
         return $this->first_name . ' ' . $this->last_name;
     }
 
-    public function courseSection()
+    public function facultyCourse()
     {
-        return $this->hasMany(CourseSection::class, 'faculty_id', 'faculty_id');
+        return $this->hasMany(FacultyCourse::class, 'faculty_id', 'faculty_id');
     }
 
     public function department()

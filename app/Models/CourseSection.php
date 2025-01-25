@@ -25,6 +25,11 @@ class CourseSection extends Model
         return $this->hasMany(StudentCourse::class, 'course_section_id', 'course_section_id'); 
     }
 
+    public function facultyCourse()
+    {
+        return $this->hasMany(FacultyCourse::class, 'course_section_id', 'course_section_id'); 
+    }
+
     public function course()
     {
         return $this->belongsTo(Course::class, 'course_id');
