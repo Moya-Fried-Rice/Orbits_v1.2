@@ -73,7 +73,7 @@
 
                             <!-- Caused By -->
                             <td class="py-2 whitespace-nowrap px-4 truncate max-w-2">
-                                {{ $log->causedBy ? $log->causedBy->name : 'N/A' }}
+                                {{ $log->causer ? $log->causer->name : 'N/A' }}
                             </td>
 
                             {{-- Details --}}
