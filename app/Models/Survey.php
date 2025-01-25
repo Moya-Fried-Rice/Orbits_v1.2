@@ -8,19 +8,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Survey extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
-    // Define the table name (optional if it follows Laravel's convention)
     protected $table = 'surveys';
-
-    // Define the primary key (optional if it follows Laravel's convention)
-    protected $primaryKey = 'survey_id'; // Assuming survey_id is the primary key
-
-    // Disable timestamps if you're not using created_at and updated_at fields
+    protected $primaryKey = 'survey_id';
     public $timestamps = true;
 
-    // Define the fillable attributes (to prevent mass assignment issues)
     protected $fillable = [
         'survey_name',
     ];

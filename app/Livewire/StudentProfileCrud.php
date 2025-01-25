@@ -5,10 +5,8 @@ use Livewire\Component;
 use App\Models\User;
 use App\Models\Student;
 use App\Models\Department;
-use App\Models\Program;
 use App\Models\Section;
 use App\Models\StudentCourse;
-use App\Models\CourseSection;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -32,15 +30,10 @@ class StudentProfileCrud extends Component
         return view('livewire.student-profile-crud', compact('student'));
     }
 
-    /**
-     * Retrieve the student with course sections by UUID.
-     *
-     * @param  string  $uuid
-     * @return \App\Models\Student|null
-     */
     protected function getStudentByUuid($uuid)
     {
-        return Student::with('courseSection')->where('uuid', $uuid)->first();
+        // Return the student with enrolled courses and course sections
+        return Student::with('studentCourse.courseSection')->where('uuid', $uuid)->first();
     }
 
     // Public properties for course data and modal states.
@@ -77,7 +70,7 @@ class StudentProfileCrud extends Component
         $student = $this->getStudentByUuid($this->uuid);
         $programId = $student->program_id;
 
-        return Section::whereHas('courseSection.course.program', function ($query) use ($programId) {
+        return Section::whereHas('courseSection.course.programCourse.program', function ($query) use ($programId) {
             $query->where('programs.program_id', $programId);
         })->get();
     }

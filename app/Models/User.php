@@ -50,19 +50,16 @@ class User extends Authenticatable
         return $this->hasOne(Faculty::class, 'user_id', 'faculty_id');
     }
 
-    // A user can be linked to a student
     public function student()
     {
         return $this->hasOne(Student::class, 'user_id', 'student_id');
     }
 
-    // A user can be linked to a program chair
     public function programChair()
     {
         return $this->hasOne(ProgramChair::class, 'user_id', 'chair_id');
     }
 
-    // A user can be linked to an admin
     public function admin()
     {
         return $this->hasOne(Admin::class, 'user_id', 'admin_id');

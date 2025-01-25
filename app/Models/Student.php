@@ -11,16 +11,10 @@ class Student extends Authenticatable
 {
     use HasFactory, Notifiable, SoftDeletes;
 
-    // Define the table name (optional if it follows Laravel's convention)
     protected $table = 'students';
-
-    // Define the primary key (optional if it follows Laravel's convention)
-    protected $primaryKey = 'student_id'; // Assuming student_id is the primary key
-
-    // Enable timestamps (default behavior)
+    protected $primaryKey = 'student_id';
     public $timestamps = true;
 
-    // Define the fillable attributes (to prevent mass assignment issues)
     protected $fillable = [
         'uuid',
         'user_id',
@@ -31,18 +25,9 @@ class Student extends Authenticatable
         'profile_image',
     ];
 
-    // Define the relationships (if any)
-
-    // Relationship with Program model (Student belongs to a Program)
-    public function program()
+    public function studentCourse()
     {
-        return $this->belongsTo(Program::class, 'program_id', 'program_id');
-    }
-
-    // Many-to-many relationship with CourseSection model (Student has many CourseSections)
-    public function courseSection()
-    {
-        return $this->belongsToMany(CourseSection::class, 'student_courses', 'student_id', 'course_section_id');
+        return $this->hasMany(StudentCourse::class, 'student_id', 'student_id'); 
     }
 
     public function user()
@@ -50,23 +35,8 @@ class Student extends Authenticatable
         return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 
-    // Custom password setter (for hashing)
-    public function setPasswordAttribute($value)
+    public function program()
     {
-        $this->attributes['password'] = bcrypt($value); // Automatically hash password before saving
-    }
-
-    // Hide sensitive data from serialization
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    // Get the attributes that should be cast
-    protected function casts(): array
-    {
-        return [
-            'password' => 'hashed', // Ensure password is always hashed
-        ];
+        return $this->belongsTo(Program::class, 'program_id', 'program_id');
     }
 }
