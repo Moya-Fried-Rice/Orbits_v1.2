@@ -163,5 +163,11 @@
 
 </x-edit-modal>
 
+{{-- Modal Add --}}
+<x-add-modal label="Course Section">
+
+    <x-select-section-courses />
+
+</x-add-modal>
 
 </div>
