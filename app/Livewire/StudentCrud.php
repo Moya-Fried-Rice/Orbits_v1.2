@@ -21,8 +21,7 @@ use Livewire\WithPagination;
 
 class StudentCrud extends Component
 {
-    use WithPagination;
-    use WithFileUploads;
+    use WithPagination, WithFileUploads;
 
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
     // Properties
@@ -254,7 +253,7 @@ class StudentCrud extends Component
             'name' => $this->first_name . ' ' . $this->last_name,
             'email' => $this->email, // Assuming email is captured
             'password' => Hash::make('password'), // Use a secure password
-            'role' => 1,
+            'role_id' => 1,
         ]);
 
         // Create the student record and link it to the user's ID
