@@ -16,7 +16,6 @@ class Student extends Authenticatable
     public $timestamps = true;
 
     protected $fillable = [
-        'uuid',
         'user_id',
         'first_name',
         'last_name',

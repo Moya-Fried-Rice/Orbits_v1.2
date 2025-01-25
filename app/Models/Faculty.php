@@ -16,6 +16,7 @@ class Faculty extends Authenticatable
     public $timestamps = true;
 
     protected $fillable = [
+        'user_id',
         'first_name',
         'last_name',
         'department_id',
