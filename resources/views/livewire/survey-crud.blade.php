@@ -41,10 +41,9 @@
     </div>
 
     @foreach ($this->test() as $item)
-        {{ $item->department->department_name }}
-        @foreach ($item->courseSection as $courseSection)
+        @foreach ($item->facultyCourse as $facultyCourse)
             <pre>
-                {{ $courseSection->course->course_code }} <!-- Adjust property name if needed -->
+                {{ $facultyCourse->courseSection->course->course_code }} <!-- Adjust property name if needed -->
             </pre>
         @endforeach
     @endforeach
