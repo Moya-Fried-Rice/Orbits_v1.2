@@ -1,43 +1,31 @@
 <?php
 
 namespace App\Livewire;
+
+use Illuminate\Support\Facades\Auth;
+
 use Livewire\Component;
 use App\Models\User;
 use App\Models\Student;
 use App\Models\Department;
 use App\Models\Program;
-use Spatie\Activitylog\Traits\LogsActivity;
-use Livewire\WithPagination;
+
 use Exception;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
 use Illuminate\Support\Facades\Hash;
 use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 
 class StudentCrud extends Component
 {
     use WithPagination;
     use WithFileUploads;
 
-    public function render()
-    {
-        $students = Student::query()
-            ->selectRaw('students.*, CONCAT(students.first_name, " ", students.last_name) AS full_name, programs.program_code')
-            ->leftJoin('programs', 'students.program_id', '=', 'programs.program_id') // Join with programs table
-            ->when($this->selectedProgram, function ($query) {
-                return $query->where('programs.program_id', $this->selectedProgram); // Use selectedProgram for filtering
-            })
-            ->when($this->search, function ($query) {
-                $query->having('full_name', 'like', '%' . $this->search . '%'); // Use HAVING for full_name virtual column filtering
-            })
-            ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate(11); // Adjust pagination as needed
-
-        return view('livewire.student-crud', compact('students'));
-    }
-
-    // Public properties for student data and modal states.
+    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // Properties
     public $first_name, $last_name, $program_id, $phone_number, $profile_image, $email;
     public $showDeleteConfirmation = false;
     public $showEditForm = false, $showEditConfirmation = false;
@@ -45,13 +33,30 @@ class StudentCrud extends Component
     public $search = null, $deleteId, $selectedProgram = null;
     public $sortField = 'created_at', $sortDirection = 'asc';
 
+    public function render()
+    {
+        $students = Student::query()
+            ->selectRaw('students.*, CONCAT(students.first_name, " ", students.last_name) AS full_name, programs.program_code')
+            ->leftJoin('programs', 'students.program_id', '=', 'programs.program_id')
+            ->when($this->selectedProgram, function ($query) {
+                return $query->where('programs.program_id', $this->selectedProgram);
+            })
+            ->when($this->search, function ($query) {
+                $query->having('full_name', 'like', '%' . $this->search . '%');
+            })
+            ->orderBy($this->sortField, $this->sortDirection)
+            ->paginate(11);
+
+        return view('livewire.student-crud', compact('students'));
+    }
+
     // Validation
     protected $rules = [
         'first_name' => 'required|string|max:50',
         'last_name' => 'required|string|max:50',
         'program_id' => 'required|integer|exists:programs,program_id',
         'phone_number' => 'nullable|string|max:15|regex:/^\+?[0-9]*$/',
-        'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // Maximum size of 2MB
+        'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
     ];
 
     // Listen to dispatched events
@@ -108,9 +113,31 @@ class StudentCrud extends Component
         session()->forget(['success', 'error', 'info', 'deleted']);
     }
 
+    // Reset specific input fields to their initial state
+    private function resetInputFields()
+    {
+        $this->reset([
+            'first_name',
+            'last_name',
+            'program_id',
+            'phone_number',
+            'profile_image',
+            'email'
+        ]);
+    }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
 
-    // Function to show the add student form ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+
+
+
+
+
+
+
+    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // Method to add student
     public function add()
     {
         $this->resetErrorBag(); // Reset any validation errors
@@ -247,7 +274,7 @@ class StudentCrud extends Component
         // Log the activity using Spatie Activitylog
         activity()
             ->performedOn($student) // Attach the log to the student object
-            ->causedBy(auth()->user()) // Associate the logged action with the authenticated user
+            ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'success', // Mark the status as success
                 'first_name' => $this->first_name,  // Log the student's first name for reference
@@ -266,7 +293,7 @@ class StudentCrud extends Component
         
         // Log the activity using Spatie Activitylog
         activity()
-            ->causedBy(auth()->user()) // Associate the logged action with the authenticated user
+            ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'error', // Mark the status as error
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 422 for validation errors)
@@ -283,7 +310,7 @@ class StudentCrud extends Component
         $this->resetInputFields(); // Reset input fields
         $this->resetErrorBag(); // Reset any validation errors
     }
-    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
 
 
@@ -294,8 +321,8 @@ class StudentCrud extends Component
 
 
 
-
-
+    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // Method to delete student
     public function delete($id)
     {
         $this->deleteId = $id;
@@ -349,7 +376,7 @@ class StudentCrud extends Component
     
             // Check for related records (dependencies) that prevent deletion
             if ($student->studentCourse()->exists()) { 
-                return $this->logRemoveError('Cannot delete the student due to existing dependencies.', $student, 400);
+                return $this->logRemoveError('Cannot delete the student as they are currently enrolled in a course.', $student, 400);
             }
     
             // Soft delete the student
@@ -384,7 +411,7 @@ class StudentCrud extends Component
         // Log the activity using Spatie Activitylog
         activity()
             ->performedOn($student)
-            ->causedBy(auth()->user())
+            ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',  // Status: success
                 'student_name' => $student->first_name . ' ' . $student->last_name, // Log student name for reference
@@ -403,7 +430,7 @@ class StudentCrud extends Component
         // Log the activity using Spatie Activitylog
         activity()
             ->performedOn($student)
-            ->causedBy(auth()->user())
+            ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',  // Status: error
                 'student_name' => $student->first_name . ' ' . $student->last_name, // Log student name for reference
@@ -412,12 +439,18 @@ class StudentCrud extends Component
             ->event('Failed to Remove Student') // Event: Failed to Remove Student
             ->log($message); // Log the custom error message
     }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
 
 
 
 
 
+
+
+
+
+    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
     // Method for restoring deleted student
     public function undoDelete()
     {
@@ -449,7 +482,7 @@ class StudentCrud extends Component
     {
         if (!$student->trashed()) {
             // Log if the student is already active
-            $this->logRestorationError('Student is already active', $student);
+            $this->logRestorationError('Student is already active', $student, 400);
             return;
         } else {
             // Restore the student if they are trashed
@@ -483,7 +516,7 @@ class StudentCrud extends Component
         // Log activity using Spatie Activitylog
         activity()
             ->performedOn($student)
-            ->causedBy(auth()->user())
+            ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',
                 'student_name' => $student->student_name,
@@ -501,7 +534,7 @@ class StudentCrud extends Component
         // Log activity using Spatie Activitylog
         activity()
             ->performedOn($student)
-            ->causedBy(auth()->user())
+            ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',
                 'student_name' => $student->student_name,
@@ -510,6 +543,7 @@ class StudentCrud extends Component
             ->event('Restore')
             ->log('Failed to restore student');
     }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
 
 
@@ -517,6 +551,10 @@ class StudentCrud extends Component
 
 
 
+
+
+
+    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
     // Log unexpected system errors
     private function logSystemError($message, Exception $e)
     {
@@ -530,7 +568,7 @@ class StudentCrud extends Component
 
         // Log the activity using Spatie Activitylog
         activity()
-            ->causedBy(auth()->user()) // Associate the logged action with the authenticated user
+            ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Log essential error information
                 'error_message' => $errorMessage, // Error message
                 'error_code' => $errorCode, // Error code
@@ -539,27 +577,6 @@ class StudentCrud extends Component
             ])
             ->event('System Error') // Event name for clarity
             ->log($message); // Log the custom error message
-
-        // Optionally, log the error to the Laravel log file as well
-        \Log::error($message, [
-            'exception' => [
-                'message' => $errorMessage,
-                'code' => $errorCode,
-                'trace' => $errorTrace
-            ]
-        ]);
     }
-
-    private function resetInputFields()
-    {
-        // Reset specific input fields to their initial state
-        $this->reset([
-            'first_name',
-            'last_name',
-            'program_id',
-            'phone_number',
-            'profile_image',
-            'email'
-        ]);
-    }
+     //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 }

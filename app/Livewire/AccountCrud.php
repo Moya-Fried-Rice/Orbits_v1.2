@@ -2,33 +2,38 @@
 
 namespace App\Livewire;
 
+use Illuminate\Support\Facades\Auth;
+
 use Livewire\Component;
 use App\Models\User;
-use Spatie\Activitylog\Traits\LogsActivity;
-use Livewire\WithPagination;
+
 use Exception;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
 use Illuminate\Support\Facades\Hash;
+use Livewire\WithPagination;
 
 class AccountCrud extends Component
 {
     use WithPagination;
 
+    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // Properties
+    public $user_id, $name, $role_id, $password, $email;
+    public $showDeleteConfirmation = false;
+    public $showEditForm = false, $showEditConfirmation = false;
+    public $showAddForm = false, $showAddConfirmation = false;
+    public $search = null, $deleteId, $selectedRole = null;
+    public $sortField = 'created_at', $sortDirection = 'asc';
+    public $oldValues;
+
     public function render()
     {
         $accounts = User::query()
-
-            //Join  
             ->leftJoin('roles', 'roles.role_id', '=', 'users.role_id')
-
-            // Select specific columns
-            ->select(
-                'users.*',
-                'roles.role_name',
-            )
-
+            ->select('users.*', 'roles.role_name',)
             ->when($this->search, function ($query) {
                 $query->where(function ($query) {
                     $query->where('users.name', 'like', '%' . $this->search . '%')
@@ -42,13 +47,6 @@ class AccountCrud extends Component
         return view('livewire.account-crud', compact('accounts'));
     }
 
-    public $user_id, $name, $role_id, $password, $email;
-    public $showDeleteConfirmation = false;
-    public $showEditForm = false, $showEditConfirmation = false;
-    public $showAddForm = false, $showAddConfirmation = false;
-    public $search = null, $deleteId, $selectedRole = null;
-    public $sortField = 'created_at', $sortDirection = 'asc';
-
     protected $listeners = [
         'searchPerformed' => 'searchPerformed'
     ];
@@ -59,7 +57,7 @@ class AccountCrud extends Component
         'password' => 'nullable|min:8',
         'role_id' => 'required|integer|exists:roles,role_id',
     ];
-    
+
     public function searchPerformed($searchTerm)
     {
         $this->search = $searchTerm;
@@ -85,6 +83,12 @@ class AccountCrud extends Component
         session()->forget(['success', 'error', 'info', 'deleted']);
     }
 
+    private function resetInputFields()
+    {
+        // Reset specific input fields to their initial state
+        $this->reset(['user_id', 'name', 'email', 'role_id', 'password']);
+    }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
 
 
@@ -95,30 +99,26 @@ class AccountCrud extends Component
 
 
 
-    // Method to edit user data ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // Method to edit user data
     public function edit($id)
     {
-        $this->resetErrorBag(); // Reset any previous errors
+        $this->resetErrorBag();
 
         try {
-            // Attempt to find the user by ID
             $user = User::findOrFail($id);
 
-            // Populate input fields with user data
             $this->user_id = $user->user_id;
             $this->name = $user->name;
             $this->email = $user->email;
             $this->role_id = $user->role_id;
-            // Keep password as null or don't populate if it's being updated
-            $this->password = null;
 
-            // Show the edit form
+            $this->password = null;
             $this->showEditForm = true;
         } catch (ModelNotFoundException $e) {
-            // Log error if user is not found
-            $this->logSystemError('User not found', $e);
+            $this
+                ->logSystemError('User not found', $e);
         } catch (Exception $e) {
-            // Log general errors
             $this->logSystemError('Failed to load user', $e);
         }
     }
@@ -223,11 +223,6 @@ class AccountCrud extends Component
         // Retrieve the user by its ID
         $user = User::find($this->user_id);
 
-        // If the user doesn't exist, throw an exception
-        if (!$user) {
-            throw new ModelNotFoundException('User not found!');
-        }
-
         // Store old values to log changes later
         $this->oldValues = $user->getOriginal();
 
@@ -257,7 +252,7 @@ class AccountCrud extends Component
         // Log the activity
         activity()
             ->performedOn($user)
-            ->causedBy(auth()->user())
+            ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',
                 'name' => $this->name,
@@ -294,7 +289,7 @@ class AccountCrud extends Component
 
         activity()
             ->performedOn($user)
-            ->causedBy(auth()->user())
+            ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',
                 'name' => $this->name,
@@ -311,6 +306,7 @@ class AccountCrud extends Component
         $this->showEditConfirmation = false;
         $this->resetErrorBag(); // Reset error bag
     }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
 
 
@@ -321,24 +317,7 @@ class AccountCrud extends Component
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
+    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
     // Log unexpected system errors
     private function logSystemError($message, Exception $e)
     {
@@ -352,7 +331,7 @@ class AccountCrud extends Component
 
         // Log the activity using Spatie Activitylog
         activity()
-            ->causedBy(auth()->user()) // Associate the logged action with the authenticated user
+            ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Log essential error information
                 'error_message' => $errorMessage, // Error message
                 'error_code' => $errorCode, // Error code
@@ -361,20 +340,6 @@ class AccountCrud extends Component
             ])
             ->event('System Error') // Event name for clarity
             ->log($message); // Log the custom error message
-
-        // Optionally, log the error to the Laravel log file as well
-        \Log::error($message, [
-            'exception' => [
-                'message' => $errorMessage,
-                'code' => $errorCode,
-                'trace' => $errorTrace
-            ]
-        ]);
     }
-    private function resetInputFields()
-    {
-        // Reset specific input fields to their initial state
-        $this->reset(['user_id', 'name', 'email', 'role_id', 'password']);
-    }
-
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 }
