@@ -8,39 +8,22 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CourseSection extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
-    // Define the table name (optional if it follows Laravel's convention)
     protected $table = 'course_sections';
-
-    // Define the primary key (optional if it follows Laravel's convention)
     protected $primaryKey = 'course_section_id';
-
-    // Disable timestamps if you're not using created_at and updated_at fields
     public $timestamps = true;
 
-    // Define the fillable attributes (to prevent mass assignment issues)
     protected $fillable = [
         'course_id',
-        'section',
-        'period_id',
+        'section_id',
         'faculty_id',
-        'program_id',
     ];
 
-
-    // Define the relationship with EvaluationPeriod model
-    public function evaluationPeriod()
+    public function studentCourse()
     {
-        return $this->belongsTo(EvaluationPeriod::class, 'period_id', 'period_id');
+        return $this->hasMany(StudentCourse::class, 'course_section_id', 'course_section_id'); 
     }
-
-    // Define the relationship with Student model through the pivot table
-    // public function students()
-    // {
-    //     return $this->belongsToMany(Student::class, 'student_courses', 'course_section_id', 'student_id');
-    // }
 
     public function course()
     {
@@ -52,16 +35,34 @@ class CourseSection extends Model
         return $this->belongsTo(Section::class, 'section_id');
     }
 
-    // Define the program relationship
-    public function program()
-    {
-        return $this->belongsTo(Program::class, 'program_id');
-    }
-
-    // Define the faculty relationship
     public function faculty()
     {
         return $this->belongsTo(Faculty::class, 'faculty_id');
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    // public function evaluationPeriod()
+    // {
+    //     return $this->belongsTo(EvaluationPeriod::class, 'period_id', 'period_id');
+    // }
     
 }

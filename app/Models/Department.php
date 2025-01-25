@@ -8,44 +8,33 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Department extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
-    // Define the table name (optional if it follows Laravel's convention)
     protected $table = 'departments';
-
-    // Define the primary key (optional if it follows Laravel's convention)
     protected $primaryKey = 'department_id';
-
-    // Disable timestamps if you're not using created_at and updated_at fields
     public $timestamps = true;
 
-    // Define the fillable attributes (to prevent mass assignment issues)
     protected $fillable = [
         'department_name',
         'department_description',
         'department_code',
     ];
 
-    // Define the relationship with Course model
     public function course()
     {
         return $this->hasMany(Course::class, 'department_id', 'department_id');
     }
 
-    // Define the relationship with Faculty model
     public function faculty()
     {
         return $this->hasMany(Faculty::class, 'department_id', 'department_id');
     }
 
-    // Define the relationship with Program model
     public function program()
     {
         return $this->hasMany(Program::class, 'department_id', 'department_id');
     }
 
-    // Define the relationship with ProgramChair model
     public function programChair()
     {
         return $this->hasOne(ProgramChair::class, 'department_id', 'department_id');

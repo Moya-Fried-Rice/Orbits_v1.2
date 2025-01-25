@@ -70,22 +70,22 @@
             </x-slot>
 
             <x-slot name="body">
-                @if($student->courseSection->isEmpty())
+                @if($student && $student->studentCourse->isEmpty())
                     <tr>
                         <td colspan="6" class="text-center py-2 px-4">
                             No courses assigned.
                         </td>
                     </tr>
                 @else
-                    @foreach($student->courseSection as $courseSection)
+                    @foreach($student->studentCourse as $studentCourse)
                         <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
-                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $courseSection->section->section_code }}</td>
-                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $courseSection->course->course_code }}</td>
-                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $courseSection->course->course_name }}</td>
+                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $studentCourse->courseSection->section->section_code }}</td>
+                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $studentCourse->courseSection->course->course_code }}</td>
+                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $studentCourse->courseSection->course->course_name }}</td>
                             <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
-                                {{ $courseSection->faculty ? $courseSection->faculty->faculty_name : 'No Faculty Assigned' }}
+                                {{ $studentCourse->courseSection->faculty ? $studentCourse->courseSection->faculty->faculty_name : 'No Faculty Assigned' }}
                             </td>
-                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $courseSection->created_at }}</td>
+                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $studentCourse->courseSection->created_at }}</td>
                             <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
                                 <div class="flex items-center justify-end space-x-2">
                                     <button wire:click="delete()"  class="w-8 h-8">
@@ -96,7 +96,6 @@
                         </tr>
                     @endforeach
                 @endif
-
             </x-slot>
         </x-table>
     </div>

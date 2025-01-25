@@ -17,7 +17,6 @@ class SurveyPeriod extends Pivot
         'period_id',
     ];
 
-    // Define relationships if needed
     public function survey()
     {
         return $this->belongsTo(Survey::class, 'survey_id');

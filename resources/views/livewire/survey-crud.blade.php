@@ -39,4 +39,15 @@
         @endif
 
     </div>
+
+    @foreach ($this->test() as $item)
+        {{ $item->department->department_name }}
+        @foreach ($item->courseSection as $courseSection)
+            <pre>
+                {{ $courseSection->course->course_code }} <!-- Adjust property name if needed -->
+            </pre>
+        @endforeach
+    @endforeach
+
+
 </div>

@@ -8,19 +8,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class EvaluationPeriod extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
-    // Define the table name (optional if it follows Laravel's convention)
     protected $table = 'evaluation_periods';
-
-    // Define the primary key (optional if it follows Laravel's convention)
     protected $primaryKey = 'period_id';
-
-    // Disable timestamps if you're not using created_at and updated_at fields
     public $timestamps = true;
 
-    // Define the fillable attributes (to prevent mass assignment issues)
     protected $fillable = [
         'semester',
         'academic_year',
@@ -35,9 +28,7 @@ class EvaluationPeriod extends Model
         'is_completed',
     ];
 
-    // Define the relationships (if any)
-
-    // Define the one-to-many relationship with the Evaluation model
+    // NOTE: NOT YET DONE
     public function evaluation()
     {
         return $this->hasMany(Evaluation::class, 'period_id', 'period_id');
