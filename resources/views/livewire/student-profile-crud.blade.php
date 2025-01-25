@@ -1,12 +1,6 @@
 <div class="bg-white">
 
     <x-system-notification />
-    
-    {{-- <div class="p-5 pb-0 ">
-        <span class="space-x-2 cursor-pointer group">
-            <i class="fa-solid fa-arrow-left-long"></i><span class="text-[#2A2723] group-hover:ml-4 transition-all ease-out">Back</span>
-        </span>
-    </div> --}}
 
     <div class="p-5 pb-0 gap-5 flex flex-wrap items-center md:justify-start justify-center relative">
         

@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Models\Student;
 use App\Models\Faculty;
-use App\Models\ProgramChair;
+use Illuminate\Support\Facades\Auth;
 
 // Route home direct to login
 Route::get('/', function () {
@@ -30,11 +30,17 @@ Route::get('/faculties', function () {
     return view('faculties.faculties');
 })->middleware(['auth', 'check_role:4'])->name('faculties');
 
+    // Route to faculty profile
+    Route::get('/faculty/{uuid}', function (string $uuid) {
+        return view('faculties.faculty-profile', ['uuid' => $uuid]);
+    })->middleware(['auth', 'check_role:4', 'verify_uuid:' . Faculty::class])->name('faculty.update');
+
 // Route to student page
 Route::get('/students', function () {
     return view('students.students');
 })->middleware(['auth', 'check_role:4'])->name('students');
 
+    // Route to student profile
     Route::get('/student/{uuid}', function (string $uuid) {
         return view('students.student-profile', ['uuid' => $uuid]);
     })->middleware(['auth', 'check_role:4', 'verify_uuid:' . Student::class])->name('student.update');
@@ -81,7 +87,7 @@ Route::get('/ranking', function () {
 
 // Route to dashboard with conditioning
 Route::get('/dashboard', function () {
-    $user = auth()->user();
+    $user = Auth::user();
     switch ($user->role_id) {
         case '4':
             return view('dashboard.admin-dashboard');
