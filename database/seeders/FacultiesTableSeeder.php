@@ -16,43 +16,46 @@ class FacultiesTableSeeder extends Seeder
         // Create an instance of Faker
         $faker = Faker::create();
 
-        // Step 1: Fetch course sections to assign randomly
+        // Step 1: Fetch all available course section IDs
         $courseSectionIds = DB::table('course_sections')->pluck('course_section_id')->toArray();
 
-        // Insert 10 sample faculty records
+        // Shuffle course section IDs to randomize assignments
+        shuffle($courseSectionIds);
+
+        // Step 2: Insert 10 sample faculty records
         foreach (range(1, 10) as $index) {
-            // Step 2: Create a User record with combined first and last name
+            // Create a User record with combined first and last name
             $firstName = $faker->firstName;
             $lastName = $faker->lastName;
 
             $user = User::create([
                 'name' => $firstName . ' ' . $lastName, // Combine first and last name
-                'password' => bcrypt('faculty123'), // Default password or generate one
+                'password' => bcrypt('faculty123'), // Default password
                 'email' => $faker->unique()->safeEmail,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'role_id' => 2,
             ]);
 
-            // Step 3: Create a Faculty record and link it to the User
+            // Create a Faculty record linked to the User
             $facultyId = DB::table('faculties')->insertGetId([
                 'uuid' => (string) Str::uuid(),
                 'faculty_id' => $index, // Auto-increment primary key for faculties
                 'user_id' => $user->user_id, // Link to the created user's user_id
-                'first_name' => $firstName, // Store the first name
-                'last_name' => $lastName, // Store the last name
+                'first_name' => $firstName,
+                'last_name' => $lastName,
                 'department_id' => rand(1, 7), // Assuming you have 7 departments
                 'phone_number' => $faker->phoneNumber,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);
 
-            // Step 4: Assign random course sections to the faculty
-            $assignedCourseSections = $faker->randomElements($courseSectionIds, rand(3, 5)); // Assign 3 to 5 random course sections
-            foreach ($assignedCourseSections as $courseSectionId) {
+            // Step 3: Assign one course section to this faculty
+            if (!empty($courseSectionIds)) {
+                $courseSectionId = array_pop($courseSectionIds); // Take one course section ID
                 DB::table('faculty_courses')->insert([
                     'faculty_id' => $facultyId, // Link to the created faculty
-                    'course_section_id' => $courseSectionId, // Link to a course section
+                    'course_section_id' => $courseSectionId, // Link to the course section
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),
                 ]);

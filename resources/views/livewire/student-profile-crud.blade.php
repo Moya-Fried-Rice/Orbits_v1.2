@@ -15,7 +15,7 @@
             <div class="ml-0 md:ml-5 flex-col flex gap-5 w-full">
                 <!-- Name and Action Buttons -->
                 <div class="py-2 flex justify-between w-full items-center border-b border-[#DDD] gap-5 md:mt-0 mt-5">
-                    <span class="font-silka font-semibold text-[#2A2723] text-xl md:text-3xl">{{ $student->first_name }} {{ $student->last_name }}</span>
+                    <span class="font-silka font-semibold text-[#2A2723] text-xl md:text-3xl">{{ $student->student_name }}</span>
                     <div class="flex items-center justify-end space-x-2">
                         <button wire:click="edit({{ $student->student_id }})"  class="w-8 h-8">
                             <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
@@ -77,7 +77,7 @@
                             <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $studentCourse->courseSection->course->course_code }}</td>
                             <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $studentCourse->courseSection->course->course_name }}</td>
                             <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
-                                {{ $studentCourse->courseSection->faculty ? $studentCourse->courseSection->faculty->faculty_name : 'No Faculty Assigned' }}
+                                {{ $studentCourse->courseSection->facultyCourse->first()->faculty->faculty_name ?? 'No Faculty Assigned' }}
                             </td>
                             <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $studentCourse->courseSection->created_at }}</td>
                             <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
