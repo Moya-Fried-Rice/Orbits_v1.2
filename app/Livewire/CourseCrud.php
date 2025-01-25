@@ -398,7 +398,7 @@ class CourseCrud extends Component
 
             // Check for related records (dependencies) that prevent deletion
             if ($course->courseSection()->exists()) { 
-                return $this->logRemoveError('Cannot delete the course due to existing dependencies.', $course, 400);
+                return $this->logRemoveError('Cannot delete the course as it is currently enrolled to a section.', $course, 400);
             }
 
             // Soft delete the course
