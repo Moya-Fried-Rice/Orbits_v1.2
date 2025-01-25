@@ -18,6 +18,8 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes(); // Soft delete column (deleted_at)
             $table->unique(['faculty_id', 'course_section_id'], 'faculty_course_unique'); // Composite unique constraint
+            // Ensure a course_section_id can only have one faculty_id
+            $table->unique('course_section_id', 'unique_course_section_faculty');
         });
     }
 

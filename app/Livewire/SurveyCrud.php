@@ -23,4 +23,10 @@ class SurveyCrud extends Component
 
         return $test;
     }
+
+    public function test2() {
+        $test = Student::with('studentCourse.courseSection.facultyCourse')->get();
+
+        return $test;
+    }
 }

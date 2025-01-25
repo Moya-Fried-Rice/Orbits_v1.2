@@ -25,6 +25,11 @@ class Student extends Authenticatable
         'profile_image',
     ];
 
+    public function getStudentNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
+
     public function studentCourse()
     {
         return $this->hasMany(StudentCourse::class, 'student_id', 'student_id'); 

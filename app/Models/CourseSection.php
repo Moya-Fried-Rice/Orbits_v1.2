@@ -40,11 +40,6 @@ class CourseSection extends Model
         return $this->belongsTo(Section::class, 'section_id');
     }
 
-    public function faculty()
-    {
-        return $this->belongsTo(Faculty::class, 'faculty_id');
-    }
-
 
 
 
