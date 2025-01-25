@@ -206,7 +206,10 @@ class DepartmentCrud extends Component
             return $this->logEdit('Department successfully updated!', $department, 200);
         } catch (ValidationException $e) {
             // Handle validation errors (e.g., invalid inputs)
-            return $this->logEditError('Invalid inputs!', $department, 422);
+            $errors = $e->validator->errors()->all();
+            $errorMessages = implode(' | ', $errors);
+
+            return $this->logEditError('Invalid inputs: ' . $errorMessages, $department, 422);
         } catch (QueryException $e) {
             // Handle database-related errors
             if ($e->errorInfo[1] == 1062) {
@@ -643,7 +646,10 @@ class DepartmentCrud extends Component
 
         } catch (ValidationException $e) {
             // Log validation error with the initialized $department
-            return $this->logAddError('Invalid inputs!', $department, 422);
+            $errors = $e->validator->errors()->all();
+            $errorMessages = implode(' | ', $errors);
+
+            return $this->logAddError('Invalid inputs: ' . $errorMessages, $department, 422);
 
         } catch (QueryException $e) {
             // Handle duplicate entry error
