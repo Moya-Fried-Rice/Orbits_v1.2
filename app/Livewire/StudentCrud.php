@@ -348,7 +348,7 @@ class StudentCrud extends Component
             }
     
             // Check for related records (dependencies) that prevent deletion
-            if ($student->courseSection()->exists()) { 
+            if ($student->studentCourse()->exists()) { 
                 return $this->logRemoveError('Cannot delete the student due to existing dependencies.', $student, 400);
             }
     

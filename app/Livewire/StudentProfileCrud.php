@@ -413,12 +413,27 @@ class StudentProfileCrud extends Component
     private function createCourse()
     {
         $student = $this->getStudentByUuid($this->uuid);
+
+        // Check for a soft-deleted record with the same `course_section_id` and `student_id`
+        $existingCourse = StudentCourse::withTrashed()->where([
+            'course_section_id' => $this->course_section_id,
+            'student_id' => $student->student_id,
+        ])->first();
+
+        if ($existingCourse) {
+            if ($existingCourse->trashed()) {
+                // Restore the soft-deleted record
+                $existingCourse->restore();
+                return $existingCourse;
+            }
+        }
+
+        // If no matching record exists, create a new one
         return StudentCourse::create([
             'course_section_id' => $this->course_section_id,
-            'student_id' => $student->student_id,  // Assuming 'id' is the field that holds the student's ID
+            'student_id' => $student->student_id,
         ]);
     }
-    
 
     // Function to log a successful course creation
     private function logAdd($message, $course, $statusCode)
@@ -465,6 +480,226 @@ class StudentProfileCrud extends Component
         $this->resetErrorBag(); // Reset any validation errors
     }
     
+
+
+
+
+
+
+
+
+
+
+    // Method to initiate deletion process ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    public function delete($id)
+    {
+        $this->deleteId = $id;
+        $this->showDeleteConfirmation = true;
+    }
+
+    // Step 2: Confirm/Cancel delete
+
+    // If confirmed
+    public function confirmDelete()
+    {
+        $this->remove(); // Proceed to delete course from database
+        $this->resetDeleteState(); // Close confirmation modal and reset state
+    }
+
+    // If canceled
+    public function cancelDelete()
+    {
+        $this->resetDeleteState(); // Close confirmation modal and reset state
+    }
+
+    // Reset delete state to prepare for next action
+    private function resetDeleteState()
+    {
+        $this->showDeleteConfirmation = false;
+        $this->deleteId = null;
+    }
+
+    // Main method to handle deletion
+    public function remove()
+    {
+        try {
+            $this->validateQueryRemove();
+        } catch (Exception $e) {
+            $this->logSystemError('An error occurred while deleting the course.', $e);
+        } finally {
+            session()->forget('deleteId');
+        }
+    }
+
+    // Validate and process deletion
+    public function validateQueryRemove()
+    {
+        try {
+            // Retrieve course by ID
+            $course = StudentCourse::find($this->deleteId);
+
+            if (!$course) {
+                return $this->logRemoveError('Course not found!', $course, 404);
+            }
+
+            $this->deleteCourse($course);
+
+        } catch (QueryException $e) {
+            // Handle database query exceptions
+            return $this->logRemoveError('Database error: ' . $e->getMessage(), $course, 500);
+        }
+    }
+
+    // Soft delete the course and log success
+    private function deleteCourse($course)
+    {
+        $course->delete();  // Perform soft delete
+
+        // Log the successful deletion
+        return $this->logRemove('Course successfully deleted!', $course, 200);
+    }
+
+    // Log successful course removal
+    private function logRemove($message, $course, $statusCode)
+    {
+        // Flash deleted id for restoration to the session
+        session()->put('deleted_record_id', $this->deleteId);
+
+        // Flash success message to the session
+        session()->flash('deleted', $message);
+
+        // Log the activity using Spatie Activitylog
+        activity()
+            ->performedOn($course)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'status' => 'success',  // Status: success
+                'student_course' => $course->courseSection->section->section_code, // Log course name for reference\
+            ])
+            ->event('Course Removed') // Event: Course Removed
+            ->log($message); // Log the custom success message
+    }
+
+    // Log an error when course removal fails
+    private function logRemoveError($message, $course, $statusCode)
+    {
+        // Flash error message to the session
+        session()->flash('error', $message);
+
+        // Log the activity using Spatie Activitylog
+        activity()
+            ->performedOn($course)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'status' => 'error',  // Status: error
+                'student_course' => $course->courseSection->section->section_code, // Log course name for reference\
+                'status_code' => $statusCode, // HTTP status code (e.g., 400, 422 for failure cases)
+            ])
+            ->event('Failed to Remove Course') // Event: Failed to Remove Course
+            ->log($message); // Log the custom error message
+    }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+
+    // Method for restoring deleted course ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    public function undoDelete()
+    {
+        // Get the deleted course ID from the session
+        $courseId = session()->get('deleted_record_id');
+
+        if ($courseId) {
+            try {
+                // Retrieve the course including trashed ones
+                $course = StudentCourse::withTrashed()->findOrFail($courseId);
+
+                // Check if the course is already active or needs restoration
+                $this->checkIfRestored($course);
+            } catch (ModelNotFoundException $e) {
+                // Log error if course is not found
+                $this->logSystemError('Course not found for restoration!', $e);
+            } catch (Exception $e) {
+                // Log any other exceptions
+                $this->logSystemError('Failed to restore course', $e);
+            }
+        } else {
+            // Handle case where no deleted course is found in session
+            session()->flash('error', 'No course available to restore!');
+        }
+    }
+
+    // Check if the course is already restored
+    private function checkIfRestored($course)
+    {
+        if (!$course->trashed()) {
+            // Log if the course is already active
+            $this->logRestorationError('Course is already active', $course);
+            return;
+        } else {
+            // Restore the course if it’s trashed
+            $this->restoreCourse($course);
+        }
+    }
+
+    // Restore the course
+    private function restoreCourse($course)
+    {
+        try {
+            // Attempt to restore the course
+            $course->restore();
+            
+            // Clear the session for deleted course ID
+            session()->forget('deleted_record_id');
+
+            // Log the restoration success
+            $this->logRestoration('Course successfully restored!', $course, 200);
+        } catch (Exception $e) {
+            // Log any errors during the restoration process
+            $this->logRestorationError('Failed to restore course', $course, 500);
+        }
+    }
+
+    // Log the course restoration
+    private function logRestoration($message, $course, $statusCode)
+    {
+        session()->flash('success', $message);
+
+        // Log activity using Spatie Activitylog
+        activity()
+            ->performedOn($course)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'status' => 'success',
+                'student_course' => $course->courseSection->section->section_code,
+                'status_code' => $statusCode,
+            ])
+            ->event('Restore')
+            ->log('Course restored');
+    }
+
+    // Log restoration error
+    private function logRestorationError($message, $course, $statusCode)
+    {
+        session()->flash('error', $message);
+
+        // Log activity using Spatie Activitylog
+        activity()
+            ->performedOn($course)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'status' => 'error',
+                'student_course' => $course->courseSection->section->section_code,
+                'status_code' => $statusCode,
+            ])
+            ->event('Restore')
+            ->log('Failed to restore course');
+    }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+
+
+
+
+
     
 
     // Log unexpected system errors
@@ -512,4 +747,7 @@ class StudentProfileCrud extends Component
             'email'
         ]);
     }
+
+
+
 }

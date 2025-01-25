@@ -88,7 +88,7 @@
                             <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $studentCourse->courseSection->created_at }}</td>
                             <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
                                 <div class="flex items-center justify-end space-x-2">
-                                    <button wire:click="delete()"  class="w-8 h-8">
+                                    <button wire:click="delete({{ $studentCourse->student_course_id }})"  class="w-8 h-8">
                                         <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                                     </button>
                                 </div>
