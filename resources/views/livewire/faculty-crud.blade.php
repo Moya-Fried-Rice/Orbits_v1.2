@@ -85,7 +85,7 @@
                 </td>                
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $faculty->first_name }}</td>
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $faculty->last_name }}</td>
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $faculty->department->department_name }}</td>
+                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $faculty->department->department_code }}</td>
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $faculty->phone_number }}</td>
                 <td class="py-2 whitespace-nowrap px-4">{{ $faculty->created_at->format('Y-m-d H:i') }}</td>
                 <td class="py-2 whitespace-nowrap px-4">{{ $faculty->updated_at->format('Y-m-d H:i') }}</td>
