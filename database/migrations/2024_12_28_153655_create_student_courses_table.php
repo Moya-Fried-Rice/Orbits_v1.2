@@ -14,6 +14,7 @@ class CreateStudentCoursesTable extends Migration
     public function up()
     {
         Schema::create('student_courses', function (Blueprint $table) {
+            $table->id('student_course_id');
             $table->foreignId('student_id')->constrained('students', 'student_id')->onDelete('cascade'); // Foreign key to students table
             $table->foreignId('course_section_id')->constrained('course_sections', 'course_section_id')->onDelete('cascade'); // Foreign key to course_sections table
             $table->timestamps(); // created_at, updated_at

@@ -6,6 +6,9 @@ use App\Models\User;
 use App\Models\Student;
 use App\Models\Department;
 use App\Models\Program;
+use App\Models\Section;
+use App\Models\StudentCourse;
+use App\Models\CourseSection;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -32,6 +35,16 @@ class StudentProfileCrud extends Component
         return view('livewire.student-profile-crud', compact('student'));
     }
 
+    /**
+     * Retrieve the student with course sections by UUID.
+     *
+     * @param  string  $uuid
+     * @return \App\Models\Student|null
+     */
+    protected function getStudentByUuid($uuid)
+    {
+        return Student::with('courseSection')->where('uuid', $uuid)->first();
+    }
 
     // Public properties for course data and modal states.
     public $student_id, $first_name, $last_name, $program_id, $phone_number, $profile_image, $email;
@@ -61,6 +74,17 @@ class StudentProfileCrud extends Component
     {
         return Department::all();
     }
+
+    public function getSections()
+    {
+        $student = $this->getStudentByUuid($this->uuid);
+        $programId = $student->program_id;
+
+        return Section::whereHas('courseSection.course.program', function ($query) use ($programId) {
+            $query->where('programs.program_id', $programId);
+        })->get();
+    }
+
 
     // Clear session messages
     public function clearMessage()
@@ -179,7 +203,7 @@ class StudentProfileCrud extends Component
             return $this->logEdit('Student successfully updated!', $student, 200);
         } catch (ValidationException $e) {
             // Handle validation errors (e.g., invalid inputs)
-            return $this->logEditError('Invalid inputs!' . $e, $student, 422);
+            return $this->logEditError('Invalid inputs!', $student, 422);
         } catch (QueryException $e) {
             // Handle database-related errors
             if ($e->errorInfo[1] == 1062) {
