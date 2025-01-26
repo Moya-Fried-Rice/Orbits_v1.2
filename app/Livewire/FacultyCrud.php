@@ -52,6 +52,7 @@ class FacultyCrud extends Component
     protected $rules = [
         'first_name' => 'required|string|max:50',
         'last_name' => 'required|string|max:50',
+        'email' => 'required|email',
         'department_id' => 'required|integer|exists:departments,department_id',
         'phone_number' => 'nullable|string|max:15|regex:/^\\+?[0-9]*$/',
         'profile_image' => 'nullable|image|max:2048', // Maximum size of 2MB
