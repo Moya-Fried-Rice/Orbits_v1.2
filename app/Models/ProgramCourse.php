@@ -24,7 +24,7 @@ class ProgramCourse extends Model
         return $this->belongsTo(Program::class, 'program_id');
     }
 
-    public function course_id()
+    public function course()
     {
         return $this->belongsTo(Course::class, 'course_id');
     }

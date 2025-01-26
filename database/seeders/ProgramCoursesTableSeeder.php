@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class ProgramCoursesTableSeeder extends Seeder
 {
@@ -21,11 +21,11 @@ class ProgramCoursesTableSeeder extends Seeder
             [31, 22], [31, 23]
         ];
 
-        // Insert all program_course pairs into the database
+        // Insert all program_course pairs into the database with timestamps
         foreach ($programCourses as $programCourse) {
             DB::table('program_courses')->insert([
                 'program_id' => $programCourse[0],
-                'course_id' => $programCourse[1]
+                'course_id' => $programCourse[1],
             ]);
         }
     }
