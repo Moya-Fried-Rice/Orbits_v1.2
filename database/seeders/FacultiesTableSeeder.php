@@ -39,7 +39,6 @@ class FacultiesTableSeeder extends Seeder
 
             // Create a Faculty record linked to the User
             $facultyId = DB::table('faculties')->insertGetId([
-                'uuid' => (string) Str::uuid(),
                 'faculty_id' => $index, // Auto-increment primary key for faculties
                 'user_id' => $user->user_id, // Link to the created user's user_id
                 'first_name' => $firstName,
