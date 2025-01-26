@@ -2,16 +2,13 @@
 
     <x-system-notification />
 
-    <div class="p-5 pb-0 gap-5 flex flex-wrap items-center md:justify-start justify-center relative">
+    <div class="p-5 pb-0 gap-2 flex flex-wrap items-center md:justify-start justify-center relative">
         
         <img src="{{ asset('storage/' . $faculty->profile_image) }}" alt="Profile Image" class="
-        ring-1 ring-[#DDD] ring-offset-8 ring-offset-[#F8F8F8]
-        object-cover rounded-full w-40 h-40 md:w-48 md:h-48">
+        ring-1 ring-[#DDD] border-8 border-[#F8F8F8]
+        object-cover rounded-full w-40 h-40">
 
         <div class="flex items-center flex-col md:flex-row w-full md:w-auto">
-            <!-- Profile Image -->
-            
-
             <div class="ml-0 md:ml-5 flex-col flex gap-5 w-full">
                 <!-- Name and Action Buttons -->
                 <div class="py-2 flex justify-between w-full items-center border-b border-[#DDD] gap-5 md:mt-0 mt-5">
@@ -29,11 +26,14 @@
                     <span class="flex items-center gap-2 justify-start"><img class="w-5" src="{{ asset('assets/icons/call.svg') }}" alt="Number">: <span>{{ $faculty->phone_number }}</span></span>
                     <span class="flex items-center gap-2 justify-start"><img class="w-5" src="{{ asset('assets/icons/department.svg') }}" alt="Department">: <span>{{ $faculty->department->department_name }}</span></span>
                 </div>
-
-                <!-- Add Button -->
-                <x-add-button add="Assign Course" />
             </div>
         </div>
+
+        {{-- Add Button --}}
+        <div class="w-full md:w-auto md:absolute bottom-0 right-0 md:mr-5">
+            <x-add-button add="Assign Course" />
+        </div>
+
     </div>  
     
     <div class="pb-5">
