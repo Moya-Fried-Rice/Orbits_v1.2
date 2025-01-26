@@ -4,11 +4,11 @@
 
     <div class="p-5 pb-0 flex flex-wrap items-center md:justify-between justify-center relative">
         
-        <div class="flex items-center flex-col md:flex-row w-full md:w-auto">
+        <div class="flex items-center flex-col md:flex-row w-full md:w-auto xl:max-w-4xl">
             <div class="ml-0 md:ml-5 flex-col flex gap-5 w-full">
                 <!-- Name and Action Buttons -->
-                <div class="py-2 flex justify-between w-full xl:max-w-[80%] items-center border-b border-[#DDD] gap-5 md:mt-0 mt-5">
-                    <span class="font-silka font-semibold text-[#2A2723] text-xl md:text-3xl max-w-[80%]">{{ $program->program_code }} - {{ $program->program_name }}</span>
+                <div class="py-2 flex justify-between w-full items-center border-b border-[#DDD] gap-5">
+                    <span class="font-silka font-semibold text-[#2A2723] text-xl md:text-3xl">{{ $program->program_code }} - {{ $program->program_name }}</span>
                     <div class="flex items-center justify-end space-x-2">
                         <button wire:click="edit({{ $program->program_id }})"  class="w-8 h-8">
                             <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
@@ -18,15 +18,16 @@
 
                 <!-- Profile Details -->
                 <div class="text-gray-600">
-                    <span class="flex items-center gap-2 justify-start"><img class="w-5" src="{{ asset('assets/icons/program.svg') }}" alt="Department">: <span>Abbreviation - {{ $program->abbreviation }}</span></span>
+                    <span class="flex items-center gap-2 justify-start"><img class="w-5" src="{{ asset('assets/icons/program.svg') }}" alt="Abbreviation">: <span>Abbreviation - {{ $program->abbreviation }}</span></span>
                     <span class="flex items-center gap-2 justify-start"><img class="w-5" src="{{ asset('assets/icons/department.svg') }}" alt="Department">: <span>{{ $program->department->department_name }}</span></span>
-                    <span class="flex items-start gap-2 justify-start max-w-[78%]"><img class="mt-0.5 w-5" src="{{ asset('assets/icons/survey.svg') }}" alt="Department">: <span>{{ $program->program_description }}</span></span>
+                    <span class="flex items-start gap-2 justify-start w-auto md:max-w-[70%] xl:max-w-full"><img class="w-5 mt-1" src="{{ asset('assets/icons/survey.svg') }}" alt="Description">: <span>{{ $program->program_description }}</span></span>
                 </div>
             </div>
         </div>
 
+        {{-- Add Button --}}
         <div class="w-full md:w-auto md:absolute bottom-0 right-0 md:mr-5">
-            <x-add-button add="Add Course" />
+            <x-add-button add="Assign Course" />
         </div>
         
     </div>  
