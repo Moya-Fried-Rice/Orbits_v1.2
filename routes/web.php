@@ -33,7 +33,7 @@ Route::get('/faculties', function () {
     // Route to faculty profile
     Route::get('/faculty/{uuid}', function (string $uuid) {
         return view('faculties.faculty-profile', ['uuid' => $uuid]);
-    })->middleware(['auth', 'check_role:4', 'verify_uuid:' . Faculty::class])->name('faculty.update');
+    })->middleware(['auth', 'check_role:4', 'verify_uuid:' . Faculty::class])->name('faculty.profile');
 
 // Route to student page
 Route::get('/students', function () {
@@ -43,7 +43,7 @@ Route::get('/students', function () {
     // Route to student profile
     Route::get('/student/{uuid}', function (string $uuid) {
         return view('students.student-profile', ['uuid' => $uuid]);
-    })->middleware(['auth', 'check_role:4', 'verify_uuid:' . Student::class])->name('student.update');
+    })->middleware(['auth', 'check_role:4', 'verify_uuid:' . Student::class])->name('student.profile');
 
 // Route to program page
 Route::get('/programs', function () {
@@ -59,6 +59,11 @@ Route::get('/survey', function () {
 Route::get('/sections', function () {
     return view('sections.sections');
 })->middleware(['auth', 'check_role:4'])->name('sections');
+
+    // Route to section courses
+    Route::get('/section/{section_code}', function () {
+        return view('sections.section-courses');
+    })->middleware(['auth', 'check_role:4'])->name('section.courses');
 
 // Route to accounts page
 Route::get('/accounts', function () {
