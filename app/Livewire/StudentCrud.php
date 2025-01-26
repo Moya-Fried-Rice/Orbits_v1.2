@@ -53,6 +53,7 @@ class StudentCrud extends Component
     protected $rules = [
         'first_name' => 'required|string|max:50',
         'last_name' => 'required|string|max:50',
+        'email' => 'required|email',
         'program_id' => 'required|integer|exists:programs,program_id',
         'phone_number' => 'nullable|string|max:15|regex:/^\+?[0-9]*$/',
         'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
