@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class CreateDepartmentsTable extends Migration
 {
@@ -18,7 +19,8 @@ class CreateDepartmentsTable extends Migration
             $table->string('department_name')->unique();; // Department name
             $table->text('department_description')->nullable(); // Department description (nullable)
             $table->string('department_code')->unique(); // Department code, should be unique
-            $table->timestamps(); // created_at and updated_at
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes(); // Add soft deletes (deleted_at column)
         });
     }

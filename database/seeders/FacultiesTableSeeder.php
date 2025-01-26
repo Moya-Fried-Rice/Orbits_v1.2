@@ -5,9 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 use App\Models\User;
-use Illuminate\Support\Str;
 
 class FacultiesTableSeeder extends Seeder
 {
@@ -32,8 +30,6 @@ class FacultiesTableSeeder extends Seeder
                 'name' => $firstName . ' ' . $lastName, // Combine first and last name
                 'password' => bcrypt('faculty123'), // Default password
                 'email' => $faker->unique()->safeEmail,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
                 'role_id' => 2,
             ]);
 
@@ -45,8 +41,6 @@ class FacultiesTableSeeder extends Seeder
                 'last_name' => $lastName,
                 'department_id' => rand(1, 7), // Assuming you have 7 departments
                 'phone_number' => $faker->phoneNumber,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
             ]);
 
             // Step 3: Assign one course section to this faculty
@@ -55,8 +49,6 @@ class FacultiesTableSeeder extends Seeder
                 DB::table('faculty_courses')->insert([
                     'faculty_id' => $facultyId, // Link to the created faculty
                     'course_section_id' => $courseSectionId, // Link to the course section
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
                 ]);
             }
         }

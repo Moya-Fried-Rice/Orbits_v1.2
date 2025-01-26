@@ -15,8 +15,8 @@ class SurveysTableSeeder extends Seeder
     public function run()
     {
         DB::table('surveys')->insert([
-            ['survey_id' => 1, 'survey_name' => 'Student Evaluation', 'created_at' => '2024-10-13 06:56:45'],
-            ['survey_id' => 2, 'survey_name' => 'Faculty Evaluation', 'created_at' => '2024-10-13 06:56:45'],
+            ['survey_id' => 1, 'survey_name' => 'Student Evaluation'],
+            ['survey_id' => 2, 'survey_name' => 'Faculty Evaluation'],
         ]);
     }
 }

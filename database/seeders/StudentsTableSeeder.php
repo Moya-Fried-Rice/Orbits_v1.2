@@ -34,8 +34,6 @@ class StudentsTableSeeder extends Seeder
                 'name' => $firstName . ' ' . $lastName,  // Combine first and last name for the name field
                 'password' => bcrypt('student123'),  // Default password or generate one
                 'email' => $faker->unique()->safeEmail,  // Unique email
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
                 'role_id' => 1,
             ]);
 
@@ -47,8 +45,6 @@ class StudentsTableSeeder extends Seeder
                 'last_name' => $lastName,  // Store last name separately
                 'program_id' => $faker->numberBetween(1, 10),  // Random program ID (adjust range as needed)
                 'phone_number' => $faker->phoneNumber,  // Random phone number
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
             ]);
 
             // Step 4: Assign 8 random course sections to the student
@@ -57,8 +53,6 @@ class StudentsTableSeeder extends Seeder
                 DB::table('student_courses')->insert([
                     'student_id' => $studentId,  // Link to the created student
                     'course_section_id' => $courseSectionId,  // Link to a course section
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
                 ]);
             }
         }
