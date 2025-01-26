@@ -444,27 +444,28 @@ class FacultyProfileCrud extends Component
     private function createFacultyCourse()
     {
         $faculty = $this->getFacultyByUuid($this->uuid);
-
-        // Check for a soft-deleted record with the same `course_section_id` and `faculty_id`
-        $existingFacultyCourse = FacultyCourse::withTrashed()->where([
-            'course_section_id' => $this->course_section_id,
-            'faculty_id' => $faculty->faculty_id,
-        ])->first();
-
+    
+        // Check for a soft-deleted record with the same `course_section_id`
+        $existingFacultyCourse = FacultyCourse::withTrashed()->where('course_section_id', $this->course_section_id)->first();
+    
         if ($existingFacultyCourse) {
             if ($existingFacultyCourse->trashed()) {
-                // Restore the soft-deleted record
+                // Restore the soft-deleted record and update the faculty_id
                 $existingFacultyCourse->restore();
+                $existingFacultyCourse->update(['faculty_id' => $faculty->faculty_id]);
                 return $existingFacultyCourse;
+            } else {
+                // Handle the case where the course section already exists with another active faculty
+                throw new \Exception('The course section is already assigned to another faculty.');
             }
         }
-
+    
         // If no matching record exists, create a new one
         return FacultyCourse::create([
             'course_section_id' => $this->course_section_id,
             'faculty_id' => $faculty->faculty_id,
         ]);
-    }
+    }    
 
     // Function to log a successful faculty course creation
     private function logAdd($message, $facultyCourse, $statusCode)
