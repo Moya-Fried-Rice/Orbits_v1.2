@@ -15,7 +15,7 @@ class CreateProgramsTable extends Migration
             $table->string('program_code')->unique(); // Unique code for the program (e.g., "CS101")
             $table->string('program_name')->unique(); // Name of the program (e.g., "Computer Science")
             $table->string('abbreviation')->nullable(); // Course name
-            $table->text('program_description'); // A detailed description of the program
+            $table->text('program_description')->nullable(); // A detailed description of the program
             $table->foreignId('department_id')->constrained('departments', 'department_id')->onDelete('cascade'); // Foreign key to the departments table
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));

@@ -109,5 +109,56 @@
     <div class="p-5">
         {{ $programs->links() }}
     </div>
+    
+{{-- Modal Delete --}}
+<x-delete-modal label="program"/>
+
+{{-- Modal Add Program --}}
+<x-add-modal label="program">
+
+    <!-- Program Name -->
+    <x-add-modal-data name="program_name" label="Program Name:">
+        <input 
+            class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+            type="text" 
+            id="program_name" 
+            wire:model="program_name">
+    </x-add-modal-data>
+
+    <div class="flex w-full gap-5">
+        <!-- Program Code -->
+        <x-add-modal-data name="program_code" label="Program Code:">
+            <input 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                type="text" 
+                id="program_code" 
+                wire:model="program_code">
+        </x-add-modal-data>
+
+        <!-- Abbreviation -->
+        <x-add-modal-data name="abbreviation" label="Abbreviation:">
+            <input 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                type="text" 
+                id="abbreviation" 
+                wire:model="abbreviation">
+        </x-add-modal-data>
+    </div>
+
+    <!-- Program Description -->
+    <x-add-modal-data name="program_description" label="Program Description:">
+        <textarea 
+            class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+            id="program_description" 
+            rows="4"
+            wire:model="program_description"></textarea>
+    </x-add-modal-data>
+
+    <!-- Department -->
+    <x-add-modal-data name="department_id" label="Department:">
+        <x-select-department/>
+    </x-add-modal-data>
+
+</x-add-modal>
 
 </div>
