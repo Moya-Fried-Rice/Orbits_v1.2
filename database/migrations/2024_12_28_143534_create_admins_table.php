@@ -23,8 +23,8 @@ class CreateAdminsTable extends Migration
             $table->string('phone')->nullable(); // Admin's phone number (optional)
             $table->timestamp('email_verified_at')->nullable(); // For email verification
             $table->softDeletes(); // Add soft deletes (deleted_at column)
-            $table->timestamps(); // created_at and updated_at
-        });
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));        });
     }
 
     /**

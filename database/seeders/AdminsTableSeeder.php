@@ -30,8 +30,6 @@ class AdminsTableSeeder extends Seeder
             'last_name' => 'Tree',
             'phone' => null, // Optional, can be updated later
             'email_verified_at' => now(), // Set email_verified_at to current timestamp if required
-            'created_at' => now(),
-            'updated_at' => now(),
         ]);
     }
 }

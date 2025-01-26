@@ -3,11 +3,10 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use DB;
 use Faker\Factory as Faker;
-use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class ProgramChairsTableSeeder extends Seeder
 {
@@ -24,8 +23,6 @@ class ProgramChairsTableSeeder extends Seeder
                 'name' => $firstName . ' ' . $lastName, // Combine first and last name
                 'password' => bcrypt('chair123'),  // Default password or generate one
                 'email' => $faker->unique()->safeEmail,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
                 'role_id' => 3,
             ]);
 
@@ -39,8 +36,6 @@ class ProgramChairsTableSeeder extends Seeder
                     'last_name' => $lastName,   // Store the last name
                     // Assign a unique department_id if a department exists, otherwise null
                     'department_id' => $index <= 7 ? $index : null,  // For demo, assuming the first 7 rows get department IDs
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
                 ]
             ]);            
         }

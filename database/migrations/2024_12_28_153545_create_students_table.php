@@ -24,7 +24,8 @@ class CreateStudentsTable extends Migration
             $table->string('phone_number')->nullable(); // Optional phone number
             $table->string('profile_image')->default('default_images/default_profile.png'); // Optional profile image path
             $table->softDeletes(); // Soft delete column (deleted_at)
-            $table->timestamps(); // created_at, updated_at
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
         });        
     }
 

@@ -18,8 +18,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS Medical Technology',
             'program_description' => 'Focuses on laboratory sciences, training students in clinical procedures and diagnostics used to detect, diagnose, and treat diseases.',
             'department_id' => 5,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'PH',
@@ -28,8 +26,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS Pharmacy',
             'program_description' => 'Prepares students for careers in the pharmaceutical industry, emphasizing drug therapy, patient care, and medication management.',
             'department_id' => 5,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'RT',
@@ -38,8 +34,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS Radiologic Technology',
             'program_description' => 'Trains students in medical imaging techniques, including X-ray, MRI, and CT scans, to assist in patient diagnosis.',
             'department_id' => 5,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'BIO',
@@ -48,8 +42,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS Biology',
             'program_description' => 'Provides a broad understanding of biological sciences, covering genetics, ecology, and microbiology as foundations for careers in research, healthcare, and biotechnology.',
             'department_id' => 5,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'BACOMM',
@@ -58,8 +50,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'Bachelor of Arts in Communication',
             'program_description' => 'Focuses on communication theory, media studies, and public relations, preparing students for careers in journalism, media, and corporate communication.',
             'department_id' => 6,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'ABFS',
@@ -68,8 +58,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'AB Foreign Service',
             'program_description' => 'Prepares students for diplomatic careers with training in international relations, global politics, and cultural studies.',
             'department_id' => 6,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'ABLS',
@@ -78,8 +66,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'AB Legal Studies',
             'program_description' => 'Offers foundational legal knowledge and critical thinking skills, ideal for students aiming for law school or legal assistant roles.',
             'department_id' => 6,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'ECED',
@@ -88,8 +74,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'Bachelor of Early Childhood Education',
             'program_description' => 'Equips students with teaching methods and psychology for educating young children, particularly in preschool and elementary levels.',
             'department_id' => 6,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'SED',
@@ -98,8 +82,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'Bachelor in Secondary Education',
             'program_description' => 'Prepares future educators to teach at the secondary level, specializing in pedagogy and adolescent development.',
             'department_id' => 6,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'PSYCH',
@@ -108,8 +90,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS Psychology',
             'program_description' => 'Covers psychological theories and practices, preparing students for roles in counseling, human resources, or further studies in psychology.',
             'department_id' => 6,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'ACC',
@@ -118,8 +98,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS Accountancy',
             'program_description' => 'Provides expertise in financial accounting, taxation, and auditing, essential for roles as accountants or financial analysts.',
             'department_id' => 7,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'HRM',
@@ -128,8 +106,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS Business Administration major in Human Resource Development Management',
             'program_description' => 'Trains students in managing employee relations, talent acquisition, and organizational behavior.',
             'department_id' => 7,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'MA',
@@ -138,8 +114,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS Business Administration major in Management Accounting',
             'program_description' => 'Equips students with skills in budgeting, cost management, and financial planning within organizations.',
             'department_id' => 7,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'MM',
@@ -148,8 +122,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS Business Administration major in Marketing Management',
             'program_description' => 'Focuses on marketing strategies, consumer behavior, and brand management, preparing students for marketing careers.',
             'department_id' => 7,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'OM',
@@ -158,8 +130,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS Business Administration major in Operations Management',
             'program_description' => 'Teaches principles of production, logistics, and supply chain management to streamline business processes.',
             'department_id' => 7,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'CA',
@@ -168,8 +138,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS Customs Administration',
             'program_description' => 'Prepares students for careers in customs, trade compliance, and logistics within global supply chains.',
             'department_id' => 7,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'ENTREP',
@@ -178,8 +146,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS Entrepreneurship with specialization in Aesthetics Industry Management',
             'program_description' => 'Focuses on business startup processes and managing ventures specifically within the aesthetics and wellness industry.',
             'department_id' => 7,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'REM',
@@ -188,8 +154,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS Real Estate Management',
             'program_description' => 'Provides knowledge in real estate laws, property management, and market analysis, preparing students for roles in real estate.',
             'department_id' => 7,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'ARCH',
@@ -198,8 +162,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'Bachelor of Science in Architecture',
             'program_description' => 'Teaches design principles, architectural theory, and construction techniques for careers in architecture.',
             'department_id' => 1,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'CS',
@@ -208,8 +170,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS Computer Science',
             'program_description' => 'Computer Science will be able to learn about other subjects such as machine learning, blockchain, social hacking, and data analytics.',
             'department_id' => 1,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'IT',
@@ -218,8 +178,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS Information Technology',
             'program_description' => 'Equips students with the basic ability to conceptualize, design, and implement software applications.',
             'department_id' => 1,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'LIS',
@@ -228,8 +186,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'Bachelor of Library and Information Science',
             'program_description' => 'Trains students in library management, information retrieval, and cataloging, preparing them for roles in library sciences.',
             'department_id' => 1,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'ENG',
@@ -238,8 +194,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'Bachelor of Science in Aeronautical Engineering',
             'program_description' => 'Prepares students for the aviation industry with training in aircraft design, systems, and safety.',
             'department_id' => 1,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'CE',
@@ -248,8 +202,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS Civil Engineering',
             'program_description' => 'Designed to prepare graduates to apply knowledge of mathematics, calculus-based physics, chemistry, and at least one additional area of basic science.',
             'department_id' => 1,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'CPE',
@@ -258,8 +210,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS Computer Engineering',
             'program_description' => 'Focuses on the development and optimization of both computer hardware and software.',
             'department_id' => 1,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'ET',
@@ -268,8 +218,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'Bachelor of Engineering Technology',
             'program_description' => 'Teaches construction practices and project management in engineering settings.',
             'department_id' => 1,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'EE',
@@ -278,8 +226,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS in Electronics Engineering',
             'program_description' => 'Focuses on electronic devices, telecommunications, and signal processing.',
             'department_id' => 1,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'IE',
@@ -288,8 +234,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'Bachelor of Science in Industrial Engineering',
             'program_description' => 'Teaches process optimization, production planning, and quality control in various industries.',
             'department_id' => 1,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'ME',
@@ -298,8 +242,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS Mechanical Engineering',
             'program_description' => 'Covers thermodynamics, mechanical design, and manufacturing processes for engineering roles.',
             'department_id' => 1,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'FA',
@@ -308,8 +250,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'Bachelor of Fine Arts',
             'program_description' => 'Offers creative training in painting, sculpture, and visual arts for careers in the arts sector.',
             'department_id' => 2,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'MMA',
@@ -318,8 +258,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'Bachelor of Multimedia Arts',
             'program_description' => 'Combines digital media, graphic design, and animation, preparing students for multimedia industries.',
             'department_id' => 2,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'PHOTO',
@@ -328,8 +266,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'Bachelor in Photography',
             'program_description' => 'Teaches photography techniques and visual storytelling for careers in professional photography.',
             'department_id' => 1,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'TM',
@@ -338,8 +274,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS International Travel and Tourism Management',
             'program_description' => 'Prepares students for roles in tourism management, including travel planning and tour operations.',
             'department_id' => 3,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'TM',
@@ -348,8 +282,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS International Travel and Tourism Management (Health and Wellness)',
             'program_description' => 'Specializes in health and wellness tourism, focusing on wellness programs and spa management.',
             'department_id' => 3,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'HM',
@@ -358,8 +290,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS International Hospitality Management',
             'program_description' => 'Prepares students to become effective leaders, managers, and/or entrepreneurs in the global hospitality industry.',
             'department_id' => 3,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'ND',
@@ -368,8 +298,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS Nutrition and Dietetics',
             'program_description' => 'Prepares students to become dietitians or nutritionists, focusing on meal planning and health management.',
             'department_id' => 3,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
             [
             'abbreviation' => 'NURS',
@@ -378,8 +306,6 @@ class ProgramsTableSeeder extends Seeder
             'program_name' => 'BS Nursing',
             'program_description' => 'Provides clinical and theoretical training in patient care, preparing students to become registered nurses.',
             'department_id' => 4,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
             ],
         ]);
     }

@@ -17,7 +17,8 @@ class CreateProgramsTable extends Migration
             $table->string('abbreviation')->nullable(); // Course name
             $table->text('program_description'); // A detailed description of the program
             $table->foreignId('department_id')->constrained('departments', 'department_id')->onDelete('cascade'); // Foreign key to the departments table
-            $table->timestamps(); // created_at, updated_at
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes(); // Add soft delete column (deleted_at)
         });
         
