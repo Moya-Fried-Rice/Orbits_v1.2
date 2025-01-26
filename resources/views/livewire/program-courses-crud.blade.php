@@ -7,7 +7,7 @@
         <div class="flex items-center flex-col md:flex-row w-full md:w-auto">
             <div class="ml-0 md:ml-5 flex-col flex gap-5 w-full">
                 <!-- Name and Action Buttons -->
-                <div class="py-2 flex justify-between max-w-[80%] items-center border-b border-[#DDD] gap-5 md:mt-0 mt-5">
+                <div class="py-2 flex justify-between w-full xl:max-w-[80%] items-center border-b border-[#DDD] gap-5 md:mt-0 mt-5">
                     <span class="font-silka font-semibold text-[#2A2723] text-xl md:text-3xl max-w-[80%]">{{ $program->program_code }} - {{ $program->program_name }}</span>
                     <div class="flex items-center justify-end space-x-2">
                         <button wire:click="edit({{ $program->program_id }})"  class="w-8 h-8">
@@ -20,7 +20,7 @@
                 <div class="text-gray-600">
                     <span class="flex items-center gap-2 justify-start"><img class="w-5" src="{{ asset('assets/icons/program.svg') }}" alt="Department">: <span>Abbreviation - {{ $program->abbreviation }}</span></span>
                     <span class="flex items-center gap-2 justify-start"><img class="w-5" src="{{ asset('assets/icons/department.svg') }}" alt="Department">: <span>{{ $program->department->department_name }}</span></span>
-                    <span class="flex items-start gap-2 justify-start max-w-[80%]"><img class="mt-0.5 w-5" src="{{ asset('assets/icons/survey.svg') }}" alt="Department">: <span>{{ $program->program_description }}</span></span>
+                    <span class="flex items-start gap-2 justify-start max-w-[78%]"><img class="mt-0.5 w-5" src="{{ asset('assets/icons/survey.svg') }}" alt="Department">: <span>{{ $program->program_description }}</span></span>
                 </div>
             </div>
         </div>
