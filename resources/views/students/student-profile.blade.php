@@ -24,7 +24,7 @@
             Students
         </a>
         <span class="text-xs opacity-50"><i class="fa-solid fa-chevron-right"></i></span>
-        <a href="{{ route('student.update', ['uuid' => $uuid]) }}" class="opacity-50 hover:opacity-100 transition-all duration-100">
+        <a href="{{ route('student.profile', ['uuid' => $uuid]) }}" class="opacity-50 hover:opacity-100 transition-all duration-100">
             Profile
         </a>
     </div>
