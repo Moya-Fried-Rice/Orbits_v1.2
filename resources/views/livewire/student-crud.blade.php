@@ -92,7 +92,7 @@
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
                     <div class="flex items-center justify-end space-x-2">
                         <a 
-                            href="{{ route('student.update', ['uuid' => $student->uuid]) }}" 
+                            href="{{ route('student.profile', ['uuid' => $student->uuid]) }}" 
                             class="bg-[#F8F8F8] text-[#2A2723] px-3 py-1 text-sm transition duration-100 border hover:border-[#923534]"
                         >
                             View Profile
