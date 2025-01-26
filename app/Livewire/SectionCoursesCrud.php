@@ -21,7 +21,7 @@ class SectionCoursesCrud extends Component
     public $showDeleteConfirmation = false;
     public $showEditForm = false, $showEditConfirmation = false;
     public $showAddForm = false, $showAddConfirmation = false;
-    public $search = null, $deleteId, $selectedProgram = null;
+    public $deleteId;
 
     public function render()
     {

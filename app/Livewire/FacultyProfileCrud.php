@@ -30,7 +30,7 @@ class FacultyProfileCrud extends Component
     public $showDeleteConfirmation = false;
     public $showEditForm = false, $showEditConfirmation = false;
     public $showAddForm = false, $showAddConfirmation = false;
-    public $search = null, $deleteId, $selectedDepartment = null;
+    public $deleteId;
     private $oldValues;
 
     public function render()
