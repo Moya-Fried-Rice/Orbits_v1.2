@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Models\Student;
+use App\Models\Section;
 use App\Models\Faculty;
+use App\Models\Program;
 use Illuminate\Support\Facades\Auth;
 
 // Route home direct to login
@@ -50,6 +52,11 @@ Route::get('/programs', function () {
     return view('programs.programs');
 })->middleware(['auth', 'check_role:4'])->name('programs');
 
+    // Route to section courses
+    Route::get('/program/{uuid}', function (string $uuid) {
+        return view('programs.program-courses', ['uuid' => $uuid]);
+    })->middleware(['auth', 'check_role:4', 'verify_uuid:' . Program::class])->name('program.courses');
+
 // Route to survey page
 Route::get('/survey', function () {
     return view('survey.survey');
@@ -61,9 +68,9 @@ Route::get('/sections', function () {
 })->middleware(['auth', 'check_role:4'])->name('sections');
 
     // Route to section courses
-    Route::get('/section/{section_code}', function () {
-        return view('sections.section-courses');
-    })->middleware(['auth', 'check_role:4'])->name('section.courses');
+    Route::get('/section/{uuid}', function (string $uuid) {
+        return view('sections.section-courses', ['uuid' => $uuid]);
+    })->middleware(['auth', 'check_role:4', 'verify_uuid:' . Section::class])->name('section.courses');
 
 // Route to accounts page
 Route::get('/accounts', function () {

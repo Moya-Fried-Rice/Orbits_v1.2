@@ -374,8 +374,24 @@ class SectionCrud extends Component
     // Function to create the section entry in the database
     private function createSection()
     {
+        // Check for a soft-deleted record with the same `section_id`, `year_level`, and `section_number`
+        $existingSection = Section::withTrashed()->where([
+            'program_id' => $this->program_id, // Handle null case
+            'year_level' => $this->year_level,
+            'section_number' => $this->section_number,
+        ])->first();
+    
+        if ($existingSection) {
+            if ($existingSection->trashed()) {
+                // Restore the soft-deleted record
+                $existingSection->restore();
+                return $existingSection;
+            }
+        }
+    
+        // If no matching record exists, create a new one
         return Section::create([
-            'program_id' => $this->program_id,
+            'program_id' => $this->program_id, // Use null if no section
             'year_level' => $this->year_level,
             'section_number' => $this->section_number,
         ]);
