@@ -84,9 +84,7 @@
                             <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
                                 {{ $faculty ? $faculty->faculty_name : 'No Faculty Assigned' }}
                             </td>
-                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
-                                {{ $studentCourse->courseSection->created_at->format('F j, Y') }}
-                            </td>
+                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $studentCourse->courseSection->created_at }}</td>
                             <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
                                 <div class="flex items-center justify-end space-x-2">
                                     <button wire:click="delete({{ $studentCourse->student_course_id }})" class="w-8 h-8">
