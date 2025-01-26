@@ -101,7 +101,7 @@ class StudentCrud extends Component
     }
 
     // Fetch all departments for dropdown 
-        public function getDepartments()
+    public function getDepartments()
     {
         return Department::all();
     }

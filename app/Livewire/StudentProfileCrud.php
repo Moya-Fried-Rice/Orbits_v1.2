@@ -31,7 +31,6 @@ class StudentProfileCrud extends Component
     public $showEditForm = false, $showEditConfirmation = false;
     public $showAddForm = false, $showAddConfirmation = false;
     public $search = null, $deleteId, $selectedProgram = null;
-    public $sortField = 'created_at', $sortDirection = 'asc';
     private $oldValues;
 
     public function render()

@@ -31,7 +31,6 @@ class FacultyProfileCrud extends Component
     public $showEditForm = false, $showEditConfirmation = false;
     public $showAddForm = false, $showAddConfirmation = false;
     public $search = null, $deleteId, $selectedDepartment = null;
-    public $sortField = 'created_at', $sortDirection = 'asc';
     private $oldValues;
 
     public function render()
@@ -454,10 +453,7 @@ class FacultyProfileCrud extends Component
                 $existingFacultyCourse->restore();
                 $existingFacultyCourse->update(['faculty_id' => $faculty->faculty_id]);
                 return $existingFacultyCourse;
-            } else {
-                // Handle the case where the course section already exists with another active faculty
-                throw new \Exception('The course section is already assigned to another faculty.');
-            }
+            } 
         }
     
         // If no matching record exists, create a new one

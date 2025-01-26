@@ -17,16 +17,4 @@ class SurveyCrud extends Component
         
         return view('livewire.survey-crud', compact('surveys'));
     }
-
-    public function test() {
-        $test = Faculty::with('facultyCourse')->get();
-
-        return $test;
-    }
-
-    public function test2() {
-        $test = Student::with('studentCourse.courseSection.facultyCourse')->get();
-
-        return $test;
-    }
 }
