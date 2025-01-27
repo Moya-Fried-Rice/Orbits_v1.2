@@ -33,84 +33,92 @@
     </div>  
 
 <div class="py-5 pt-0">
+
+    @if ($program && $program->programCourse->isEmpty())
+        <div class="text-center text-[#666] pt-10">
+            No courses found.
+        </div>
+    @else
     
-    @foreach ($program->programCourse->pluck('year_level')->unique()->sort() as $year_level)
+        @foreach ($program->programCourse->pluck('year_level')->unique()->sort() as $year_level)
 
-        <div class="pt-10 text-[#2A2723] text-center w-full">** {{ strtoupper($this->ordinalWord($year_level)) }} YEAR **</div>
+            <div class="pt-10 text-[#2A2723] text-center w-full">** {{ strtoupper($this->ordinalWord($year_level)) }} YEAR **</div>
 
-        <div class="grid grid-cols-1 xl:grid-cols-2">
+            <div class="grid grid-cols-1 xl:grid-cols-2">
 
-            @foreach ($program->programCourse->where('year_level', $year_level)->pluck('semester')->unique()->sort() as $semester)
+                @foreach ($program->programCourse->where('year_level', $year_level)->pluck('semester')->unique()->sort() as $semester)
 
-                <div class="pt-5 lg:pt-5">
-                    <div class="px-5">{{ $this->ordinal($semester) }} Semester</div>
-                    <x-table :action="true">
+                    <div class="pt-5 lg:pt-5">
+                        <div class="px-5">{{ $this->ordinal($semester) }} Semester</div>
+                        <x-table :action="true">
 
-                        <x-slot name="header">
+                            <x-slot name="header">
 
-                            <x-table-header
-                            :allowSort="false"
-                            label="Course Code"
-                            />
+                                <x-table-header
+                                :allowSort="false"
+                                label="Course Code"
+                                />
 
-                            <x-table-header
-                            :allowSort="false"
-                            label="Course Name"/>
+                                <x-table-header
+                                :allowSort="false"
+                                label="Course Name"/>
 
-                            <x-table-header
-                            :allowSort="false"
-                            label="Lec"/>
+                                <x-table-header
+                                :allowSort="false"
+                                label="Lec"/>
 
-                            <x-table-header
-                            :allowSort="false"
-                            label="Lab"/>
+                                <x-table-header
+                                :allowSort="false"
+                                label="Lab"/>
 
-                            <x-table-header
-                            :allowSort="false"
-                            label="Units"/>
+                                <x-table-header
+                                :allowSort="false"
+                                label="Units"/>
 
-                        </x-slot>
+                            </x-slot>
 
-                        <x-slot name="body">
-                            @php
-                                $coursesInSemester = $program->programCourse->where('year_level', $year_level)->where('semester', $semester);
-                            @endphp
+                            <x-slot name="body">
+                                @php
+                                    $coursesInSemester = $program->programCourse->where('year_level', $year_level)->where('semester', $semester);
+                                @endphp
 
-                            @if ($program && $program->programCourse->isEmpty())
-                                <tr>
-                                    <td colspan="6" class="text-center py-2 px-4">
-                                        No courses found.
-                                    </td>
-                                </tr>
-                            @else
-                                @foreach ($coursesInSemester as $programCourse)
-                                    @php
-                                        $course = $programCourse->course;
-                                    @endphp
-                                    <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
-                                        <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->course_code }}</td>
-                                        <td class="py-2 whitespace-nowrap px-4 truncate max-w-20">{{ $course->course_name }}</td>
-                                        <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->lec }}</td>
-                                        <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->lab }}</td>
-                                        <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->units }}</td>
-                                        <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
-                                            <div class="flex items-center justify-end space-x-2">
-                                                <button wire:click="delete({{ $programCourse->program_course_id }})" class="w-8 h-8">
-                                                    <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
-                                                </button>
-                                            </div>
+                                @if ($program && $program->programCourse->isEmpty())
+                                    <tr>
+                                        <td colspan="6" class="text-center py-2 px-4">
+                                            No courses found.
                                         </td>
                                     </tr>
-                                @endforeach
-                            @endif
-                        </x-slot>
-                    </x-table>
-                </div>
-            @endforeach
+                                @else
+                                    @foreach ($coursesInSemester as $programCourse)
+                                        @php
+                                            $course = $programCourse->course;
+                                        @endphp
+                                        <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
+                                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->course_code }}</td>
+                                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-20">{{ $course->course_name }}</td>
+                                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->lec }}</td>
+                                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->lab }}</td>
+                                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->units }}</td>
+                                            <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
+                                                <div class="flex items-center justify-end space-x-2">
+                                                    <button wire:click="delete({{ $programCourse->program_course_id }})" class="w-8 h-8">
+                                                        <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </x-slot>
+                        </x-table>
+                    </div>
+                @endforeach
 
-        </div>
-    
-    @endforeach
+            </div>
+        
+        @endforeach
+
+    @endif
 </div>
 
 {{-- Modal Delete --}}
