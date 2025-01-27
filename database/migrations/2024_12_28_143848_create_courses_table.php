@@ -18,7 +18,9 @@ class CreateCoursesTable extends Migration
             $table->id('course_id'); // Primary key
             $table->string('course_name')->unique(); // Course name
             $table->text('course_description')->nullable(); // Course description (nullable)
-            $table->string('course_code')->unique(); // Course code, should be unique
+            $table->string('course_code')->unique(); // Course code, should be unique    
+            $table->integer('lec');
+            $table->integer('lab');
             $table->foreignId('department_id')->constrained('departments', 'department_id')->onDelete('cascade'); // Foreign key to the departments table with cascade delete
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
