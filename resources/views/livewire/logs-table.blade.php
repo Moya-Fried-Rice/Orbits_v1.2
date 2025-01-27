@@ -1,6 +1,6 @@
-<div class="bg-white pb-5 h-full overflow-x-auto">
+<div class="bg-white h-full overflow-x-auto">
     <!-- Logs Table -->
-    <div>
+    <div class="py-5">
         <x-table :action="false">
             <x-slot name="header">
                 <x-table-header

@@ -32,7 +32,8 @@
         
     </div>  
 
-<div class="pb-5">
+<div class="py-5">
+    
     @foreach ($program->programCourse->pluck('year_level')->unique()->sort() as $year_level)
 
         <div class="pt-10 text-[#2A2723] text-center w-full">{{ strtoupper($this->ordinalWord($year_level)) }} YEAR</div>

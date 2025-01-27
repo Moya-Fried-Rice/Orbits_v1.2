@@ -21,7 +21,7 @@
         <x-add-button add="Add Course" />
     </div>   
 
-    <div class="pb-5">
+    <div class="py-5">
         <x-table :action="true">
             <x-slot name="header">
 

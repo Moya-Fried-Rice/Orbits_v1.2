@@ -23,102 +23,105 @@
     
     </div>
     
-    <!-- Course List -->
-    <x-table :action="true">
-        <x-slot name="header">
+    <div class="py-5">
+        <!-- Course List -->
+        <x-table :action="true">
+            <x-slot name="header">
 
-            <x-table-header
-                sortField="{{ $sortField }}"
-                sortDirection="{{ $sortDirection }}"
-                data="course_code"
-                label="Course Code"/>
+                <x-table-header
+                    sortField="{{ $sortField }}"
+                    sortDirection="{{ $sortDirection }}"
+                    data="course_code"
+                    label="Course Code"/>
 
-            <x-table-header
-                sortField="{{ $sortField }}"
-                sortDirection="{{ $sortDirection }}"
-                data="course_name"
-                label="Course Name"/>
+                <x-table-header
+                    sortField="{{ $sortField }}"
+                    sortDirection="{{ $sortDirection }}"
+                    data="course_name"
+                    label="Course Name"/>
 
-            <x-table-header
-                sortField="{{ $sortField }}"
-                sortDirection="{{ $sortDirection }}"
-                data="course_description"
-                label="Course Description"/>
+                <x-table-header
+                    sortField="{{ $sortField }}"
+                    sortDirection="{{ $sortDirection }}"
+                    data="course_description"
+                    label="Course Description"/>
 
-            <x-table-header
-                sortField="{{ $sortField }}"
-                sortDirection="{{ $sortDirection }}"
-                data="lec"
-                label="lec"/>
+                <x-table-header
+                    sortField="{{ $sortField }}"
+                    sortDirection="{{ $sortDirection }}"
+                    data="lec"
+                    label="lec"/>
 
-            <x-table-header
-                sortField="{{ $sortField }}"
-                sortDirection="{{ $sortDirection }}"
-                data="lab"
-                label="lab"/>
-            
-            <x-table-header
-                sortField="{{ $sortField }}"
-                sortDirection="{{ $sortDirection }}"
-                data="units"
-                label="units"/>
+                <x-table-header
+                    sortField="{{ $sortField }}"
+                    sortDirection="{{ $sortDirection }}"
+                    data="lab"
+                    label="lab"/>
+                
+                <x-table-header
+                    sortField="{{ $sortField }}"
+                    sortDirection="{{ $sortDirection }}"
+                    data="units"
+                    label="units"/>
 
-            <x-table-header
-                sortField="{{ $sortField }}"
-                sortDirection="{{ $sortDirection }}"
-                data="department_id"
-                label="Department"/>
+                <x-table-header
+                    sortField="{{ $sortField }}"
+                    sortDirection="{{ $sortDirection }}"
+                    data="department_id"
+                    label="Department"/>
 
-            <x-table-header
-                sortField="{{ $sortField }}"
-                sortDirection="{{ $sortDirection }}"
-                data="created_at"
-                label="Created At"/>
+                <x-table-header
+                    sortField="{{ $sortField }}"
+                    sortDirection="{{ $sortDirection }}"
+                    data="created_at"
+                    label="Created At"/>
 
-            <x-table-header
-                sortField="{{ $sortField }}"
-                sortDirection="{{ $sortDirection }}"
-                data="updated_at"
-                label="Updated At"/>
+                <x-table-header
+                    sortField="{{ $sortField }}"
+                    sortDirection="{{ $sortDirection }}"
+                    data="updated_at"
+                    label="Updated At"/>
 
-        </x-slot>
+            </x-slot>
 
-        <x-slot name="body">
-            @if($courses->isEmpty())
-            <tr>
-                <td colspan="7" class="text-center py-4">No courses found.</td>
-            </tr>
-            @else
-            @foreach ($courses as $course)
-            <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-24">{{ $course->course_code }}</td>
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-24">{{ $course->course_name }}</td>
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-24">{{ $course->course_description }}</td>
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-sm">{{ $course->lec }}</td>
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-sm">{{ $course->lab }}</td>
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-sm">{{ $course->units }}</td>
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->department->department_code }}</td>
-                <td class="py-2 whitespace-nowrap px-4">{{ $course->created_at->format('Y-m-d H:i') }}</td>
-                <td class="py-2 whitespace-nowrap px-4">{{ $course->updated_at->format('Y-m-d H:i') }}</td>
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
-                    <div class="flex items-center justify-end space-x-2">
-                        <button wire:click="edit({{ $course->course_id }})" class="w-8 h-8">
-                            <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
-                        </button>
-                        <button wire:click="delete({{ $course->course_id }})" class="w-8 h-8">
-                            <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
-                        </button>
-                    </div>
-                </td>
-            </tr>            
-            @endforeach
-            @endif
-        </x-slot>
-    </x-table>
+            <x-slot name="body">
+                @if($courses->isEmpty())
+                <tr>
+                    <td colspan="7" class="text-center py-4">No courses found.</td>
+                </tr>
+                @else
+                @foreach ($courses as $course)
+                <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
+                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-24">{{ $course->course_code }}</td>
+                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-24">{{ $course->course_name }}</td>
+                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-24">{{ $course->course_description }}</td>
+                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-sm">{{ $course->lec }}</td>
+                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-sm">{{ $course->lab }}</td>
+                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-sm">{{ $course->units }}</td>
+                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->department->department_code }}</td>
+                    <td class="py-2 whitespace-nowrap px-4">{{ $course->created_at->format('Y-m-d H:i') }}</td>
+                    <td class="py-2 whitespace-nowrap px-4">{{ $course->updated_at->format('Y-m-d H:i') }}</td>
+                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
+                        <div class="flex items-center justify-end space-x-2">
+                            <button wire:click="edit({{ $course->course_id }})" class="w-8 h-8">
+                                <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                            </button>
+                            <button wire:click="delete({{ $course->course_id }})" class="w-8 h-8">
+                                <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                            </button>
+                        </div>
+                    </td>
+                </tr>            
+                @endforeach
+                @endif
+            </x-slot>
+        </x-table>
 
-    <!-- Pagination -->
-    <div class="p-5">
-        {{ $courses->links() }}
+        <!-- Pagination -->
+        <div class="p-5 pb-0">
+            {{ $courses->links() }}
+        </div>
+
     </div>
 
 {{-- Modal Delete --}}

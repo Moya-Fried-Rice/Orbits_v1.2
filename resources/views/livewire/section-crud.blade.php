@@ -23,88 +23,91 @@
 
     </div>
 
-    <!-- Section List -->
-    <x-table :action="true">
-        <x-slot name="header">
+    <div class="py-5">
+        <!-- Section List -->
+        <x-table :action="true">
+            <x-slot name="header">
 
-            <x-table-header
-                sortField="{{ $sortField }}"
-                sortDirection="{{ $sortDirection }}"
-                data="section_code"
-                label="Section Code"/>
+                <x-table-header
+                    sortField="{{ $sortField }}"
+                    sortDirection="{{ $sortDirection }}"
+                    data="section_code"
+                    label="Section Code"/>
+                    
+                <x-table-header
+                    sortField="{{ $sortField }}"
+                    sortDirection="{{ $sortDirection }}"
+                    data="program_name"
+                    label="Program Code"/>
+
+                <x-table-header
+                    sortField="{{ $sortField }}"
+                    sortDirection="{{ $sortDirection }}"
+                    data="year_level"
+                    label="Year Level"/>
+
+                <x-table-header
+                    sortField="{{ $sortField }}"
+                    sortDirection="{{ $sortDirection }}"
+                    data="section_number"
+                    label="Section Number"/>
+
+                <x-table-header
+                    sortField="{{ $sortField }}"
+                    sortDirection="{{ $sortDirection }}"
+                    data="created_at"
+                    label="Created At"/>
                 
-            <x-table-header
-                sortField="{{ $sortField }}"
-                sortDirection="{{ $sortDirection }}"
-                data="program_name"
-                label="Program Code"/>
+                <x-table-header
+                    sortField="{{ $sortField }}"
+                    sortDirection="{{ $sortDirection }}"
+                    data="updated_at"
+                    label="Updated At"/>
 
-            <x-table-header
-                sortField="{{ $sortField }}"
-                sortDirection="{{ $sortDirection }}"
-                data="year_level"
-                label="Year Level"/>
+            </x-slot>
 
-            <x-table-header
-                sortField="{{ $sortField }}"
-                sortDirection="{{ $sortDirection }}"
-                data="section_number"
-                label="Section Number"/>
+            <x-slot name="body">
+                @if($sections->isEmpty())
+                <tr>
+                    <td colspan="7" class="text-center py-4">No sections found.</td>
+                </tr>
+                @else
+                @foreach ($sections as $section)
+                <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
+                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $section->section_code }}</td>
+                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $section->program->program_code }}</td>
+                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $this->ordinal($section->year_level) }} Year</td>
+                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $section->section_number }}</td>
+                    <td class="py-2 whitespace-nowrap px-4">
+                        {{ $section->created_at ? $section->created_at->format('Y-m-d H:i') : 'N/A' }}
+                    </td>
+                    <td class="py-2 whitespace-nowrap px-4">
+                        {{ $section->updated_at ? $section->updated_at->format('Y-m-d H:i') : 'N/A' }}
+                    </td>
+                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
+                        <div class="flex items-center justify-end space-x-2">
+                            <a 
+                                href="{{ route('section.courses', ['uuid' => $section->uuid]) }}" 
+                                class="bg-[#F8F8F8] text-[#2A2723] px-3 py-1 text-sm transition duration-100 border hover:border-[#923534]"
+                            >
+                                View Courses
+                            </a>
+                            <button wire:click="delete({{ $section->section_id }})" class="w-8 h-8">
+                                <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                            </button>
+                        </div>
+                    </td>                
+                </tr>            
+                @endforeach
+                @endif
+            </x-slot>
+        </x-table>
 
-            <x-table-header
-                sortField="{{ $sortField }}"
-                sortDirection="{{ $sortDirection }}"
-                data="created_at"
-                label="Created At"/>
-            
-            <x-table-header
-                sortField="{{ $sortField }}"
-                sortDirection="{{ $sortDirection }}"
-                data="updated_at"
-                label="Updated At"/>
+        <!-- Pagination -->
+        <div class="p-5 pb-0">
+            {{ $sections->links() }}
+        </div>
 
-        </x-slot>
-
-        <x-slot name="body">
-            @if($sections->isEmpty())
-            <tr>
-                <td colspan="7" class="text-center py-4">No sections found.</td>
-            </tr>
-            @else
-            @foreach ($sections as $section)
-            <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $section->section_code }}</td>
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $section->program->program_code }}</td>
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $this->ordinal($section->year_level) }} Year</td>
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $section->section_number }}</td>
-                <td class="py-2 whitespace-nowrap px-4">
-                    {{ $section->created_at ? $section->created_at->format('Y-m-d H:i') : 'N/A' }}
-                </td>
-                <td class="py-2 whitespace-nowrap px-4">
-                    {{ $section->updated_at ? $section->updated_at->format('Y-m-d H:i') : 'N/A' }}
-                </td>
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
-                    <div class="flex items-center justify-end space-x-2">
-                        <a 
-                            href="{{ route('section.courses', ['uuid' => $section->uuid]) }}" 
-                            class="bg-[#F8F8F8] text-[#2A2723] px-3 py-1 text-sm transition duration-100 border hover:border-[#923534]"
-                        >
-                            View Courses
-                        </a>
-                        <button wire:click="delete({{ $section->section_id }})" class="w-8 h-8">
-                            <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
-                        </button>
-                    </div>
-                </td>                
-            </tr>            
-            @endforeach
-            @endif
-        </x-slot>
-    </x-table>
-
-    <!-- Pagination -->
-    <div class="p-5">
-        {{ $sections->links() }}
     </div>
 
     {{-- Modal Delete --}}
