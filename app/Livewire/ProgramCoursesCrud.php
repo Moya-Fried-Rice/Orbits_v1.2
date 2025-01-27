@@ -18,7 +18,8 @@ class ProgramCoursesCrud extends Component
 {
 
     public $uuid;
-    public $program_id, $program_name, $program_code, $abbreviation, $program_description, $department_id, $programCourse, $course_id;
+    public $program_id, $program_name, $program_code, $abbreviation, 
+    $program_description, $department_id, $programCourse, $course_id, $year_level, $semester;
     public $showDeleteConfirmation = false;
     public $showEditForm = false, $showEditConfirmation = false;
     public $showAddForm = false, $showAddConfirmation = false;
@@ -60,6 +61,42 @@ class ProgramCoursesCrud extends Component
         return Department::all();
     }
 
+    public function ordinal($number)
+    {
+        $suffixes = ['th', 'st', 'nd', 'rd'];
+        $value = $number % 100;
+
+        return $number . ($suffixes[($value - 20) % 10] ?? $suffixes[$value] ?? $suffixes[0]);
+    }
+
+    public function ordinalWord($number)
+    {
+        switch ($number) {
+            case 1:
+                return 'First';
+            case 2:
+                return 'Second';
+            case 3:
+                return 'Third';
+            case 4:
+                return 'Fourth';
+            case 5:
+                return 'Fifth';
+            case 6:
+                return 'Sixth';
+            case 7:
+                return 'Seventh';
+            case 8:
+                return 'Eighth';
+            case 9:
+                return 'Ninth';
+            case 10:
+                return 'Tenth';
+            default:
+                return $number . 'th'; // Default case for numbers 11 and above
+        }
+    }
+
     private function resetInputFields()
     {
         // Reset all form input fields to their initial values
@@ -70,7 +107,9 @@ class ProgramCoursesCrud extends Component
             'abbreviation',
             'program_description',
             'department_id',
-            'course_id'
+            'course_id',
+            'year_level',
+            'semester'
         ]);
     }
     //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
@@ -326,7 +365,9 @@ class ProgramCoursesCrud extends Component
     // Function to check if form is empty
     public function isPopulated()
     {
-        return !empty($this->course_id);
+        return !empty($this->course_id) ||
+        !empty($this->year_level) ||
+        !empty($this->semester);
     }
 
     // Function that is called if the user confirms to store the course
@@ -352,6 +393,8 @@ class ProgramCoursesCrud extends Component
         // Initialize $course with the intended input values
         $course = new ProgramCourse([
             'course_id' => $this->course_id,
+            'year_level' => $this->year_level,
+            'semester' => $this->semester,
         ]);
         
         try {
@@ -395,6 +438,10 @@ class ProgramCoursesCrud extends Component
             if ($existingCourse->trashed()) {
                 // Restore the soft-deleted record
                 $existingCourse->restore();
+                $existingCourse->update([
+                    'year_level' => $this->year_level,
+                    'semester' => $this->semester,
+                ]);
                 return $existingCourse;
             }
         }
@@ -402,6 +449,8 @@ class ProgramCoursesCrud extends Component
         // If no matching record exists, create a new one
         return ProgramCourse::create([
             'course_id' => $this->course_id,
+            'year_level' => $this->year_level,
+            'semester' => $this->semester,
             'program_id' => $program->program_id,
         ]);
     }

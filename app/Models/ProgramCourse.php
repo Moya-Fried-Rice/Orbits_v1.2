@@ -17,6 +17,8 @@ class ProgramCourse extends Model
     protected $fillable = [
         'program_id',
         'course_id',
+        'year_level',
+        'semester',
     ];
 
     public function program()
