@@ -88,7 +88,7 @@
                                     @endphp
                                     <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
                                         <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->course_code }}</td>
-                                        <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->course_name }}</td>
+                                        <td class="py-2 whitespace-nowrap px-4 truncate max-w-20">{{ $course->course_name }}</td>
                                         <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->lec }}</td>
                                         <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->lab }}</td>
                                         <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->units }}</td>
