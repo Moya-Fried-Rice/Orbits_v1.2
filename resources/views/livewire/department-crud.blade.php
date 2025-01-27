@@ -20,74 +20,77 @@
     
     </div>
     
-    <!-- Department List -->
-    <x-table :action="true">
-        <x-slot name="header">
+    <div class="py-5">
+        <!-- Department List -->
+        <x-table :action="true">
+            <x-slot name="header">
 
-            <x-table-header
-                sortField="{{ $sortField }}"
-                sortDirection="{{ $sortDirection }}"
-                data="department_code"
-                label="Department Code"/>
+                <x-table-header
+                    sortField="{{ $sortField }}"
+                    sortDirection="{{ $sortDirection }}"
+                    data="department_code"
+                    label="Department Code"/>
 
-            <x-table-header
-                sortField="{{ $sortField }}"
-                sortDirection="{{ $sortDirection }}"
-                data="department_name"
-                label="Department Name"/>
+                <x-table-header
+                    sortField="{{ $sortField }}"
+                    sortDirection="{{ $sortDirection }}"
+                    data="department_name"
+                    label="Department Name"/>
 
-            <x-table-header
-                sortField="{{ $sortField }}"
-                sortDirection="{{ $sortDirection }}"
-                data="department_description"
-                label="Department Description"/>
+                <x-table-header
+                    sortField="{{ $sortField }}"
+                    sortDirection="{{ $sortDirection }}"
+                    data="department_description"
+                    label="Department Description"/>
 
-            <x-table-header
-                sortField="{{ $sortField }}"
-                sortDirection="{{ $sortDirection }}"
-                data="created_at"
-                label="Created At"/>
+                <x-table-header
+                    sortField="{{ $sortField }}"
+                    sortDirection="{{ $sortDirection }}"
+                    data="created_at"
+                    label="Created At"/>
 
-            <x-table-header
-                sortField="{{ $sortField }}"
-                sortDirection="{{ $sortDirection }}"
-                data="updated_at"
-                label="Updated At"/>
+                <x-table-header
+                    sortField="{{ $sortField }}"
+                    sortDirection="{{ $sortDirection }}"
+                    data="updated_at"
+                    label="Updated At"/>
 
-        </x-slot>
+            </x-slot>
 
-        <x-slot name="body">
-            @if($departments->isEmpty())
-            <tr>
-                <td colspan="5" class="text-center py-4">No departments found.</td>
-            </tr>
-            @else
-            @foreach ($departments as $department)
-            <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $department->department_code }}</td>
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $department->department_name }}</td>
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $department->department_description }}</td>
-                <td class="py-2 whitespace-nowrap px-4">{{ $department->created_at->format('Y-m-d H:i') }}</td>
-                <td class="py-2 whitespace-nowrap px-4">{{ $department->updated_at->format('Y-m-d H:i') }}</td>
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
-                    <div class="flex items-center justify-end space-x-2">
-                        <button wire:click="edit({{ $department->department_id }})" class="w-8 h-8">
-                            <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
-                        </button>
-                        <button wire:click="delete({{ $department->department_id }})" class="w-8 h-8">
-                            <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
-                        </button>
-                    </div>
-                </td>
-            </tr>            
-            @endforeach
-            @endif
-        </x-slot>
-    </x-table>
+            <x-slot name="body">
+                @if($departments->isEmpty())
+                <tr>
+                    <td colspan="5" class="text-center py-4">No departments found.</td>
+                </tr>
+                @else
+                @foreach ($departments as $department)
+                <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
+                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $department->department_code }}</td>
+                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $department->department_name }}</td>
+                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $department->department_description }}</td>
+                    <td class="py-2 whitespace-nowrap px-4">{{ $department->created_at->format('Y-m-d H:i') }}</td>
+                    <td class="py-2 whitespace-nowrap px-4">{{ $department->updated_at->format('Y-m-d H:i') }}</td>
+                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
+                        <div class="flex items-center justify-end space-x-2">
+                            <button wire:click="edit({{ $department->department_id }})" class="w-8 h-8">
+                                <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                            </button>
+                            <button wire:click="delete({{ $department->department_id }})" class="w-8 h-8">
+                                <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                            </button>
+                        </div>
+                    </td>
+                </tr>            
+                @endforeach
+                @endif
+            </x-slot>
+        </x-table>
 
-    <!-- Pagination -->
-    <div class="p-5">
-        {{ $departments->links() }}
+        <!-- Pagination -->
+        <div class="p-5 pb-0">
+            {{ $departments->links() }}
+        </div>
+
     </div>
 
     {{-- Modal Delete --}}
