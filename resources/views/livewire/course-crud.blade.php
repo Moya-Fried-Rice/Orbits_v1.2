@@ -48,6 +48,24 @@
             <x-table-header
                 sortField="{{ $sortField }}"
                 sortDirection="{{ $sortDirection }}"
+                data="lec"
+                label="lec"/>
+
+            <x-table-header
+                sortField="{{ $sortField }}"
+                sortDirection="{{ $sortDirection }}"
+                data="lab"
+                label="lab"/>
+            
+            <x-table-header
+                sortField="{{ $sortField }}"
+                sortDirection="{{ $sortDirection }}"
+                data="units"
+                label="units"/>
+
+            <x-table-header
+                sortField="{{ $sortField }}"
+                sortDirection="{{ $sortDirection }}"
                 data="department_id"
                 label="Department"/>
 
@@ -73,9 +91,12 @@
             @else
             @foreach ($courses as $course)
             <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->course_code }}</td>
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->course_name }}</td>
-                <td class="py-2 whitespace-nowrap px-4 truncate max-w-sm">{{ $course->course_description }}</td>
+                <td class="py-2 whitespace-nowrap px-4 truncate max-w-24">{{ $course->course_code }}</td>
+                <td class="py-2 whitespace-nowrap px-4 truncate max-w-24">{{ $course->course_name }}</td>
+                <td class="py-2 whitespace-nowrap px-4 truncate max-w-24">{{ $course->course_description }}</td>
+                <td class="py-2 whitespace-nowrap px-4 truncate max-w-sm">{{ $course->lec }}</td>
+                <td class="py-2 whitespace-nowrap px-4 truncate max-w-sm">{{ $course->lab }}</td>
+                <td class="py-2 whitespace-nowrap px-4 truncate max-w-sm">{{ $course->units }}</td>
                 <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->department->department_code }}</td>
                 <td class="py-2 whitespace-nowrap px-4">{{ $course->created_at->format('Y-m-d H:i') }}</td>
                 <td class="py-2 whitespace-nowrap px-4">{{ $course->updated_at->format('Y-m-d H:i') }}</td>
@@ -124,6 +145,36 @@
             wire:model="course_code">
     </x-add-modal-data>
 
+    <div class="flex w-full gap-5">
+        <!-- Year Level -->
+        <x-add-modal-data name="lec" label="Lecture:">
+            <input 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                type="number" 
+                id="lec" 
+                min="1"
+                max="15"
+                wire:model.live="lec">
+        </x-add-modal-data>
+
+        <!-- Section Number -->
+        <x-add-modal-data name="lab" label="Laboratory:">
+            <input 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                type="number" 
+                id="lab" 
+                min="1"
+                max="15"
+                wire:model.live="lab">
+        </x-add-modal-data>
+
+        <x-add-modal-data name="units" label="Units:">
+            <div class="px-4 w-full p-2">
+                {{ $units }}
+            </div>
+        </x-add-modal-data>
+    </div>
+
     <!-- Course Description -->
     <x-add-modal-data name="course_description" label="Course Description:">
         <textarea 
@@ -171,6 +222,36 @@
             wire:model="course_code">
     </x-add-modal-data>
 
+    <div class="flex w-full gap-5">
+        <!-- Year Level -->
+        <x-add-modal-data name="lec" label="Lecture:">
+            <input 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                type="number" 
+                id="lec" 
+                min="1"
+                max="15"
+                wire:model.live="lec">
+        </x-add-modal-data>
+
+        <!-- Section Number -->
+        <x-add-modal-data name="lab" label="Laboratory:">
+            <input 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                type="number" 
+                id="lab" 
+                min="1"
+                max="15"
+                wire:model.live="lab">
+        </x-add-modal-data>
+
+        <x-add-modal-data name="units" label="Units:">
+            <div class="px-4 w-full p-2">
+                {{ $units }}
+            </div>
+        </x-add-modal-data>
+    </div>
+    
     <!-- Course Description -->
     <x-add-modal-data name="course_description" label="Course Description:">
         <textarea 

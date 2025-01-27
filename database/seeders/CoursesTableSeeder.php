@@ -21,6 +21,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'An introductory course to computing, covering basic computer systems and applications.',
                 'course_code' => 'DCSN01C',
                 'department_id' => 1,
+                'lec' => 2,
+                'lab' => 1,
             ],
             [
                 'course_id' => 2,
@@ -28,6 +30,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'This course introduces programming concepts and techniques in a structured programming environment.',
                 'course_code' => 'DCSN02C',
                 'department_id' => 1,
+                'lec' => 2,
+                'lab' => 1,
             ],
             [
                 'course_id' => 3,
@@ -35,6 +39,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'Focus on mathematical principles that are used in everyday life and in various modern fields.',
                 'course_code' => 'MATH01G',
                 'department_id' => 5,
+                'lec' => 3,
+                'lab' => 0,
             ],
             [
                 'course_id' => 4,
@@ -42,6 +48,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'A course designed to explore personal identity, self-awareness, and the human experience.',
                 'course_code' => 'UTSN0IG',
                 'department_id' => 3,
+                'lec' => 3,
+                'lab' => 0,
             ],
             [
                 'course_id' => 5,
@@ -49,6 +57,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'Introduction to the principles of ethics, moral philosophy, and contemporary ethical issues.',
                 'course_code' => 'ESTN01G',
                 'department_id' => 6,
+                'lec' => 3,
+                'lab' => 0,
             ],
             [
                 'course_id' => 6,
@@ -56,6 +66,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'Study of the life and works of J.P. Lang, focusing on his contributions to science and literature.',
                 'course_code' => 'JPLN01G',
                 'department_id' => 5,
+                'lec' => 3,
+                'lab' => 0,
             ],
             [
                 'course_id' => 7,
@@ -63,6 +75,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'A physical education course designed to promote health and fitness through physical activities.',
                 'course_code' => 'PATHFit1',
                 'department_id' => 4,
+                'lec' => 3,
+                'lab' => 0,
             ],
             [
                 'course_id' => 8,
@@ -70,6 +84,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'A course aimed at fostering civic consciousness and defense preparedness through community service and military training.',
                 'course_code' => 'NSTPN01G',
                 'department_id' => 7,
+                'lec' => 3,
+                'lab' => 0,
             ],
             [
                 'course_id' => 9,
@@ -77,6 +93,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'A course that explores quality assurance, process improvement, and establishing good work habits.',
                 'course_code' => 'CPHN0IC',
                 'department_id' => 7,
+                'lec' => 3,
+                'lab' => 0,
             ],
             [
                 'course_id' => 10,
@@ -84,6 +102,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'This course continues the study of programming with an emphasis on algorithms, data structures, and advanced programming concepts.',
                 'course_code' => 'DCSN03C',
                 'department_id' => 1,
+                'lec' => 2,
+                'lab' => 1,
             ],
             [
                 'course_id' => 11,
@@ -91,6 +111,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'Introduction to discrete mathematical structures used in computer science, such as sets, graphs, and combinatorics.',
                 'course_code' => 'CSCN01C',
                 'department_id' => 1,
+                'lec' => 3,
+                'lab' => 0,
             ],
             [
                 'course_id' => 12,
@@ -98,6 +120,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'A course that explores the social, ethical, and legal issues related to the practice of computing and technology professions.',
                 'course_code' => 'DCSN07C',
                 'department_id' => 1,
+                'lec' => 3,
+                'lab' => 0,
             ],
             [
                 'course_id' => 13,
@@ -105,6 +129,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'Study of global issues and how they affect modern society, politics, and economics.',
                 'course_code' => 'TCWN01G',
                 'department_id' => 5,
+                'lec' => 3,
+                'lab' => 0,
             ],
             [
                 'course_id' => 14,
@@ -112,6 +138,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'Course focused on effective communication skills across various media, emphasizing purpose-driven communication in professional and personal contexts.',
                 'course_code' => 'ENGL0IG',
                 'department_id' => 3,
+                'lec' => 3,
+                'lab' => 0,
             ],
             [
                 'course_id' => 15,
@@ -119,6 +147,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'A preparatory mathematics course that covers functions, algebra, and the basic concepts necessary for calculus.',
                 'course_code' => 'MATN07G',
                 'department_id' => 5,
+                'lec' => 3,
+                'lab' => 0,
             ],
             [
                 'course_id' => 16,
@@ -126,6 +156,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'Course that focuses on the role of information technology in everyday life and the workplace, including its impact on society and individuals.',
                 'course_code' => 'LVTN01C',
                 'department_id' => 1,
+                'lec' => 3,
+                'lab' => 0,
             ],
             [
                 'course_id' => 17,
@@ -133,6 +165,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'Continued physical education focusing on advanced activities aimed at improving fitness and health.',
                 'course_code' => 'PATHFit2',
                 'department_id' => 4,
+                'lec' => 2,
+                'lab' => 0,
             ],
             [
                 'course_id' => 18,
@@ -140,6 +174,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'Continuation of the National Service Training Program (NSTP) that emphasizes civic duty and community involvement.',
                 'course_code' => 'NSTPN02G',
                 'department_id' => 7,
+                'lec' => 3,
+                'lab' => 0,
             ],
             [
                 'course_id' => 19,
@@ -147,6 +183,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'An introductory course focusing on the basic principles of drawing, with emphasis on form, shape, and basic techniques.',
                 'course_code' => 'ARTN01G',
                 'department_id' => 6,
+                'lec' => 2,
+                'lab' => 1,
             ],
             [
                 'course_id' => 20,
@@ -154,6 +192,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'An introductory course on multimedia arts, exploring graphic design, animation, and video production techniques.',
                 'course_code' => 'BMMA01F',
                 'department_id' => 2,
+                'lec' => 2,
+                'lab' => 1,
             ],
             [
                 'course_id' => 21,
@@ -161,6 +201,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'A course covering the history and evolution of graphic design, from its origins to modern developments.',
                 'course_code' => 'BMMA02F',
                 'department_id' => 2,
+                'lec' => 3,
+                'lab' => 0,
             ],
             [
                 'course_id' => 22,
@@ -168,6 +210,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'A course exploring the interaction between science, technology, and society, with a focus on their impact on modern life.',
                 'course_code' => 'STSN11G',
                 'department_id' => 5,
+                'lec' => 3,
+                'lab' => 0,
             ],
             [
                 'course_id' => 23,
@@ -175,6 +219,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'A Filipino course focusing on contextualized communication and the use of Filipino in various real-world settings.',
                 'course_code' => 'FLIN01G',
                 'department_id' => 2,
+                'lec' => 3,
+                'lab' => 0,
             ],
             [
                 'course_id' => 24,
@@ -182,6 +228,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'A course that covers the essential concepts of data structures and algorithms, essential for efficient programming.',
                 'course_code' => 'DCSN04C',
                 'department_id' => 1,
+                'lec' => 2,
+                'lab' => 1,
             ],
             [
                 'course_id' => 25,
@@ -189,6 +237,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'An including classes, objects, inheritance, and polymorphism.',
                 'course_code' => 'CSCN02C',
                 'department_id' => 1,
+                'lec' => 2,
+                'lab' => 1,
             ],
             [
                 'course_id' => 26,
@@ -196,6 +246,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'A continuation of Discrete Structures 1, focusing on more advanced topics in mathematics and logic for computer science.',
                 'course_code' => 'CSCN03C',
                 'department_id' => 1,
+                'lec' => 3,
+                'lab' => 0,
             ],
             [
                 'course_id' => 27,
@@ -203,6 +255,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'A Computer Science elective course offering students an opportunity to dive into specialized topics of their interest in CS.',
                 'course_code' => 'CSELCO1C',
                 'department_id' => 1,
+                'lec' => 2,
+                'lab' => 1,
             ],
             [
                 'course_id' => 28,
@@ -210,6 +264,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'A math course covering the fundamentals of differential and integral calculus, essential for many fields of engineering and computer science.',
                 'course_code' => 'MATH23E',
                 'department_id' => 5,
+                'lec' => 3,
+                'lab' => 0,
             ],
             [
                 'course_id' => 29,
@@ -217,6 +273,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'A course that introduces students to the appreciation of visual arts and their cultural significance.',
                 'course_code' => 'HUMNO2G',
                 'department_id' => 5,
+                'lec' => 3,
+                'lab' => 0,
             ],
             [
                 'course_id' => 30,
@@ -224,6 +282,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'A course examining the life and works of Dr. Jose Rizal, the national hero of the Philippines.',
                 'course_code' => 'LWRNDIG',
                 'department_id' => 4,
+                'lec' => 3,
+                'lab' => 0,
             ],
             [
                 'course_id' => 31,
@@ -231,6 +291,8 @@ class CoursesTableSeeder extends Seeder
                 'course_description' => 'A physical education course focused on advanced fitness activities to promote health and well-being.',
                 'course_code' => 'PATHFit3',
                 'department_id' => 4,
+                'lec' => 2,
+                'lab' => 0,
             ]
         ]);
     }

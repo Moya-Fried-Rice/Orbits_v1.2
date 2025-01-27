@@ -19,7 +19,14 @@ class Course extends Model
         'course_description',
         'course_code',
         'department_id',
+        'lab',
+        'lec',
     ];
+
+    public function getUnitsAttribute()
+    {
+        return $this->lab + $this->lec;
+    }
 
     public function courseSection()
     {

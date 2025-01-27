@@ -27,7 +27,8 @@ class ProgramCoursesTableSeeder extends Seeder
                 DB::table('program_courses')->insert([
                     'program_id' => $program->program_id,
                     'course_id' => $course->course_id,
-                ]);
+                    'year_level' => rand(1, 4), // Random year level between 1 and 4
+                ]);                
             }
         }
     }    

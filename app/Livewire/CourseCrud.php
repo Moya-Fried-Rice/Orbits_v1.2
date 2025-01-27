@@ -14,6 +14,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\DB;
 
 class CourseCrud extends Component
 {
@@ -21,18 +22,19 @@ class CourseCrud extends Component
 
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
     // Properties
-    public $course_id, $course_name, $course_description, $course_code, $department_id;
+    public $course_id, $course_name, $course_description, $course_code, $department_id, $lec, $lab;
     public $showDeleteConfirmation = false;
     public $showEditForm = false, $showEditConfirmation = false;
     public $showAddForm = false, $showAddConfirmation = false;
     public $search = null, $deleteId, $selectedDepartment = null;
     public $sortField = 'created_at', $sortDirection = 'asc';
-    public $oldValues;
+    public $oldValues, $units;
     
     // Render everything
     public function render()
     {
         $courses = Course::query()
+            ->select('courses.*', DB::raw('(lab + lec) AS units'))
             ->when($this->search, function ($query) {
                 $query->where(function ($query) {
                     $query->where('course_name', 'like', '%' . $this->search . '%')
@@ -46,6 +48,18 @@ class CourseCrud extends Component
         return view('livewire.course-crud', compact('courses'));
     }
 
+    public function updated()
+    {
+        // Check if lec and lab have values
+        if ($this->lec && $this->lab) {
+            // Concatenate lec and lab to form a units string
+            $this->units = $this->lec + $this->lab;
+        } else {
+            // Set units to a default string if lec and lab are not set
+            $this->units = ' ';
+        }
+    }
+    
     // Listen to dispatched events
     protected $listeners = [
         'departmentSelected' => 'departmentSearch',
@@ -106,7 +120,7 @@ class CourseCrud extends Component
     private function resetInputFields()
     {
         // Reset specific input fields to their initial state
-        $this->reset(['course_id', 'course_name', 'course_code', 'course_description', 'department_id']);
+        $this->reset(['course_id', 'course_name', 'course_code', 'course_description', 'department_id', 'lec', 'lab']);
     }
     //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
@@ -130,11 +144,14 @@ class CourseCrud extends Component
             $course = Course::findOrFail($id);
     
             // Populate input fields with course data
+            $this->units = $course->lec + $course->lab;
             $this->course_id = $course->course_id;
             $this->course_name = $course->course_name;
             $this->course_description = $course->course_description;
             $this->course_code = $course->course_code;
             $this->department_id = $course->department_id;
+            $this->lec = $course->lec;
+            $this->lab = $course->lab;
     
             // Show the edit form
             $this->showEditForm = true;
@@ -173,7 +190,9 @@ class CourseCrud extends Component
             $course->course_name !== $this->course_name ||
             $course->course_description !== $this->course_description ||
             $course->course_code !== $this->course_code ||
-            $course->department_id !== $this->department_id
+            $course->department_id !== $this->department_id ||
+            $course->lec !== $this->lec ||
+            $course->lab !== $this->lab
         );
     }
     
@@ -264,6 +283,8 @@ class CourseCrud extends Component
         $course->course_description = $this->course_description;
         $course->course_code = $this->course_code;
         $course->department_id = $this->department_id;
+        $course->lec = $this->lec;
+        $course->lab = $this->lab;
 
         // Return the updated course object
         return $course;
@@ -619,7 +640,9 @@ class CourseCrud extends Component
         return !empty($this->course_name) ||
             !empty($this->course_description) ||
             !empty($this->course_code) ||
-            !empty($this->department_id);
+            !empty($this->department_id) ||
+            !empty($this->lec) ||
+            !empty($this->lab);
     }
 
     // Function that is called if the user confirms to store the course
@@ -648,6 +671,8 @@ class CourseCrud extends Component
             'course_description' => $this->course_description,
             'course_code' => $this->course_code,
             'department_id' => $this->department_id,
+            'lec' => $this->lec,
+            'lab' => $this->lab,
         ]);
 
         try {
@@ -685,6 +710,8 @@ class CourseCrud extends Component
             'course_description' => $this->course_description,
             'course_code' => $this->course_code,
             'department_id' => $this->department_id,
+            'lec' => $this->lec,
+            'lab' => $this->lab,
         ]);
     }
 
