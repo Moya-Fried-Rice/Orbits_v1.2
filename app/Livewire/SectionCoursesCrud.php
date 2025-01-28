@@ -53,6 +53,14 @@ class SectionCoursesCrud extends Component
         ]);
     }
 
+    public function ordinal($number)
+    {
+        $suffixes = ['th', 'st', 'nd', 'rd'];
+        $value = $number % 100;
+
+        return $number . ($suffixes[($value - 20) % 10] ?? $suffixes[$value] ?? $suffixes[0]);
+    }
+
     public function getPrograms()
     {
         $section = $this->getSectionByUuid($this->uuid);
