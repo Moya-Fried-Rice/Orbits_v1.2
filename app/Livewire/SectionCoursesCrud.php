@@ -12,12 +12,12 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Livewire\Component;
 use App\Models\Section;
 use App\Models\CourseSection;
-use App\Models\Department;
+use App\Models\Program;
 
 class SectionCoursesCrud extends Component
 {
     public $uuid;
-    public $course_id, $CourseSection;
+    public $course_id, $CourseSection, $program_id;
     public $showDeleteConfirmation = false;
     public $showEditForm = false, $showEditConfirmation = false;
     public $showAddForm = false, $showAddConfirmation = false;
@@ -53,9 +53,11 @@ class SectionCoursesCrud extends Component
         ]);
     }
 
-    public function getDepartments()
+    public function getPrograms()
     {
-        return Department::all();
+        $section = $this->getSectionByUuid($this->uuid);
+
+        return Program::findOrFail($section->program_id);
     }
     //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 

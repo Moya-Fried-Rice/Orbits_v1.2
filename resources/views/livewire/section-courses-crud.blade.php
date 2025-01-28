@@ -90,7 +90,7 @@
 {{-- Modal Add --}}
 <x-add-modal label="Course">
 
-    <x-select-course />
+    <x-select-program-course />
 
 </x-add-modal>
 
