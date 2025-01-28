@@ -90,7 +90,11 @@
 {{-- Modal Add --}}
 <x-add-modal label="Course">
 
-    <x-select-program-course />
+    <x-add-modal-data name="course_id" label="{{ $section->program->program_name }} Courses:">
+
+        <x-select-program-course />
+
+    </x-add-modal-data>
 
 </x-add-modal>
 
