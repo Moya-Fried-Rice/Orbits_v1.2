@@ -132,45 +132,53 @@ class SectionCoursesCrud extends Component
     // Function to validate inputs and handle course creation
     public function validateQueryStore() 
     {
-        // Initialize $course with the intended input values
-        $course = new CourseSection([
-            'course_id' => $this->course_id,
-        ]);
-        
-        try {
+        // Initialize an array to store all course objects for the response
+        $courses = [];
 
-            // Attempt to create the course
-            $course = $this->createCourse();
+        // Assuming input is an array of course data
+        foreach ($this->course_id as $course_id) {
+            // Initialize a new CourseSection for each course entry
+            $course = new CourseSection([
+                'course_id' => $course_id,
+            ]);
 
-            // Log success and return a success response
-            return $this->logAdd('Course successfully added!', $course, 201);
+            try {
+                // Attempt to create the course
+                $createdCourse = $this->createCourse($course_id);
 
-        } catch (ValidationException $e) {
-            // Log validation error with the initialized $course
-            $errors = $e->validator->errors()->all();
-            $errorMessages = implode(' | ', $errors);
+                // Log success and add to courses array
+                $courses[] = $this->logAdd('Course successfully added!', $createdCourse, 201);
 
-            return $this->logAddError('Invalid inputs: ' . $errorMessages, $course, 422);
+            } catch (ValidationException $e) {
+                // Log validation error with the initialized $course
+                $errors = $e->validator->errors()->all();
+                $errorMessages = implode(' | ', $errors);
 
-        } catch (QueryException $e) {
-            // Handle duplicate entry error
-            if ($e->errorInfo[1] == 1062) {
-                return $this->logAddError('Course already assigned!', $course, 400);
+                $courses[] = $this->logAddError('Invalid inputs: ' . $errorMessages, $course, 422);
+
+            } catch (QueryException $e) {
+                // Handle duplicate entry error
+                if ($e->errorInfo[1] == 1062) {
+                    $courses[] = $this->logAddError('Course already assigned!', $course, 400);
+                } else {
+                    $courses[] = $this->logAddError('Database error: ' . $e->getMessage(), $course, 500);
+                }
+                // Handle other SQL errors
             }
-
-            // Handle other SQL errors
-            return $this->logAddError('Database error: ' . $e->getMessage(), $course, 500);
         }
+
+        // Return all courses' results (successes and errors)
+        return $courses;
     }
 
     // Function to create the course entry in the database
-    private function createCourse()
+    private function createCourse($course_id)
     {
         $section = $this->getSectionByUuid($this->uuid);
 
         // Check for a soft-deleted record with the same `course_id` and `section_id`
         $existingCourse = CourseSection::withTrashed()->where([
-            'course_id' => $this->course_id,
+            'course_id' => $course_id,
             'section_id' => $section->section_id,
         ])->first();
 
@@ -184,10 +192,11 @@ class SectionCoursesCrud extends Component
 
         // If no matching record exists, create a new one
         return CourseSection::create([
-            'course_id' => $this->course_id,
+            'course_id' => $course_id,
             'section_id' => $section->section_id,
         ]);
     }
+
 
     // Function to log a successful course creation
     private function logAdd($message, $course, $statusCode)
