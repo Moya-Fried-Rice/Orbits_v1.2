@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use App\Models\Faculty;
 use App\Models\Department;
-use App\Models\Section;
+use App\Models\CourseSection;
 use App\Models\FacultyCourse;
 
 use Exception;
@@ -64,15 +64,15 @@ class FacultyProfileCrud extends Component
         return Department::all();
     }
 
-    public function getSections()
+    public function getCourseSections()
     {
-        // Get the student by UUID to find the department ID
-        $faculty = $this->getfacultyByUuid($this->uuid);
+        // Get the student by UUID to find the program ID
+        $faculty = $this->getFacultyByUuid($this->uuid);
         $departmentId = $faculty->department_id;
 
-        // Retrieve sections related to the faculty's program
-        return Section::whereHas('courseSection.course', function ($query) use ($departmentId) {
-            $query->where('courses.department_id', $departmentId); // Filter sections based on the program ID
+        // Retrieve sections related to the student's program
+        return CourseSection::whereHas('course', function ($query) use ($departmentId) {
+            $query->where('courses.department_id', $departmentId);
         })->get();
     }
 
@@ -409,59 +409,72 @@ class FacultyProfileCrud extends Component
     // Function to validate inputs and handle faculty course creation
     public function validateQueryStore() 
     {
-        // Initialize $facultyCourse with the intended input values
-        $facultyCourse = new FacultyCourse([
-            'course_section_id' => $this->course_section_id,
-        ]);
-        
-        try {
-            // Attempt to create the faculty course
-            $facultyCourse = $this->createFacultyCourse();
 
-            // Log success and return a success response
-            return $this->logAdd('Faculty Course successfully added!', $facultyCourse, 201);
+        // Initialize an array to store all faculty course objects for the response
+        $facultyCourses = [];
 
-        } catch (ValidationException $e) {
-            // Log validation error with the initialized $facultyCourse
-            $errors = $e->validator->errors()->all();
-            $errorMessages = implode(' | ', $errors);
+        // Iterate over the array of course_section_id
+        foreach ($this->course_section_id as $course_section_id) {
+            // Initialize a new FacultyCourse for each course section
+            $facultyCourse = new FacultyCourse([
+                'course_section_id' => $course_section_id,
+            ]);
 
-            return $this->logAddError('Invalid inputs: ' . $errorMessages, $facultyCourse, 422);
+            try {
+                // Attempt to create the faculty course
+                $createdFacultyCourse = $this->createFacultyCourse($course_section_id);
 
-        } catch (QueryException $e) {
-            // Handle duplicate entry error
-            if ($e->errorInfo[1] == 1062) {
-                return $this->logAddError('Faculty already assigned to the course!', $facultyCourse, 400);
+                // Log success and add to facultyCourses array
+                $facultyCourses[] = $this->logAdd('Faculty Course successfully added!', $createdFacultyCourse, 201);
+
+            } catch (ValidationException $e) {
+                // Log validation error with the initialized $facultyCourse
+                $errors = $e->validator->errors()->all();
+                $errorMessages = implode(' | ', $errors);
+
+                $facultyCourses[] = $this->logAddError('Invalid inputs: ' . $errorMessages, $facultyCourse, 422);
+
+            } catch (QueryException $e) {
+                // Handle duplicate entry error
+                if ($e->errorInfo[1] == 1062) {
+                    $facultyCourses[] = $this->logAddError('Faculty already assigned to the course section!', $facultyCourse, 400);
+                } else {
+                    // Handle other SQL errors
+                    $facultyCourses[] = $this->logAddError('Database error: ' . $e->getMessage(), $facultyCourse, 500);
+                }
             }
-
-            // Handle other SQL errors
-            return $this->logAddError('Database error: ' . $e->getMessage(), $facultyCourse, 500);
         }
+
+        // Return all faculty courses' results (successes and errors)
+        return $facultyCourses;
     }
 
     // Function to create the faculty course entry in the database
-    private function createFacultyCourse()
+    private function createFacultyCourse($course_section_id)
     {
         $faculty = $this->getFacultyByUuid($this->uuid);
-    
+
         // Check for a soft-deleted record with the same `course_section_id`
-        $existingFacultyCourse = FacultyCourse::withTrashed()->where('course_section_id', $this->course_section_id)->first();
-    
+        $existingFacultyCourse = FacultyCourse::withTrashed()->where(
+            'course_section_id', $course_section_id
+        )->first();
+
         if ($existingFacultyCourse) {
             if ($existingFacultyCourse->trashed()) {
                 // Restore the soft-deleted record and update the faculty_id
                 $existingFacultyCourse->restore();
                 $existingFacultyCourse->update(['faculty_id' => $faculty->faculty_id]);
                 return $existingFacultyCourse;
-            } 
+            }
         }
-    
+
         // If no matching record exists, create a new one
         return FacultyCourse::create([
-            'course_section_id' => $this->course_section_id,
+            'course_section_id' => $course_section_id,
             'faculty_id' => $faculty->faculty_id,
         ]);
-    }    
+    }
+ 
 
     // Function to log a successful faculty course creation
     private function logAdd($message, $facultyCourse, $statusCode)
@@ -475,7 +488,7 @@ class FacultyProfileCrud extends Component
             ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'success', // Mark the status as success
-                'course_section_id' => $this->course_section_id, // Log the course section ID for reference
+                'course_section_id' => $facultyCourse->course_section_id, // Log the course section ID for reference
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 201 for created)
             ])
             ->event('Faculty Course Created') // Set the event name as "Faculty Course Created"
