@@ -210,7 +210,7 @@ class SectionCoursesCrud extends Component
             ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'success', // Mark the status as success
-                'course_id' => $this->course_id,  // Log the course name for reference
+                'course_id' => $course->course_id,  // Log the course name for reference
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 201 for created)
             ])
             ->event('Course Created') // Set the event name as "Course Created"
