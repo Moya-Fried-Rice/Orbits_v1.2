@@ -1,5 +1,5 @@
 <div class="bg-white">
-
+    
     <x-system-notification />
 
     <div class="p-5 pb-0 flex flex-wrap items-center md:justify-between justify-center relative">
