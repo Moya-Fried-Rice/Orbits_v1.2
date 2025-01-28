@@ -6,7 +6,7 @@
         multiple
         size="10">
         @foreach ($this->getCourseSections()->groupBy('section.section_code') as $sectionCode => $sections)
-            <optgroup label="{{ $sectionCode }}">
+            <optgroup class="mb-2" label="{{ $sectionCode }}:">
                 @foreach ($sections as $section)
                     <option value="{{ $section->course_section_id }}">
                         {{ $section->course->course_name }}
