@@ -595,7 +595,8 @@ class ProgramCoursesCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',  // Status: success
-                'student_course' => $course->courseSection->section->section_code, // Log course name for reference\
+                'course_id' => $course->course_id, // Log course name for reference\
+                'status_code' => $statusCode
             ])
             ->event('Course Removed') // Event: Course Removed
             ->log($message); // Log the custom success message
@@ -613,7 +614,7 @@ class ProgramCoursesCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',  // Status: error
-                'student_course' => $course->courseSection->section->section_code, // Log course name for reference\
+                'course_id' => $course->course_id, // Log course name for reference\
                 'status_code' => $statusCode, // HTTP status code (e.g., 400, 422 for failure cases)
             ])
             ->event('Failed to Remove Course') // Event: Failed to Remove Course
@@ -699,7 +700,7 @@ class ProgramCoursesCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',
-                'student_course' => $course->courseSection->section->section_code,
+                'course_id' => $course->course_id,
                 'status_code' => $statusCode,
             ])
             ->event('Restore')
@@ -717,7 +718,7 @@ class ProgramCoursesCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',
-                'student_course' => $course->courseSection->section->section_code,
+                'course_id' => $course->course_id,
                 'status_code' => $statusCode,
             ])
             ->event('Restore')
