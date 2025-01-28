@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use App\Models\Student;
 use App\Models\Department;
-use App\Models\Section;
+use App\Models\CourseSection;
 use App\Models\StudentCourse;
 
 use Exception;
@@ -64,15 +64,15 @@ class StudentProfileCrud extends Component
         return Department::all();
     }
 
-    public function getSections()
+    public function getCourseSections()
     {
         // Get the student by UUID to find the program ID
         $student = $this->getStudentByUuid($this->uuid);
         $programId = $student->program_id;
 
         // Retrieve sections related to the student's program
-        return Section::whereHas('courseSection.course.programCourse.program', function ($query) use ($programId) {
-            $query->where('programs.program_id', $programId); // Filter sections based on the program ID
+        return CourseSection::whereHas('course.programCourse.program', function ($query) use ($programId) {
+            $query->where('programs.program_id', $programId);
         })->get();
     }
 
@@ -348,7 +348,7 @@ class StudentProfileCrud extends Component
 
 
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-    // Method for adding course section
+   // Method for adding multiple course sections
     public function add()
     {
         $this->resetErrorBag(); // Reset any validation errors
@@ -356,15 +356,15 @@ class StudentProfileCrud extends Component
         $this->showAddForm = true; // Show the add form modal for the user to enter data
     }
 
-    // Function to store the course information
+    // Function to store multiple course information
     public function store()
     {
         try {
-            // Attempt to validate and create the course
+            // Attempt to validate and create multiple courses
             $this->validateQueryStore();
         } catch (Exception $e) {
             // If an unexpected error occurs, log the system error
-            $this->logSystemError('An error occurred while storing the course.', $e);
+            $this->logSystemError('An error occurred while storing the courses.', $e);
         } finally {
             // Reset input fields after the operation, regardless of success or failure
             $this->resetInputFields();
@@ -383,19 +383,19 @@ class StudentProfileCrud extends Component
         }
     }    
 
-    // Function to check if form is empty
+    // Function to check if the form is populated
     public function isPopulated()
     {
-        return !empty($this->course_section_id);
+        return !empty($this->course_section_id); // Assuming an array of course section IDs
     }
 
-    // Function that is called if the user confirms to store the course
+    // Function that is called if the user confirms to store the courses
     public function confirmStore() 
     {
-        $this->store(); // Call the store method to save the new course
+        $this->store(); // Call the store method to save the new courses
         $this->showAddConfirmation = false; // Close the confirmation modal
         $this->showAddForm = false; // Close the add form modal
-        $this->resetInputFields(); // Reset the input fields after storing the course
+        $this->resetInputFields(); // Reset the input fields after storing the courses
     }
 
     // Function that is called if the user cancels the store action
@@ -406,48 +406,55 @@ class StudentProfileCrud extends Component
         $this->resetErrorBag(); // Reset any validation errors
     }
 
-    // Function to validate inputs and handle course creation
+    // Function to validate inputs and handle multiple course creation
     public function validateQueryStore() 
     {
-        // Initialize $course with the intended input values
-        $course = new StudentCourse([
-            'course_section_id' => $this->course_section_id,
-        ]);
-        
-        try {
+        // Initialize an array to store all course objects for the response
+        $courses = [];
 
-            // Attempt to create the course
-            $course = $this->createCourse();
+        // Assuming input is an array of course data
+        foreach ($this->course_section_id as $course_section_id) {
+            // Initialize a new CourseSection for each course entry
+            $course = new StudentCourse([
+                'course_section_id' => $course_section_id,
+            ]);
 
-            // Log success and return a success response
-            return $this->logAdd('Course Section successfully added!', $course, 201);
+            try {
+                // Attempt to create the course
+                $createdCourse = $this->createCourse($course_section_id);
 
-        } catch (ValidationException $e) {
-            // Log validation error with the initialized $course
-            $errors = $e->validator->errors()->all();
-            $errorMessages = implode(' | ', $errors);
+                // Log success and add to courses array
+                $courses[] = $this->logAdd('Course successfully added!', $createdCourse, 201);
 
-            return $this->logAddError('Invalid inputs: ' . $errorMessages, $course, 422);
+            } catch (ValidationException $e) {
+                // Log validation error with the initialized $course
+                $errors = $e->validator->errors()->all();
+                $errorMessages = implode(' | ', $errors);
 
-        } catch (QueryException $e) {
-            // Handle duplicate entry error
-            if ($e->errorInfo[1] == 1062) {
-                return $this->logAddError('Student already enrolled!', $course, 400);
+                $courses[] = $this->logAddError('Invalid inputs: ' . $errorMessages, $course, 422);
+
+            } catch (QueryException $e) {
+                // Handle duplicate entry error
+                if ($e->errorInfo[1] == 1062) {
+                    $courses[] = $this->logAddError('Course already assigned!', $course, 400);
+                } else {
+                    $courses[] = $this->logAddError('Database error: ' . $e->getMessage(), $course, 500);
+                }
             }
-
-            // Handle other SQL errors
-            return $this->logAddError('Database error: ' . $e->getMessage(), $course, 500);
         }
+
+        // Return all courses' results (successes and errors)
+        return $courses;
     }
 
     // Function to create the course entry in the database
-    private function createCourse()
+    private function createCourse($course_section_id)
     {
         $student = $this->getStudentByUuid($this->uuid);
 
         // Check for a soft-deleted record with the same `course_section_id` and `student_id`
         $existingCourse = StudentCourse::withTrashed()->where([
-            'course_section_id' => $this->course_section_id,
+            'course_section_id' => $course_section_id,
             'student_id' => $student->student_id,
         ])->first();
 
@@ -461,7 +468,7 @@ class StudentProfileCrud extends Component
 
         // If no matching record exists, create a new one
         return StudentCourse::create([
-            'course_section_id' => $this->course_section_id,
+            'course_section_id' => $course_section_id,
             'student_id' => $student->student_id,
         ]);
     }
@@ -478,15 +485,15 @@ class StudentProfileCrud extends Component
             ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'success', // Mark the status as success
-                'course_section_id' => $this->course_section_id,  // Log the course name for reference
+                'course_section_id' => $course->course_section_id,  // Log the course sections for reference
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 201 for created)
             ])
-            ->event('Course Created') // Set the event name as "Course Created"
+            ->event('Courses Created') // Set the event name as "Courses Created"
             ->log($message); // Log the custom success message
     }
 
     // Function to log an error when course creation fails
-    private function logAddError($message, $statusCode)
+    private function logAddError($message, $course, $statusCode)
     {
         // Flash error message to the session for user feedback
         session()->flash('error', $message);
@@ -498,7 +505,7 @@ class StudentProfileCrud extends Component
                 'status' => 'error', // Mark the status as error
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 422 for validation errors)
             ])
-            ->event('Failed to Add Course') // Set the event name as "Failed to Add Course"
+            ->event('Failed to Add Courses') // Set the event name as "Failed to Add Courses"
             ->log($message); // Log the custom error message
     }
 
@@ -510,6 +517,7 @@ class StudentProfileCrud extends Component
         $this->resetInputFields(); // Reset input fields
         $this->resetErrorBag(); // Reset any validation errors
     }
+
     //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
 
