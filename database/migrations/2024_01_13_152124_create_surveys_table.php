@@ -11,6 +11,7 @@ class CreateSurveysTable extends Migration
     {
         Schema::create('surveys', function (Blueprint $table) {
             $table->id('survey_id'); // Auto-increment primary key
+            $table->uuid('uuid')->default(DB::raw('UUID()'))->nullable(false);
             $table->string('survey_name')->unique(); // Name of the survey
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));

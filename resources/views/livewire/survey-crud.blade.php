@@ -8,9 +8,12 @@
         <div class="border border-[#D4D4D4] transition ease-out duration-300  hover:shadow-lg">
             <div class="flex justify-between items-center pb-2 m-2 mb-0 border-b border-[#D4D4D4]">
                 <div class="flex items-center justify-end space-x-2">
-                    <button wire:click="edit()" class="w-8 h-8">
-                        <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
-                    </button>
+                    <a 
+                        href="{{ route('survey.questions', ['uuid' => $survey->uuid]) }}" 
+                        class="bg-[#F8F8F8] text-[#2A2723] px-3 py-1 text-sm transition duration-100 border hover:border-[#923534]"
+                    >
+                        View Survey
+                    </a>
                     <button wire:click="delete()" class="w-8 h-8">
                         <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                     </button>

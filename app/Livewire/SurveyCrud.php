@@ -11,6 +11,8 @@ use App\Models\Faculty;
 
 class SurveyCrud extends Component
 {
+    public $uuid;
+    
     public function render()
     {
         $surveys = Survey::all();
