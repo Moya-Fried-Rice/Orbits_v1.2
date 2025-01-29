@@ -5,6 +5,7 @@ use App\Models\Student;
 use App\Models\Section;
 use App\Models\Faculty;
 use App\Models\Program;
+use App\Models\Survey;
 use Illuminate\Support\Facades\Auth;
 
 // Route home direct to login
@@ -61,6 +62,10 @@ Route::get('/programs', function () {
 Route::get('/survey', function () {
     return view('survey.survey');
 })->middleware(['auth', 'check_role:4'])->name('survey');
+
+    Route::get('/survey/{uuid}', function (string $uuid) {
+        return view('survey.survey-questions', ['uuid' => $uuid]);
+    })->middleware(['auth', 'check_role:4', 'verify_uuid:' . Survey::class])->name('survey.questions');
 
 // Route to section page
 Route::get('/sections', function () {
