@@ -20,7 +20,7 @@ class Question extends Model
         'criteria_id',
     ];
 
-    public function criteria()
+    public function questionCriteria()
     {
         return $this->belongsTo(QuestionCriteria::class, 'criteria_id', 'criteria_id');
     }

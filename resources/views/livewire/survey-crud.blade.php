@@ -1,6 +1,6 @@
 <div class="bg-white h-full">
     <div class="font-TT p-5 flex flex-wrap justify-start gap-5 items-center">
-        
+                
         @if($surveys->isEmpty())
             No surveys found.
         @else
@@ -29,11 +29,13 @@
                     <span class="text-xs">Roles</span>
                 </div>
                 <div class="py-2 px-4 w-24 justify-center flex flex-col items-center text-center">
-                    <span class="text-black">{{ $survey->criteria->count() }}</span>
+                    <span class="text-black">{{ $survey->surveyCriteria->count() }}</span>
                     <span class="text-xs">Criterias</span>
                 </div>
                 <div class="border-l border-[#D4D4D4] py-2 px-4 w-24 justify-center flex flex-col items-center text-center">
-                    <span class="text-black">{{ $survey->criteria->flatMap->question->count() }}</span>
+                    <span class="text-black">
+                        {{ $survey->total_questions }}
+                    </span>
                     <span class="text-xs">Questions</span>
                 </div>
             </div>                 
