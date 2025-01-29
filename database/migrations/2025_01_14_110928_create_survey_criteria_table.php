@@ -13,6 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('survey_criteria', function (Blueprint $table) {
+            $table->id('survey_criteria_id');
             $table->foreignId('survey_id')->constrained('surveys', 'survey_id')->onDelete('cascade');
             $table->foreignId('criteria_id')->constrained('question_criteria', 'criteria_id')->onDelete('cascade');
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));

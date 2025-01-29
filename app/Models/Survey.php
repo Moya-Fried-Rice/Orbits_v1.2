@@ -18,15 +18,44 @@ class Survey extends Model
         'survey_name',
     ];
 
-    // Define the relationships (if any)
-
-    // Relationship with Question model (Survey can have many questions)
-    public function question()
+    public function role()
     {
-        return $this->hasMany(Question::class, 'survey_id', 'survey_id');
+        return $this->belongsToMany(Role::class, 'survey_roles', 'survey_id', 'role_id');
+    }
+    
+    public function surveyCriteria()
+    {
+        return $this->hasMany(SurveyCriteria::class, 'survey_id', 'survey_id');
     }
 
-    // Relationship with Evaluation model (Survey can be used in many evaluations)
+    public function getTotalQuestionsAttribute()
+    {
+        return $this->surveyCriteria->sum(fn($sc) => $sc->questionCriteria->questions->count() ?? 0);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
     public function evaluationsPeriod()
     {
         return $this->belongsToMany(EvaluationPeriod::class, 'survey_period', 'survey_id', 'period_id')
@@ -34,19 +63,4 @@ class Survey extends Model
                     ->withPivot('deleted_at');
     }
 
-    public function role()
-    {
-        return $this->belongsToMany(Role::class, 'survey_roles', 'survey_id', 'role_id');
-    }
-
-    public function criteria()
-    {
-        return $this->belongsToMany(QuestionCriteria::class, 'survey_criteria', 'survey_id', 'criteria_id')
-                    ->withTimestamps();
-    }
-
-    // public function surveyPeriods()
-    // {
-    //     return $this->hasMany(SurveyPeriod::class, 'survey_id', 'survey_id');
-    // }
 }

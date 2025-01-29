@@ -17,18 +17,15 @@ class QuestionCriteria extends Model
 
     protected $fillable = [
         'description',
-        'survey_id',
     ];
 
-    // NOTE: NOT YET DONE
-    public function question()
+    public function questions()
     {
         return $this->hasMany(Question::class, 'criteria_id', 'criteria_id');
     }
 
-    public function survey()
+    public function surveyCriteria()
     {
-        return $this->belongsToMany(Survey::class, 'survey_criteria', 'criteria_id', 'survey_id')
-                    ->withTimestamps();
+        return $this->hasMany(SurveyCriteria::class, 'criteria_id', 'criteria_id');
     }
 }
