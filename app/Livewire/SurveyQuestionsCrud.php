@@ -11,14 +11,16 @@ class SurveyQuestionsCrud extends Component
 
     public function render()
     {
-        $surveys = $this->getSurveyByUuid($this->uuid);
+        $survey = $this->getSurveyByUuid($this->uuid);
         
-        return view('livewire.survey-questions-crud', compact('surveys'));
+        return view('livewire.survey-questions-crud', compact('survey'));
     }
 
     protected function getSurveyByUuid($uuid)
     {
-        // Return the faculty record along with its associated department
-        return Survey::where('uuid', $uuid)->first();
+        return Survey::where('uuid', $uuid)
+            ->with('surveyCriteria.questionCriteria.questions') // Eager load all related data
+            ->first();
     }
+    
 }
