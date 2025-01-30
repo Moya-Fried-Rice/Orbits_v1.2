@@ -23,7 +23,7 @@
     
     </div>
     
-    <div class="py-5">
+    <div class="p-5">
         <!-- Course List -->
         <x-table :action="true">
             <x-slot name="header">

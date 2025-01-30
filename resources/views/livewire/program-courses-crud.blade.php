@@ -48,8 +48,8 @@
 
                 @foreach ($program->programCourse->where('year_level', $year_level)->pluck('semester')->unique()->sort() as $semester)
 
-                    <div class="pt-5 lg:pt-5">
-                        <div class="px-5">{{ $this->ordinal($semester) }} Semester</div>
+                    <div class="p-5">
+                        <div>{{ $this->ordinal($semester) }} Semester</div>
                         <x-table :action="true">
 
                             <x-slot name="header">
