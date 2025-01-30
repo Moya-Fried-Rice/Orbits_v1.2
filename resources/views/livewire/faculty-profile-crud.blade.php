@@ -15,7 +15,7 @@
                     <span class="font-silka font-semibold text-[#2A2723] text-xl md:text-3xl">{{ $faculty->faculty_name }}</span>
                     <div class="flex items-center justify-end space-x-2">
                         <button wire:click="edit({{ $faculty->faculty_id }})"  class="w-8 h-8">
-                            <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                            <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#F8F8F8] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                         </button>
                     </div>
                 </div>
