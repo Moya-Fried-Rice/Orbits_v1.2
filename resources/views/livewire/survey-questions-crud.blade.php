@@ -27,57 +27,131 @@
         </div>
         <x-add-button add="Add Course" />
     </div>  
+    
+    <div class="grid grid-cols-1 xl:grid-cols-[2fr_1fr] p-5 gap-5">
+       
+        <div class="order-1 xl:order-2">
 
-<div class="grid grid-cols-1 xl:grid-cols-2 p-5 gap-5">
-    @foreach($survey->surveyCriteria as $criterion)
-    <div>
-        <x-table :action="false">
-            <x-slot name="header">
-                <x-table-header
-                        :allowSort="false"
-                        label="{{ $criterion->questionCriteria->description ?? 'No Title' }}"/>
-            </x-slot>
-            <x-slot name="body">
-                <tr class="font-normal border border-[#DDD] text-[#666]-100">
-                    <td class="p-2">
+            <div class="text-sm text-gray-500 mt-1">
+                Select a <span class="font-bold">criteria</span> to display the relevant questions.
+            </div>
 
-                        <x-table :action="true">
-                            <x-slot name="header">
-                                <x-table-header
+            <x-table :action="false">
+                <x-slot name="header">
+
+                    <x-table-header
+                    :allowSort="false"
+                    label="Criteria List"/>
+
+                </x-slot>
+                <x-slot name="body">
+
+                    <tr class="font-normal border border-[#DDD] text-[#666]-100">
+                        <td class="p-2">
+
+                            <x-table :action="true">
+                                <x-slot name="header">
+                
+                                    <x-table-header
                                     :allowSort="false"
-                                    label="Q. Code"/>
-                                
-                                <x-table-header
-                                    :allowSort="false"
-                                    label="Question Text"/>
+                                    label="Criteria Name"/>
 
-                            </x-slot>
-                            <x-slot name="body">
-                                @foreach($criterion->questionCriteria->questions ?? [] as $question)
-                                <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
-                                    <td class="py-2 whitespace-nowrap px-4 truncate w-20">{{ $question->question_code }}</td>
-                                    <td class="py-2 whitespace-nowrap px-4 truncate min-w-[20rem] max-w-[25rem]">{{ $question->question_text }}</td>
-                                    <td class="py-2 whitespace-nowrap px-4 w-24">
-                                        <div class="flex items-center justify-end space-x-2">
-                                            <button wire:click="edit({{ $question->question_id }})" class="w-8 h-8">
-                                                <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
-                                            </button>
-                                            <button wire:click="delete({{ $question->question_id }})" class="w-8 h-8">
-                                                <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                
-                                @endforeach
-                            </x-slot>
-                        </x-table>
-                    </td>
-                </tr>
-            </x-slot>
-        </x-table>
-    </div>    
-    @endforeach
-</div>
+                                    <x-table-header
+                                    :allowSort="false"
+                                    label="Updated At"/>
+                
+                                </x-slot>
+                                <x-slot name="body">
+                
+                                    @foreach($survey->surveyCriteria as $criteria)
+                                    <tr class="font-normal border border-[#DDD] text-[#666]-100 
+                                        {{ $selectedCriteria == $criteria->criteria_id ? 'bg-blue-50' : '' }}">
+                                        <td class="p-2 whitespace-nowrap px-4 truncate max-w-xs">
+                                            {{ $criteria->questionCriteria->description ?? 'No Description' }}
+                                        </td>
+                                        <td class="p-2 whitespace-nowrap px-4 truncate max-w-xs">
+                                            {{ $criteria->updated_at }}
+                                        </td>
+                                        <td class="py-2 whitespace-nowrap px-4 w-24">
+                                            <div class="flex items-center justify-end space-x-2">
+                                                <button wire:click="selectCriteria({{ $criteria->criteria_id }})" class="w-8 h-8">
+                                                    <img src="{{ asset('assets/icons/menu2.svg') }}" alt="Edit"
+                                                         class="hover:transform hover:rotate-12 bg-[#F8F8F8] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                                                </button>
+                                                <button wire:click="edit({{ $criteria->criteria_id }})" class="w-8 h-8">
+                                                    <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit"
+                                                         class="hover:transform hover:rotate-12 bg-[#F8F8F8] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                                                </button>
+                                                <button wire:click="delete({{ $criteria->criteria_id }})" class="w-8 h-8">
+                                                    <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete"
+                                                         class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforeach                                    
+
+                                </x-slot>
+                            </x-table>
+
+                        </td>
+                    </tr>
+                </x-slot>
+            </x-table>
+        </div>
+    
+        <!-- Survey Criteria section -->
+        <div class="order-2 xl:order-1">
+            @foreach($survey->surveyCriteria->where('criteria_id', $selectedCriteria) as $criterion)
+            <div>
+                <x-table :action="false">
+                    <x-slot name="header">
+                        <x-table-header
+                                :allowSort="false"
+                                label="{{ $criterion->questionCriteria->description ?? 'No Title' }}"/>
+                    </x-slot>
+                    <x-slot name="body">
+                        <tr class="font-normal border border-[#DDD] text-[#666]-100">
+                            <td class="p-2">
+    
+                                <x-table :action="true">
+                                    <x-slot name="header">
+                                        <x-table-header
+                                            :allowSort="false"
+                                            label="Q. Code"/>
+                                        
+                                        <x-table-header
+                                            :allowSort="false"
+                                            label="Question Text"/>
+    
+                                    </x-slot>
+                                    <x-slot name="body">
+                                        @foreach($criterion->questionCriteria->questions ?? [] as $question)
+                                        <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
+                                            <td class="py-2 whitespace-nowrap px-4 truncate w-20">{{ $question->question_code }}</td>
+                                            <td class="py-2 whitespace-nowrap px-4 truncate min-w-[20rem] max-w-[25rem]">{{ $question->question_text }}</td>
+                                            <td class="py-2 whitespace-nowrap px-4 w-24">
+                                                <div class="flex items-center justify-end space-x-2">
+                                                    <button wire:click="edit({{ $question->question_id }})" class="w-8 h-8">
+                                                        <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                                                    </button>
+                                                    <button wire:click="delete({{ $question->question_id }})" class="w-8 h-8">
+                                                        <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        
+                                        @endforeach
+                                    </x-slot>
+                                </x-table>
+                            </td>
+                        </tr>
+                    </x-slot>
+                </x-table>
+            </div>    
+            @endforeach
+        </div>
+    </div>
 
 </div>
