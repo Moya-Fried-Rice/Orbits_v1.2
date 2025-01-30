@@ -17,7 +17,7 @@
                     </span>
                     <div class="flex items-center justify-end space-x-2">
                         <button wire:click="edit()"  class="w-8 h-8">
-                            <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                            <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#F8F8F8] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                         </button>
                     </div>
                 </div>
@@ -133,7 +133,7 @@
                                             <td class="py-2 whitespace-nowrap px-4 w-24">
                                                 <div class="flex items-center justify-end space-x-2">
                                                     <button wire:click="edit({{ $question->question_id }})" class="w-8 h-8">
-                                                        <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#DDD] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
+                                                        <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#F8F8F8] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                                                     </button>
                                                     <button wire:click="delete({{ $question->question_id }})" class="w-8 h-8">
                                                         <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
