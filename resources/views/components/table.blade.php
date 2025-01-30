@@ -1,6 +1,6 @@
 @props(['action'])
 
-<div class="overflow-x-auto w-full px-5">
+<div class="overflow-x-auto w-full">
     <table class="table table-bordered font-TT w-full table-auto">
         <thead>
             <tr class="uppercase font-normal bg-[#F8F8F8] text-black">

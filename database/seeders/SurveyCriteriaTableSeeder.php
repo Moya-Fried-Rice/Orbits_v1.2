@@ -18,11 +18,6 @@ class SurveyCriteriaTableSeeder extends Seeder
             ['criteria_id' => 2, 'survey_id' => 1],
             ['criteria_id' => 3, 'survey_id' => 2],
             ['criteria_id' => 4, 'survey_id' => 2],
-            ['criteria_id' => 5, 'survey_id' => 2],
-            ['criteria_id' => 6, 'survey_id' => 2],
-            ['criteria_id' => 7, 'survey_id' => 2],
-            ['criteria_id' => 8, 'survey_id' => 2],
-            ['criteria_id' => 9, 'survey_id' => 2],
         ]);
     }
 }
