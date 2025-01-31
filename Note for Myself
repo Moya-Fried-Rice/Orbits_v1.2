@@ -9,3 +9,8 @@ STOP NA TAYO SA DATA MANAGEMENT, MAY SURVEY PA >:|
 Add change faculty sa section courses
 
 Linis onti sa error handling message tas linis na din code tas survey na :D.
+
+
+
+
+- Remove Question Code in questions table, ung question code is dapat every first letter of word ng criteria.
