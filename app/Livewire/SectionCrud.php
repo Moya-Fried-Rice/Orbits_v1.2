@@ -238,7 +238,7 @@ class SectionCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',  // Status: success
-                'section_id' => $section->section_id, // Log section ID for reference
+                'record_name' => $section->section_code,  // Log the course name for reference
                 'status_code' => $statusCode, // HTTP status code (e.g., 200 for successful removal)
             ])
             ->event('Section Removed') // Event: Section Removed
@@ -257,7 +257,7 @@ class SectionCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',  // Status: error
-                'section_id' => $section->section_id, // Log section ID for reference
+                'record_name' => $section->section_code,  // Log the course name for reference
                 'status_code' => $statusCode, // HTTP status code (e.g., 400, 422 for failure cases)
             ])
             ->event('Failed to Remove Section') // Event: Failed to Remove Section
@@ -409,7 +409,7 @@ class SectionCrud extends Component
             ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'success', // Mark the status as success
-                'program_id' => $this->program_id,
+                'record_name' => $section->section_code,  // Log the course name for reference
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 201 for created)
             ])
             ->event('Section Created') // Set the event name as "Section Created"
@@ -427,6 +427,7 @@ class SectionCrud extends Component
             ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'error', // Mark the status as error
+                'record_name' => $section->section_code,  // Log the course name for reference
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 422 for validation errors)
             ])
             ->event('Failed to Add Section') // Set the event name as "Failed to Add Section"
@@ -521,7 +522,7 @@ class SectionCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',
-                'section_name' => $section->name,  // Use section name instead of course name
+                'record_name' => $section->section_code,  // Log the course name for reference
                 'status_code' => $statusCode,
             ])
             ->event('Restore')
@@ -539,7 +540,7 @@ class SectionCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',
-                'section_name' => $section->name,  // Use section name instead of course name
+                'record_name' => $section->section_code,  // Log the course name for reference
                 'status_code' => $statusCode,
             ])
             ->event('Restore')

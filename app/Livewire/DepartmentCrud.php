@@ -260,7 +260,7 @@ class DepartmentCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',
-                'department_name' => $this->department_name,
+                'record_name' => $department->department_name,
                 'status_code' => $statusCode,
                 'changes' => $changes, // Include changes in the log
             ])
@@ -297,7 +297,7 @@ class DepartmentCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',
-                'department_name' => $this->department_name,
+                'record_name' => $department->department_name,
                 'status_code' => $statusCode,
             ])
             ->event('Failed Edit')
@@ -530,7 +530,7 @@ class DepartmentCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',
-                'department_name' => $department->department_name,
+                'record_name' => $department->department_name,
                 'status_code' => $statusCode,
             ])
             ->event('Restore')
@@ -548,7 +548,7 @@ class DepartmentCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',
-                'department_name' => $department->department_name,
+                'record_name' => $department->department_name,
                 'status_code' => $statusCode,
             ])
             ->event('Restore')
@@ -684,7 +684,7 @@ class DepartmentCrud extends Component
             ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'success', // Mark the status as success
-                'department_name' => $this->department_name, // Log the department name for reference
+                'record_name' => $department->department_name, // Log the department name for reference
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 201 for created)
             ])
             ->event('Department Created') // Set the event name as "Department Created"
@@ -692,7 +692,7 @@ class DepartmentCrud extends Component
     }
 
     // Function to log an error when department creation fails
-    private function logAddError($message, $statusCode)
+    private function logAddError($message, $department, $statusCode)
     {
         // Flash error message to the session for user feedback
         session()->flash('error', $message);
@@ -702,6 +702,7 @@ class DepartmentCrud extends Component
             ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'error', // Mark the status as error
+                'record_name' => $department,
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 422 for validation errors)
             ])
             ->event('Failed to Add Department') // Set the event name as "Failed to Add Department"

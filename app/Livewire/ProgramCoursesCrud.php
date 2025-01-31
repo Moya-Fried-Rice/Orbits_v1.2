@@ -264,8 +264,7 @@ class ProgramCoursesCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',
-                'program_code' => $this->program_code,
-                'program_name' => $this->program_name,
+                'record_name' => $program->program_name,
                 'status_code' => $statusCode,
                 'changes' => $changes,
             ])
@@ -300,8 +299,7 @@ class ProgramCoursesCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',
-                'program_code' => $this->program_code,
-                'program_name' => $this->program_name,
+                'record_name' => $program->program_name,
                 'status_code' => $statusCode,
             ])
             ->event('Failed Edit')
@@ -467,7 +465,7 @@ class ProgramCoursesCrud extends Component
             ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'success', // Mark the status as success
-                'course_id' => $this->course_id,  // Log the course name for reference
+                'record_name' => $course->course_name,  // Log the course name for reference
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 201 for created)
             ])
             ->event('Course Created') // Set the event name as "Course Created"
@@ -475,7 +473,7 @@ class ProgramCoursesCrud extends Component
     }
 
     // Function to log an error when course creation fails
-    private function logAddError($message, $statusCode)
+    private function logAddError($message, $course, $statusCode)
     {
         // Flash error message to the session for user feedback
         session()->flash('error', $message);
@@ -485,6 +483,7 @@ class ProgramCoursesCrud extends Component
             ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'error', // Mark the status as error
+                'record_name' => $course,  // Log the course name for reference
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 422 for validation errors)
             ])
             ->event('Failed to Add Course') // Set the event name as "Failed to Add Course"
@@ -595,7 +594,7 @@ class ProgramCoursesCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',  // Status: success
-                'course_id' => $course->course_id, // Log course name for reference\
+                'record_name' => $course->course->course_name, // Log course name for reference\
                 'status_code' => $statusCode
             ])
             ->event('Course Removed') // Event: Course Removed
@@ -614,7 +613,7 @@ class ProgramCoursesCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',  // Status: error
-                'course_id' => $course->course_id, // Log course name for reference\
+                'record_name' => $course->course->course_name, // Log course name for reference\
                 'status_code' => $statusCode, // HTTP status code (e.g., 400, 422 for failure cases)
             ])
             ->event('Failed to Remove Course') // Event: Failed to Remove Course
@@ -700,7 +699,7 @@ class ProgramCoursesCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',
-                'course_id' => $course->course_id,
+                'record_name' => $course->course->course_name, // Log course name for reference\
                 'status_code' => $statusCode,
             ])
             ->event('Restore')
@@ -718,7 +717,7 @@ class ProgramCoursesCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',
-                'course_id' => $course->course_id,
+                'record_name' => $course->course->course_name, // Log course name for reference\
                 'status_code' => $statusCode,
             ])
             ->event('Restore')
@@ -759,5 +758,6 @@ class ProgramCoursesCrud extends Component
             ->event('System Error') // Event name for clarity
             ->log($message); // Log the custom error message
     }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
 }

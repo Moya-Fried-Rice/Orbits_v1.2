@@ -280,8 +280,7 @@ class StudentCrud extends Component
             ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'success', // Mark the status as success
-                'first_name' => $this->first_name,  // Log the student's first name for reference
-                'last_name' => $this->last_name,  // Log the student's last name for reference
+                'record_name' => $student->student_name,  // Log the student's last name for reference
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 201 for created)
             ])
             ->event('Student Created') // Set the event name as "Student Created"
@@ -289,7 +288,7 @@ class StudentCrud extends Component
     }
 
     // Function to log an error when student creation fails
-    private function logAddError($message, $statusCode)
+    private function logAddError($message, $student, $statusCode)
     {
         // Flash error message to the session for user feedback
         session()->flash('error', $message);
@@ -299,6 +298,7 @@ class StudentCrud extends Component
             ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'error', // Mark the status as error
+                'record_name' => $student->student_name,  // Log the student's last name for reference
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 422 for validation errors)
             ])
             ->event('Failed to Add Student') // Set the event name as "Failed to Add Student"
@@ -417,7 +417,7 @@ class StudentCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',  // Status: success
-                'student_name' => $student->first_name . ' ' . $student->last_name, // Log student name for reference
+                'record_name' => $student->student_name,  // Log the student's last name for reference
                 'status_code' => $statusCode, // HTTP status code (e.g., 200 for successful removal)
             ])
             ->event('Student Removed') // Event: Student Removed
@@ -436,7 +436,7 @@ class StudentCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',  // Status: error
-                'student_name' => $student->first_name . ' ' . $student->last_name, // Log student name for reference
+                'record_name' => $student->student_name,  // Log the student's last name for reference
                 'status_code' => $statusCode, // HTTP status code (e.g., 400, 422 for failure cases)
             ])
             ->event('Failed to Remove Student') // Event: Failed to Remove Student
@@ -522,7 +522,7 @@ class StudentCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',
-                'student_name' => $student->student_name,
+                'record_name' => $student->student_name,  // Log the student's last name for reference
                 'status_code' => $statusCode,
             ])
             ->event('Restore')
@@ -540,7 +540,7 @@ class StudentCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',
-                'student_name' => $student->student_name,
+                'record_name' => $student->student_name,  // Log the student's last name for reference
                 'status_code' => $statusCode,
             ])
             ->event('Restore')

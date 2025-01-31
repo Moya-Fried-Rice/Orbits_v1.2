@@ -273,8 +273,7 @@ class FacultyCrud extends Component
             ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'success', // Mark the status as success
-                'first_name' => $this->first_name,  // Log the faculty's first name for reference
-                'last_name' => $this->last_name,  // Log the faculty's last name for reference
+                'record_name' => $faculty->first_name . ' ' . $faculty->last_name,  // Log the faculty's first name for reference
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 201 for created)
             ])
             ->event('Faculty Created') // Set the event name as "Faculty Created"
@@ -282,7 +281,7 @@ class FacultyCrud extends Component
     }
 
     // Function to log an error when faculty creation fails
-    private function logAddError($message, $statusCode)
+    private function logAddError($message, $faculty, $statusCode)
     {
         // Flash error message to the session for user feedback
         session()->flash('error', $message);
@@ -292,6 +291,7 @@ class FacultyCrud extends Component
             ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'error', // Mark the status as error
+                'record_name' => $faculty,
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 422 for validation errors)
             ])
             ->event('Failed to Add Faculty') // Set the event name as "Failed to Add Faculty"
@@ -410,7 +410,7 @@ class FacultyCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',  // Status: success
-                'faculty_name' => $faculty->first_name . ' ' . $faculty->last_name, // Log faculty name for reference
+                'record_name' => $faculty->first_name . ' ' . $faculty->last_name, // Log faculty name for reference
                 'status_code' => $statusCode, // HTTP status code (e.g., 200 for successful removal)
             ])
             ->event('Faculty Removed') // Event: Faculty Removed
@@ -515,7 +515,7 @@ class FacultyCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',
-                'faculty_name' => $faculty->first_name . ' ' . $faculty->last_name,
+                'record_name' => $faculty->first_name . ' ' . $faculty->last_name,
                 'status_code' => $statusCode,
             ])
             ->event('Restore')
@@ -533,7 +533,7 @@ class FacultyCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',
-                'faculty_name' => $faculty->first_name . ' ' . $faculty->last_name,
+                'record_name' => $faculty->first_name . ' ' . $faculty->last_name,
                 'status_code' => $statusCode,
             ])
             ->event('Restore')

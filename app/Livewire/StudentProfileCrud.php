@@ -283,8 +283,7 @@ class StudentProfileCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',
-                'first_name' => $this->first_name,
-                'last_name' => $this->last_name,
+                'record_name' => $student->student_name,  // Log the student's last name for reference
                 'status_code' => $statusCode,
                 'changes' => $changes, // Include changes in the log
             ])
@@ -321,8 +320,7 @@ class StudentProfileCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',
-                'first_name' => $this->first_name,
-                'last_name' => $this->last_name,
+                'record_name' => $student->student_name,  // Log the student's last name for reference
                 'status_code' => $statusCode,
             ])
             ->event('Failed Edit')
@@ -485,7 +483,7 @@ class StudentProfileCrud extends Component
             ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'success', // Mark the status as success
-                'course_section_id' => $course->course_section_id,  // Log the course sections for reference
+                'record_name' => $course->courseSection->section->section_code,  // Log the student's last name for reference
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 201 for created)
             ])
             ->event('Courses Created') // Set the event name as "Courses Created"
@@ -503,6 +501,7 @@ class StudentProfileCrud extends Component
             ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'error', // Mark the status as error
+                'record_name' => $course->courseSection->section->section_code,  // Log the student's last name for reference
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 422 for validation errors)
             ])
             ->event('Failed to Add Courses') // Set the event name as "Failed to Add Courses"
@@ -614,7 +613,8 @@ class StudentProfileCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',  // Status: success
-                'student_course' => $course->courseSection->section->section_code, // Log course name for reference\
+                'record_name' => $course->courseSection->section->section_code, // Log course name for reference\
+                'status_code' => $statusCode
             ])
             ->event('Course Removed') // Event: Course Removed
             ->log($message); // Log the custom success message
@@ -718,7 +718,7 @@ class StudentProfileCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',
-                'student_course' => $course->courseSection->section->section_code,
+                'record_name' => $course->courseSection->section->section_code,
                 'status_code' => $statusCode,
             ])
             ->event('Restore')
@@ -736,7 +736,7 @@ class StudentProfileCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',
-                'student_course' => $course->courseSection->section->section_code,
+                'record_name' => $course->courseSection->section->section_code,
                 'status_code' => $statusCode,
             ])
             ->event('Restore')

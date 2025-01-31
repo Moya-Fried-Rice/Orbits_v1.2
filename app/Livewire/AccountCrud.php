@@ -258,7 +258,7 @@ class AccountCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',
-                'name' => $this->name,
+                'record_name' => $user->name,
                 'status_code' => $statusCode,
                 'changes' => $changes, // Include changes in the log
             ])
@@ -295,7 +295,7 @@ class AccountCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',
-                'name' => $this->name,
+                'record_name' => $user->name,
                 'status_code' => $statusCode,
             ])
             ->event('Failed Edit')
