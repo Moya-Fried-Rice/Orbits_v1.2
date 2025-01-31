@@ -266,7 +266,7 @@ class ProgramCrud extends Component
             ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'success', // Mark the status as success
-                'program_name' => $this->program_name,  // Log the program name for reference
+                'record_name' => $program->program_name,  // Log the program name for reference
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 201 for created)
             ])
             ->event('Program Created') // Set the event name as "Program Created"
@@ -284,6 +284,7 @@ class ProgramCrud extends Component
             ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'error', // Mark the status as error
+                'record_name' => $program,  // Log the program name for reference
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 422 for validation errors)
             ])
             ->event('Failed to Add Program') // Set the event name as "Failed to Add Program"
@@ -400,7 +401,7 @@ class ProgramCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',  // Status: success
-                'program_name' => $program->program_name, // Log program name for reference
+                'record_name' => $program->program_name,  // Log the program name for reference
                 'status_code' => $statusCode, // HTTP status code (e.g., 200 for successful removal)
             ])
             ->event('Program Removed') // Event: Program Removed
@@ -419,7 +420,7 @@ class ProgramCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',  // Status: error
-                'program_name' => $program->program_name, // Log program name for reference
+                'record_name' => $program->program_name,  // Log the program name for reference
                 'status_code' => $statusCode, // HTTP status code (e.g., 400, 422 for failure cases)
             ])
             ->event('Failed to Remove Program') // Event: Failed to Remove Program
@@ -505,7 +506,7 @@ class ProgramCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',
-                'program_name' => $program->program_name,
+                'record_name' => $program->program_name,  // Log the program name for reference
                 'status_code' => $statusCode,
             ])
             ->event('Restore')
@@ -523,7 +524,7 @@ class ProgramCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',
-                'program_name' => $program->program_name,
+                'record_name' => $program->program_name,  // Log the program name for reference
                 'status_code' => $statusCode,
             ])
             ->event('Restore')
