@@ -1,7 +1,7 @@
 <div class="bg-white pb-5">
 
     <x-system-notification />
-
+    
     <div class="p-5 pb-0 flex flex-wrap items-center md:justify-between justify-center relative">
         
         <div class="flex items-center flex-col md:flex-row w-full md:w-auto">
@@ -21,7 +21,7 @@
 
                     </span>
                     <div class="flex items-center justify-end space-x-2">
-                        <button wire:click="edit()"  class="w-8 h-8">
+                        <button wire:click="edit({{ $survey->survey_id }}, 'survey')"  class="w-8 h-8">
                             <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#F8F8F8] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                         </button>
                     </div>
@@ -88,7 +88,7 @@
                                                     <img src="{{ asset('assets/icons/menu2.svg') }}" alt="Edit"
                                                          class="hover:transform hover:rotate-12 bg-[#F8F8F8] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                                                 </button>
-                                                <button wire:click="edit({{ $criteria->criteria_id }})" class="w-8 h-8">
+                                                <button wire:click="edit({{ $criteria->criteria_id }}, 'criteria')" class="w-8 h-8">
                                                     <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit"
                                                          class="hover:transform hover:rotate-12 bg-[#F8F8F8] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                                                 </button>
@@ -160,7 +160,7 @@
                                             </td> --}}
                                             <td class="py-2 whitespace-nowrap px-4 w-24">
                                                 <div class="flex items-center justify-end space-x-2">
-                                                    <button wire:click="edit({{ $question->question_id }})" class="w-8 h-8">
+                                                    <button wire:click="edit({{ $question->question_id }}, 'question')" class="w-8 h-8">
                                                         <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#F8F8F8] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                                                     </button>
                                                     <button wire:click="delete({{ $question->question_id }})" class="w-8 h-8">
@@ -181,5 +181,50 @@
             @endforeach
         </div>
     </div>
+
+<x-edit-modal label="{{ $name }}">
+
+    <!-- Show only if the 'edit' name is 'survey' -->
+    @if($name == 'survey')
+        <x-add-modal-data name="survey_name" label="Survey Name:">
+            <input 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                type="text" 
+                id="survey_name" 
+                wire:model="survey_name">
+        </x-add-modal-data>
+
+        <x-add-modal-data name="role_id" label="Target Roles:">
+
+            <x-select-role :roles="$this->getRoles()" :role_id="$role_id" />
+    
+        </x-add-modal-data>
+
+    @endif
+
+    <!-- Show only if the 'edit' name is 'criteria' -->
+    @if($name == 'criteria')
+        <x-add-modal-data name="description" label="Criteria Description:">
+            <input 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                type="text" 
+                id="description" 
+                wire:model="description">
+        </x-add-modal-data>
+    @endif
+
+    <!-- Show only if the 'edit' name is 'question' -->
+    @if($name == 'question')
+        <x-add-modal-data name="question_text" label="Question Text:">
+            <textarea 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                id="question_text" 
+                rows="3"
+                wire:model="question_text"></textarea>
+        </x-add-modal-data>
+    @endif
+
+</x-edit-modal>
+    
 
 </div>

@@ -106,10 +106,6 @@
                 type="text" 
                 id="department_code" 
                 wire:model="department_code">
-
-            @error('department_code') 
-                <span class="text-sm text-red-500">{{ $message }}</span>
-            @enderror
         </x-add-modal-data>
 
         <!-- Department Name -->
@@ -119,10 +115,6 @@
                 type="text" 
                 id="department_name" 
                 wire:model="department_name">
-
-            @error('department_name') 
-                <span class="text-sm text-red-500">{{ $message }}</span>
-            @enderror
         </x-add-modal-data>
 
         <!-- Department Description -->
@@ -132,10 +124,6 @@
                 id="department_description" 
                 rows="4"
                 wire:model="department_description"></textarea>
-    
-            @error('department_description') 
-                <span class="text-sm text-red-500">{{ $message }}</span>
-            @enderror
         </x-add-modal-data>
 
     </x-edit-modal>
@@ -150,10 +138,6 @@
                 type="text" 
                 id="department_code" 
                 wire:model="department_code">
-
-            @error('department_code') 
-                <span class="text-sm text-red-500">{{ $message }}</span>
-            @enderror
         </x-add-modal-data>
 
         <!-- Department Name -->
@@ -163,10 +147,6 @@
                 type="text" 
                 id="department_name" 
                 wire:model="department_name">
-
-            @error('department_name') 
-                <span class="text-sm text-red-500">{{ $message }}</span>
-            @enderror
         </x-add-modal-data>
 
         <!-- Department Description -->
@@ -176,10 +156,6 @@
                 id="department_description" 
                 rows="4"
                 wire:model="department_description"></textarea>
-    
-            @error('department_description') 
-                <span class="text-sm text-red-500">{{ $message }}</span>
-            @enderror
         </x-add-modal-data>
 
     </x-add-modal>
