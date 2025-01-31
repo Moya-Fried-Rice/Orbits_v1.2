@@ -129,9 +129,9 @@
                                             :allowSort="false"
                                             label="Question Text"/>
 
-                                        <x-table-header
+                                        {{-- <x-table-header
                                             :allowSort="false"
-                                            label=" "/>
+                                            label=" "/> --}}
     
                                     </x-slot>
                                     <x-slot name="body">
@@ -144,15 +144,15 @@
                                         <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
                                             <td class="py-2 whitespace-nowrap px-4 truncate w-20">{{ $question->question_code }}</td>
                                             <td class="py-2 whitespace-nowrap px-4 truncate min-w-[20rem] max-w-[25rem]">{{ $question->question_text }}</td>
-                                            <td class="py-2 whitespace-nowrap px-4 truncate min-w-[20rem] max-w-[25rem]">
-                                                <div class="opacity-50 flex gap-10 items-center justify-center">
+                                            {{-- <td class="py-2 whitespace-nowrap px-4 truncate min-w-[20rem] max-w-[25rem]">
+                                                <div class="opacity-50 flex gap-5 items-center justify-center">
                                                     <i class="fa-regular fa-circle"></i>
                                                     <i class="fa-regular fa-circle"></i>
                                                     <i class="fa-regular fa-circle"></i>
                                                     <i class="fa-regular fa-circle"></i>
                                                     <i class="fa-regular fa-circle"></i>
                                                 </div>
-                                            </td>
+                                            </td> --}}
                                             <td class="py-2 whitespace-nowrap px-4 w-24">
                                                 <div class="flex items-center justify-end space-x-2">
                                                     <button wire:click="edit({{ $question->question_id }})" class="w-8 h-8">
