@@ -12,8 +12,13 @@
                     <span class="font-silka font-semibold text-[#2A2723] text-3xl">{{ $survey->survey_name }}</span>
                     <div class="flex items-center justify-end space-x-2">
                     </div>
-                    <span class="flex items-center gap-2 justify-start">Target Roles: 
-                        <span>{{ $survey->role->map(fn($role) => Str::title(str_replace('_', ' ', $role->role_name)))->implode(', ') }}</span>
+                    <span class="flex items-center gap-2 justify-start">
+                        
+                        Target Roles: 
+                        @foreach ($survey->surveyRole as $index => $surveyRole)
+                            {{ ucfirst(str_replace('_', ' ', $surveyRole->role->role_name)) }}@if(!$loop->last), @endif
+                        @endforeach
+
                     </span>
                     <div class="flex items-center justify-end space-x-2">
                         <button wire:click="edit()"  class="w-8 h-8">
