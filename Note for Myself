@@ -18,5 +18,3 @@ Linis onti sa error handling message tas linis na din code tas survey na :D.
 - May defect sa ui ng notification pag dalawa yung notification.
 
 - After natin matapos sa survey management, linisin muna natin yung code.
-
-- May $this->reset(); imbis na specify lahat.
