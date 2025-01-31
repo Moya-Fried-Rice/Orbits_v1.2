@@ -16,6 +16,7 @@ class CreateSurveyRolesTable extends Migration
     {
         // Create the survey_roles table
         Schema::create('survey_roles', function (Blueprint $table) {
+            $table->id('survey_role_id');
             $table->unsignedBigInteger('survey_id');
             $table->unsignedBigInteger('role_id');
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));

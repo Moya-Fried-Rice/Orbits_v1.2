@@ -25,7 +25,7 @@
             </div>
             <div class="bg-[#F8F8F8] border-t border-[#D4D4D4] flex">
                 <div class="border-r border-[#D4D4D4] py-2 px-4 w-24 justify-center flex flex-col items-center text-center">
-                    <span class="text-black">{{ $survey->role->count() }}</span>
+                    <span class="text-black">{{ $survey->surveyRole->count() }}</span>
                     <span class="text-xs">Roles</span>
                 </div>
                 <div class="py-2 px-4 w-24 justify-center flex flex-col items-center text-center">

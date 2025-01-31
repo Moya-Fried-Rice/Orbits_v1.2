@@ -18,9 +18,9 @@ class Survey extends Model
         'survey_name',
     ];
 
-    public function role()
+    public function surveyRole()
     {
-        return $this->belongsToMany(Role::class, 'survey_roles', 'survey_id', 'role_id');
+        return $this->hasMany(SurveyRole::class, 'survey_id', 'survey_id');
     }
     
     public function surveyCriteria()
