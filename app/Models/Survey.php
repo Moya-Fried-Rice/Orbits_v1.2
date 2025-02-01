@@ -30,8 +30,12 @@ class Survey extends Model
 
     public function getTotalQuestionsAttribute()
     {
-        return $this->surveyCriteria->sum(fn($sc) => $sc->questionCriteria->questions->count() ?? 0);
+        return $this->surveyCriteria->sum(function ($sc) {
+            return $sc->questionCriteria ? $sc->questionCriteria->questions->count() : 0;
+        });
     }
+    
+    
 
 
 

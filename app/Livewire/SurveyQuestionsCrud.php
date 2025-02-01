@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Survey;
 use App\Models\QuestionCriteria;
 use App\Models\Question;
+use App\Models\SurveyCriteria;
 use App\Models\Role;
 
 use Illuminate\Support\Facades\Auth;
@@ -31,7 +32,9 @@ class SurveyQuestionsCrud extends Component
     public $question_id;
     public $criteria_id;
     public $role_id;
-
+    public $deleteId;
+    public $deleteType;
+    
     public $showDeleteConfirmation = false;
     public $showEditForm = false, $showEditConfirmation = false;
     public $showAddForm = false, $showAddConfirmation = false;
@@ -445,7 +448,210 @@ class SurveyQuestionsCrud extends Component
 
 
 
+    public function delete($id, $type)
+    {
+        $this->deleteId = $id;
+        $this->deleteType = $type;
+        $this->showDeleteConfirmation = true;
+    }
+    
+    public function confirmDelete()
+    {
+        $this->remove();
+        $this->resetDeleteState();
+    }
+    
+    public function cancelDelete()
+    {
+        $this->resetDeleteState();
+    }
+    
+    private function resetDeleteState()
+    {
+        $this->showDeleteConfirmation = false;
+        $this->deleteId = null;
+        $this->deleteType = null;
+    }
+    
+    public function remove()
+    {
+        try {
+            $this->validateQueryRemove();
+        } catch (Exception $e) {
+            $this->logSystemError('An error occurred while deleting the ' . ucfirst($this->deleteType) . '.', $e);
+        }
+    }
+    
+    public function validateQueryRemove()
+    {
+        try {
+            switch ($this->deleteType) {
+                case 'question':
+                    $entity = Question::find($this->deleteId);
+                    if (!$entity) {
+                        return $this->logRemoveError('Question not found!', null, 404);
+                    }
+                    break;
+                
+                case 'criteria':
+                    $entity = SurveyCriteria::find($this->deleteId);
+                    if (!$entity) {
+                        return $this->logRemoveError('Criteria not found!', null, 404);
+                    }
+                    // Prevent deleting if criteria has associated questions
+                    if ($entity->questionCriteria->questions()->exists()) {
+                        return $this->logRemoveError('Cannot delete criteria as it has associated questions.', $entity, 400);
+                    }
+                    break;
+                
+                default:
+                    throw new InvalidArgumentException('Invalid delete type.');
+            }
+    
+            $this->deleteEntity($entity);
+        } catch (QueryException $e) {
+            return $this->logRemoveError('Database error: ' . $e->getMessage(), $entity ?? null, 500);
+        }
+    }
+    
+    private function deleteEntity($entity)
+    {
+        $entity->delete();
+        return $this->logRemove(ucfirst($this->deleteType) . ' successfully deleted!', $entity, 200);
+    }
+    
+    private function logRemove($message, $entity, $statusCode)
+    {
+        session()->put('deleted_record_id', $this->deleteId);
+        session()->put('deleted_record_type', $this->deleteType);
 
+        session()->flash('deleted', $message);
+        activity()
+            ->performedOn($entity)
+            ->causedBy(Auth::user())
+            ->withProperties([
+                'status' => 'success',
+                'record_name' => $entity->name ?? $entity->description,
+                'status_code' => $statusCode,
+            ])
+            ->event(ucfirst($this->deleteType) . ' Removed')
+            ->log($message);
+    }
+    
+    private function logRemoveError($message, $entity, $statusCode)
+    {
+        session()->flash('error', $message);
+        activity()
+            ->performedOn($entity)
+            ->causedBy(Auth::user())
+            ->withProperties([
+                'status' => 'error',
+                'record_name' => $entity->name ?? $entity->description ?? 'Unknown',
+                'status_code' => $statusCode,
+            ])
+            ->event('Failed to Remove ' . ucfirst($this->deleteType))
+            ->log($message);
+    }
+    
+
+
+
+
+
+
+
+
+
+    // Method for restoring deleted question or criteria
+    public function undoDelete()
+    {
+        // Get the deleted record ID and type from the session
+        $deletedId = session()->get('deleted_record_id');
+        $deletedType = session()->get('deleted_record_type');
+
+        if ($deletedId && $deletedType) {
+            try {
+                // Retrieve the appropriate model based on the type
+                $entity = $this->getTrashedEntity($deletedId, $deletedType);
+
+                // Check if already restored or proceed with restoration
+                $this->checkIfRestored($entity, $deletedType);
+            } catch (ModelNotFoundException $e) {
+                $this->logSystemError(ucfirst($deletedType) . ' not found for restoration!', $e);
+            } catch (Exception $e) {
+                $this->logSystemError('Failed to restore ' . ucfirst($deletedType), $e);
+            }
+        } else {
+            session()->flash('error', 'No record available to restore!');
+        }
+    }
+
+    // Retrieve the trashed entity
+    private function getTrashedEntity($id, $type)
+    {
+        switch ($type) {
+            case 'question':
+                return Question::withTrashed()->findOrFail($id);
+            case 'criteria':
+                return SurveyCriteria::withTrashed()->findOrFail($id);
+            default:
+                throw new InvalidArgumentException('Invalid entity type: ' . $type);
+        }
+    }
+
+    // Check if already restored
+    private function checkIfRestored($entity, $type)
+    {
+        if (!$entity->trashed()) {
+            $this->logRestorationError(ucfirst($type) . ' is already active', $entity, 400);
+        } else {
+            $this->restoreEntity($entity, $type);
+        }
+    }
+
+    // Restore the entity
+    private function restoreEntity($entity, $type)
+    {
+        try {
+            $entity->restore();
+            session()->forget(['deleted_record_id', 'deleted_record_type']);
+            $this->logRestoration(ucfirst($type) . ' successfully restored!', $entity, 200);
+        } catch (Exception $e) {
+            $this->logRestorationError('Failed to restore ' . ucfirst($type), $entity, 500);
+        }
+    }
+
+    // Log successful restoration
+    private function logRestoration($message, $entity, $statusCode)
+    {
+        session()->flash('success', $message);
+        activity()
+            ->performedOn($entity)
+            ->causedBy(Auth::user())
+            ->withProperties([
+                'status' => 'success',
+                'record_name' => $entity->question_text ?? $entity->description,
+                'status_code' => $statusCode,
+            ])
+            ->event('Restore')
+            ->log($message);
+    }
+
+    // Log restoration error
+    private function logRestorationError($message, $entity, $statusCode)
+    {
+        session()->flash('error', $message);
+        activity()
+            ->performedOn($entity)
+            ->causedBy(Auth::user())
+            ->withProperties([
+                'status' => 'error',
+                'record_name' => $entity->question_text ?? $entity->description,
+                'status_code' => $statusCode,
+            ])
+            ->event('Restore')
+            ->log($message);
+    }
 
 
 
