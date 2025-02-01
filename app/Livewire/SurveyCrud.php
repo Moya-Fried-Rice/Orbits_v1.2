@@ -13,4 +13,8 @@ class SurveyCrud extends Component
         
         return view('livewire.survey-crud', compact('surveys'));
     }
+
+    public function getSurvey() {
+        return Survey::all();
+    }
 }

@@ -17,6 +17,7 @@ class QuestionCriteria extends Model
 
     protected $fillable = [
         'description',
+        'survey_id'
     ];
 
     public function questions()
@@ -24,8 +25,8 @@ class QuestionCriteria extends Model
         return $this->hasMany(Question::class, 'criteria_id', 'criteria_id');
     }
 
-    public function surveyCriteria()
+    public function survey()
     {
-        return $this->hasMany(SurveyCriteria::class, 'criteria_id', 'criteria_id');
+        return $this->belonsgTo(Survey::class, 'survey_id', 'survey_id');
     }
 }

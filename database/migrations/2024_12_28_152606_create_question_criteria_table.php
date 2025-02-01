@@ -19,6 +19,7 @@ class CreateQuestionCriteriaTable extends Migration
             $table->string('description'); // Description of the criteria
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->foreignId('survey_id')->constrained('surveys', 'survey_id')->onDelete('cascade'); // Foreign key to the departments table with cascade delete
             $table->softDeletes(); // Soft delete column (deleted_at)
         });        
     }
