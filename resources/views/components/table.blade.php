@@ -1,4 +1,4 @@
-@props(['action', 'sortable' => false])
+@props(['action', 'sortable' => null])
 
 <div class="overflow-x-auto w-full">
     <table class="table table-bordered font-TT w-full table-auto">
@@ -16,7 +16,7 @@
             </tr>
         </thead>
         @if ($sortable) 
-            <tbody wire:sortable="updateOrder">
+            <tbody wire:sortable="{{ $sortable }}">
                 {{ $body }}
             </tbody>
         @else

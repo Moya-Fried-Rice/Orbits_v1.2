@@ -16,7 +16,8 @@ class CreateQuestionsTable extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id('question_id'); // Auto-increment primary key
-            $table->string('question_text')->unique(); // Text of the question
+            $table->string('question_text'); // Text of the question
+            $table->integer('position')->nullable(false)->default(0);
             $table->foreignId('criteria_id')->constrained('question_criteria', 'criteria_id')->onDelete('cascade'); // Foreign key to the question_criteria table
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
