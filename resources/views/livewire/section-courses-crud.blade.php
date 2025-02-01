@@ -85,7 +85,7 @@
     </div>
     
 {{-- Modal Delete --}}
-<x-delete-modal label="Course"/>
+<x-delete-modal label="course"/>
 
 {{-- Modal Add --}}
 <x-add-modal label="Course">
