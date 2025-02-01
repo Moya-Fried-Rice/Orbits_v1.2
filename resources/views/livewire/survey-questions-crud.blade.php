@@ -73,11 +73,16 @@
                                         <img src="{{ asset('assets/icons/add-black.svg') }}" class="opacity-50" alt="Add">
                                     </button>
 
+                                    @if($survey->surveyCriteria->isEmpty())
+                                    <tr>
+                                        <td colspan="7" class="text-center py-4">No criteria found.</td>
+                                    </tr>
+                                    @else
                                     @foreach($survey->surveyCriteria as $criteria)
                                     <tr class="font-normal border border-[#DDD] text-[#666]-100 
                                         {{ $selectedCriteria == $criteria->criteria_id ? 'bg-blue-50' : '' }}">
                                         <td class="p-2 whitespace-nowrap px-4 truncate max-w-xs">
-                                            {{ $criteria->questionCriteria->description ?? 'No Description' }}
+                                            {{ $criteria->questionCriteria->description ?? 'No description' }}
                                         </td>
                                         <td class="p-2 whitespace-nowrap px-4 truncate max-w-xs">
                                             {{ $criteria->updated_at }}
@@ -92,7 +97,7 @@
                                                     <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit"
                                                          class="hover:transform hover:rotate-12 bg-[#F8F8F8] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                                                 </button>
-                                                <button wire:click="delete({{ $criteria->criteria_id }})" class="w-8 h-8">
+                                                <button wire:click="delete({{ $criteria->criteria_id }}, 'criteria')" class="w-8 h-8">
                                                     <img src="{{ asset('assets/icons/minus.svg') }}" alt="Delete"
                                                          class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                                                 </button>
@@ -100,8 +105,9 @@
                                         </td>
                                     </tr>
                                     @endforeach     
-
+                                    @endif
                                 </x-slot>
+
                             </x-table>
 
                         </td>
@@ -112,6 +118,11 @@
     
         <!-- Survey Criteria section -->
         <div class="order-2 xl:order-1">
+            @if($survey->surveyCriteria->isEmpty())
+            <div class="flex justify-center">
+                No Criteria Selected.
+            </div>
+            @else
             @foreach($survey->surveyCriteria->where('criteria_id', $selectedCriteria) as $criterion)
             <div>
                 <x-table :action="false">
@@ -163,7 +174,7 @@
                                                     <button wire:click="edit({{ $question->question_id }}, 'question')" class="w-8 h-8">
                                                         <img src="{{ asset('assets/icons/edit.svg') }}" alt="Edit" class="hover:transform hover:rotate-12 bg-[#F8F8F8] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                                                     </button>
-                                                    <button wire:click="delete({{ $question->question_id }})" class="w-8 h-8">
+                                                    <button wire:click="delete({{ $question->question_id }}, 'question')" class="w-8 h-8">
                                                         <img src="{{ asset('assets/icons/minus.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                                                     </button>
                                                 </div>
@@ -179,8 +190,11 @@
                 </x-table>
             </div>    
             @endforeach
+            @endif
         </div>
     </div>
+
+<x-delete-modal label="{{ $deleteType }}"/>
 
 <x-edit-modal label="{{ $name }}">
 
