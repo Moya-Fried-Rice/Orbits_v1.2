@@ -5,7 +5,7 @@
             No surveys found.
         @else
         @foreach ($surveys as $survey)
-        <div class="border border-[#D4D4D4] transition ease-out duration-300  hover:shadow-lg">
+        <div class="border border-[#D4D4D4] transition ease-out duration-300">
             <div class="flex justify-between items-center pb-2 m-2 mb-0 border-b border-[#D4D4D4]">
                 <div class="flex items-center justify-end space-x-2">
                     <a 
