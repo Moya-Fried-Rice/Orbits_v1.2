@@ -16,7 +16,7 @@ class CreateQuestionCriteriaTable extends Migration
     {
         Schema::create('question_criteria', function (Blueprint $table) {
             $table->id('criteria_id'); // Auto-increment primary key
-            $table->string('description'); // Description of the criteria
+            $table->string('description')->unique(); // Description of the criteria
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->foreignId('survey_id')->constrained('surveys', 'survey_id')->onDelete('cascade'); // Foreign key to the departments table with cascade delete
