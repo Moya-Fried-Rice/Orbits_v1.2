@@ -36,32 +36,58 @@ class QuestionCriteria extends Model
     {
         parent::boot();
     
-        // Add logging for debugging
+        // Automatically set position when a new criteria is created
         static::creating(function ($criteria) {
-            // Log for debugging
-            Log::info('Creating new QuestionCriteria record. Survey ID: ' . $criteria->survey_id);
-    
             // Find the max position for the same survey_id, excluding soft-deleted records
             $maxPosition = QuestionCriteria::where('survey_id', $criteria->survey_id)
                                            ->whereNull('deleted_at')  // Exclude soft-deleted records
                                            ->max('position');
-            
-            Log::info('Max Position (excluding soft-deleted): ' . $maxPosition);
     
             // Set position to next increment or 1 if it's the first entry
             $criteria->position = $maxPosition ? $maxPosition + 1 : 1;
-    
-            // Log the final position being set
-            Log::info('Assigned Position: ' . $criteria->position);
         });
     
-        // Handle soft-deleted record restoration
+        // When a criteria is being deleted, set its position to 0
+        static::deleting(function ($criteria) {
+            // Set the deleted criteria's position to 0
+            $criteria->update(['position' => 0]);
+        });
+    
+        // When a criteria is deleted, readjust positions of other criteria
+        static::deleted(function ($criteria) {
+            // Readjust the positions of other criteria in the same survey
+            QuestionCriteria::where('survey_id', $criteria->survey_id)
+                            ->where('position', '>', 0)
+                            ->orderBy('position')
+                            ->get()
+                            ->each(function ($c, $index) {
+                                // Update the position to eliminate gaps, starting from 1
+                                $c->update(['position' => $index + 1]);
+                            });
+        });
+    
+        // When a criteria is being restored, set it to the last position
         static::restoring(function ($criteria) {
-            // Log when a soft-deleted record is being restored
-            Log::info('Restoring QuestionCriteria record. ID: ' . $criteria->criteria_id);
+            // Find the maximum position of the non-deleted criteria in the same survey
+            $maxPosition = QuestionCriteria::where('survey_id', $criteria->survey_id)
+                                           ->whereNull('deleted_at') // Only consider non-deleted criteria
+                                           ->max('position');
     
-            // Restore the position value if necessary (but it should stay the same as before soft delete)
-            // You can add logic here if you need to adjust anything when restoring, but typically the position won't change.
+            // Position the restored criteria at the last position (maxPosition + 1)
+            $criteria->position = $maxPosition ? $maxPosition + 1 : 1;
         });
-    }
+    
+        // When a criteria is restored, readjust the positions of other criteria
+        static::restored(function ($criteria) {
+            // Readjust the positions of other criteria in the same survey
+            QuestionCriteria::where('survey_id', $criteria->survey_id)
+                            ->where('position', '>', 0)
+                            ->orderBy('position')
+                            ->get()
+                            ->each(function ($c, $index) {
+                                // Update the position to eliminate gaps, starting from 1
+                                $c->update(['position' => $index + 1]);
+                            });
+        });
+    }    
 }

@@ -188,8 +188,8 @@
                                             </td> 
                                             <td class="py-2 whitespace-nowrap px-4 truncate w-20">{{ $question->question_code }}</td>
                                             <td class="py-2 whitespace-nowrap px-4 truncate min-w-[20rem] max-w-[25rem]">{{ $question->question_text }}</td>
-                                            <td class="py-2 whitespace-nowrap px-4 truncate min-w-[20rem] max-w-[25rem]">
-                                                <div class="opacity-20 flex gap-10 items-center justify-center">
+                                            <td class="py-2 whitespace-nowrap px-4 truncate min-w-[10rem] max-w-[25rem]">
+                                                <div class="opacity-20 flex gap-5 items-center justify-center">
                                                     <i class="fa-regular fa-circle"></i>
                                                     <i class="fa-regular fa-circle"></i>
                                                     <i class="fa-regular fa-circle"></i>
