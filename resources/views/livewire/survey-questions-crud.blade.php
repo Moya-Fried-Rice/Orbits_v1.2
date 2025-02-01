@@ -54,7 +54,7 @@
                     <tr class="font-normal border border-[#DDD] text-[#666]-100">
                         <td class="p-2">
 
-                            <x-table :action="true">
+                            <x-table :action="true" :sortable="true">
 
                                 <x-slot name="header">
                 
@@ -78,9 +78,13 @@
                                         <td colspan="7" class="text-center py-4">No criteria found.</td>
                                     </tr>
                                     @else
-                                    @foreach($survey->questionCriteria as $criteria)
-                                    <tr class="font-normal border border-[#DDD] text-[#666]-100 
+                                    @foreach($survey->questionCriteria->sortBy('position') as $criteria)
+
+                                    <tr wire:sortable.item="{{ $criteria->criteria_id }}" wire:key="criteria-{{ $criteria->criteria_id }}" 
+                                        
+                                        class="font-normal border border-[#DDD] text-[#666]-100 
                                         {{ $selectedCriteria == $criteria->criteria_id ? 'bg-blue-50' : '' }}">
+                                        
                                         <td class="p-2 whitespace-nowrap px-4 truncate max-w-xs">
                                             {{ $criteria->description ?? 'No description' }}
                                         </td>
