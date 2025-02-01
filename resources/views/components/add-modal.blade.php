@@ -35,7 +35,7 @@
                 <!-- Submit Button -->
                 <div class="p-4 flex flex-wrap justify-end gap-2 items-center bg-white rounded-b-lg">
                     <button type="submit" class="transition duration-100 bg-[#923534] text-white px-4 py-2 rounded hover:bg-[#7B2323] focus:outline-none focus:ring focus:ring-red-300">
-                        Add {{ $label }}
+                        Add {{ ucwords($label) }}
                     </button>
 
                     <button type="button" wire:click="closeAdd" class="transition duration-100 bg-[#666] text-white px-4 py-2 rounded hover:bg-zinc-600 focus:outline-none focus:ring focus:ring-gray-300">
@@ -68,7 +68,7 @@
             {{-- Footer --}}
             <div class="p-4 flex flex-wrap justify-center gap-4 bg-white rounded-b-lg">
                 <button wire:click="confirmStore" class="transition duration-100 bg-[#923534] text-white px-4 py-2 rounded hover:bg-[#7B2323] focus:outline-none focus:ring focus:ring-red-300">
-                    Yes, Add {{ $label }}
+                    Yes, Add {{ ucwords($label) }}
                 </button>
                 <button wire:click="cancelStore" class="transition duration-100 bg-[#666] text-white px-4 py-2 rounded hover:bg-zinc-600 focus:outline-none focus:ring focus:ring-gray-300">
                     Cancel

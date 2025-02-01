@@ -28,8 +28,8 @@
             {{-- Body --}}
             <div class="flex flex-col items-center px-6 py-4 text-center">
                 <img src="{{ asset('assets/icons/error.svg') }}" class="w-20 h-20 mb-4" alt="Warning">
-                <p class="text-gray-700 text-sm sm:text-base">Are you sure you want to delete this {{ $label }}?</p>
-                <p class="text-xs text-gray-500 mt-2 sm:text-sm">This action can be undone.</p>
+                <p class="text-gray-700 text-sm sm:text-base">Are you sure you want to remove this {{ $label }}?</p>
+                <p class="text-xs text-gray-500 mt-2 sm:text-sm">This action can be undo if needed.</p>
             </div>
 
             {{-- Footer --}}

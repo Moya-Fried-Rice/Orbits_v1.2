@@ -102,7 +102,7 @@
     </div>
 
 {{-- Modal Delete --}}
-<x-delete-modal label="student"/>
+<x-delete-modal label="course section"/>
 
 {{-- Modal Edit --}}
 <x-edit-modal label="student">
