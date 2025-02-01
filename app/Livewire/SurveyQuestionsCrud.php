@@ -99,10 +99,17 @@ class SurveyQuestionsCrud extends Component
 
 
 
-    public function updateOrder($list) 
+    public function updateOrderCriteria($list) 
     {
         foreach($list as $item) {
             QuestionCriteria::find($item['value'])->update(['position' => $item['order']]);
+        }
+    }
+
+    public function updateOrderQuestion($list) 
+    {
+        foreach($list as $item) {
+            Question::find($item['value'])->update(['position' => $item['order']]);
         }
     }
     //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑

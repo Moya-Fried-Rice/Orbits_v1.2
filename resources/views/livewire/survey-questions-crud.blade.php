@@ -54,10 +54,18 @@
                     <tr class="font-normal border border-[#DDD] text-[#666]-100">
                         <td class="p-2">
 
-                            <x-table :action="true" :sortable="true">
+                            <x-table :action="true" sortable="updateOrderCriteria">
 
                                 <x-slot name="header">
-                
+
+                                    <x-table-header
+                                    :allowSort="false"
+                                    label=""/>
+
+                                    <x-table-header
+                                    :allowSort="false"
+                                    label=""/>
+
                                     <x-table-header
                                     :allowSort="false"
                                     label="Criteria Name"/>
@@ -80,17 +88,18 @@
                                     @else
                                     @foreach($survey->questionCriteria->sortBy('position') as $criteria)
 
-                                    <tr wire:sortable.item="{{ $criteria->criteria_id }}" wire:key="criteria-{{ $criteria->criteria_id }}" 
+                                    <tr 
+                                    wire:sortable.item="{{ $criteria->criteria_id }}" wire:key="criteria-{{ $criteria->criteria_id }}" 
                                         
-                                        class="font-normal border border-[#DDD] text-[#666]-100 
+                                        class="hover:bg-[#F8F8F8] transition-colors duration-100 font-normal border border-[#DDD] text-[#666]-100 
                                         {{ $selectedCriteria == $criteria->criteria_id ? 'bg-blue-50' : '' }}">
                                         
-                                        <td class="p-2 whitespace-nowrap px-4 truncate max-w-xs">
-                                            {{ $criteria->description ?? 'No description' }}
-                                        </td>
-                                        <td class="p-2 whitespace-nowrap px-4 truncate max-w-xs">
-                                            {{ $criteria->updated_at }}
-                                        </td>
+                                        <td wire:sortable.handle class="cursor-move w-10">
+                                            <img src="{{ asset('assets/icons/drag.svg') }}" class="opacity-50" alt="Add">
+                                        </td>                                        
+                                        <td class="p-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $criteria->position }}</td>
+                                        <td class="p-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $criteria->description ?? 'No description' }}</td>
+                                        <td class="p-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $criteria->updated_at }}</td>
                                         <td class="py-2 whitespace-nowrap px-4 w-24">
                                             <div class="flex items-center justify-end space-x-2">
                                                 <button wire:click="selectCriteria({{ $criteria->criteria_id }})" class="w-8 h-8">
@@ -124,7 +133,7 @@
         <div class="order-2 xl:order-1">
             @if($survey->questionCriteria->isEmpty())
             <div class="flex justify-center">
-                No Criteria Selected.
+                No criteria selected.
             </div>
             @else
             @foreach($survey->questionCriteria->where('criteria_id', $selectedCriteria) as $criterion)
@@ -139,19 +148,24 @@
                         <tr class="font-normal border border-[#DDD] text-[#666]-100">
                             <td class="p-2">
     
-                                <x-table :action="true">
+                                <x-table :action="true" sortable="updateOrderQuestion">
                                     <x-slot name="header">
+
                                         <x-table-header
                                             :allowSort="false"
-                                            label="Q. Code"/>
+                                            label=""/>
+
+                                        <x-table-header
+                                            :allowSort="false"
+                                            label="Code"/>
                                         
                                         <x-table-header
                                             :allowSort="false"
                                             label="Question Text"/>
 
-                                        {{-- <x-table-header
+                                        <x-table-header
                                             :allowSort="false"
-                                            label=" "/> --}}
+                                            label=" "/>
     
                                     </x-slot>
                                     <x-slot name="body">
@@ -159,20 +173,30 @@
                                         <button wire:click="add('question')" class="bg-green-100 hover:bg-green-200 transition duration-100 w-full rounded flex mb-2 justify-center p-1 border">
                                             <img src="{{ asset('assets/icons/add-black.svg') }}" class="opacity-50" alt="Add">
                                         </button>
+                                        @if($criterion->questions->isEmpty())
+                                        <tr>
+                                            <td colspan="7" class="text-center py-4">No question found.</td>
+                                        </tr>
+                                        @else
+                                        @foreach($criterion->questions->sortBy('position') ?? [] as $question)
 
-                                        @foreach($criterion->questions ?? [] as $question)
-                                        <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
+                                        <tr wire:sortable.item="{{ $question->question_id }}" wire:key="question-{{ $question->question_id }}"
+                                             class="bg-white font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
+                                            
+                                             <td wire:sortable.handle class="cursor-move w-10">
+                                                <img src="{{ asset('assets/icons/drag.svg') }}" class="opacity-50" alt="Add">
+                                            </td> 
                                             <td class="py-2 whitespace-nowrap px-4 truncate w-20">{{ $question->question_code }}</td>
                                             <td class="py-2 whitespace-nowrap px-4 truncate min-w-[20rem] max-w-[25rem]">{{ $question->question_text }}</td>
-                                            {{-- <td class="py-2 whitespace-nowrap px-4 truncate min-w-[20rem] max-w-[25rem]">
-                                                <div class="opacity-50 flex gap-5 items-center justify-center">
+                                            <td class="py-2 whitespace-nowrap px-4 truncate min-w-[20rem] max-w-[25rem]">
+                                                <div class="opacity-20 flex gap-10 items-center justify-center">
                                                     <i class="fa-regular fa-circle"></i>
                                                     <i class="fa-regular fa-circle"></i>
                                                     <i class="fa-regular fa-circle"></i>
                                                     <i class="fa-regular fa-circle"></i>
                                                     <i class="fa-regular fa-circle"></i>
                                                 </div>
-                                            </td> --}}
+                                            </td>
                                             <td class="py-2 whitespace-nowrap px-4 w-24">
                                                 <div class="flex items-center justify-end space-x-2">
                                                     <button wire:click="edit({{ $question->question_id }}, 'question')" class="w-8 h-8">
@@ -185,7 +209,7 @@
                                             </td>
                                         </tr>
                                         @endforeach
-
+                                        @endif
                                     </x-slot>
                                 </x-table>
                             </td>
