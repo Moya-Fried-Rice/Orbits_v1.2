@@ -69,20 +69,20 @@
                                 </x-slot>
                                 <x-slot name="body">
 
-                                    <button class="bg-green-100 hover:bg-green-200 transition duration-100 w-full rounded flex justify-center p-1 mb-2 border">
+                                    <button wire:click="add('criteria')" class="bg-green-100 hover:bg-green-200 transition duration-100 w-full rounded flex justify-center p-1 mb-2 border">
                                         <img src="{{ asset('assets/icons/add-black.svg') }}" class="opacity-50" alt="Add">
                                     </button>
 
-                                    @if($survey->surveyCriteria->isEmpty())
+                                    @if($survey->questionCriteria->isEmpty())
                                     <tr>
                                         <td colspan="7" class="text-center py-4">No criteria found.</td>
                                     </tr>
                                     @else
-                                    @foreach($survey->surveyCriteria as $criteria)
+                                    @foreach($survey->questionCriteria as $criteria)
                                     <tr class="font-normal border border-[#DDD] text-[#666]-100 
                                         {{ $selectedCriteria == $criteria->criteria_id ? 'bg-blue-50' : '' }}">
                                         <td class="p-2 whitespace-nowrap px-4 truncate max-w-xs">
-                                            {{ $criteria->questionCriteria->description ?? 'No description' }}
+                                            {{ $criteria->description ?? 'No description' }}
                                         </td>
                                         <td class="p-2 whitespace-nowrap px-4 truncate max-w-xs">
                                             {{ $criteria->updated_at }}
@@ -118,18 +118,18 @@
     
         <!-- Survey Criteria section -->
         <div class="order-2 xl:order-1">
-            @if($survey->surveyCriteria->isEmpty())
+            @if($survey->questionCriteria->isEmpty())
             <div class="flex justify-center">
                 No Criteria Selected.
             </div>
             @else
-            @foreach($survey->surveyCriteria->where('criteria_id', $selectedCriteria) as $criterion)
+            @foreach($survey->questionCriteria->where('criteria_id', $selectedCriteria) as $criterion)
             <div>
                 <x-table :action="false">
                     <x-slot name="header">
                         <x-table-header
                                 :allowSort="false"
-                                label="{{ $criterion->questionCriteria->description ?? 'No Title' }}"/>
+                                label="{{ $criterion->description ?? 'No Title' }}"/>
                     </x-slot>
                     <x-slot name="body">
                         <tr class="font-normal border border-[#DDD] text-[#666]-100">
@@ -152,11 +152,11 @@
                                     </x-slot>
                                     <x-slot name="body">
 
-                                        <button class="bg-green-100 hover:bg-green-200 transition duration-100 w-full rounded flex mb-2 justify-center p-1 border">
+                                        <button wire:click="add('question')" class="bg-green-100 hover:bg-green-200 transition duration-100 w-full rounded flex mb-2 justify-center p-1 border">
                                             <img src="{{ asset('assets/icons/add-black.svg') }}" class="opacity-50" alt="Add">
                                         </button>
 
-                                        @foreach($criterion->questionCriteria->questions ?? [] as $question)
+                                        @foreach($criterion->questions ?? [] as $question)
                                         <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
                                             <td class="py-2 whitespace-nowrap px-4 truncate w-20">{{ $question->question_code }}</td>
                                             <td class="py-2 whitespace-nowrap px-4 truncate min-w-[20rem] max-w-[25rem]">{{ $question->question_text }}</td>
@@ -196,10 +196,10 @@
 
 <x-delete-modal label="{{ $deleteType }}"/>
 
-<x-edit-modal label="{{ $name }}">
+<x-edit-modal label="{{ $editType }}">
 
     <!-- Show only if the 'edit' name is 'survey' -->
-    @if($name == 'survey')
+    @if($editType == 'survey')
         <x-add-modal-data name="survey_name" label="Survey Name:">
             <input 
                 class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
@@ -217,7 +217,7 @@
     @endif
 
     <!-- Show only if the 'edit' name is 'criteria' -->
-    @if($name == 'criteria')
+    @if($editType == 'criteria')
         <x-add-modal-data name="description" label="Criteria Description:">
             <input 
                 class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
@@ -228,7 +228,7 @@
     @endif
 
     <!-- Show only if the 'edit' name is 'question' -->
-    @if($name == 'question')
+    @if($editType == 'question')
         <x-add-modal-data name="question_text" label="Question Text:">
             <textarea 
                 class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
@@ -239,6 +239,33 @@
     @endif
 
 </x-edit-modal>
+
+
+<x-add-modal label="{{ $addType }}">
+
+    <!-- Show only if the 'add' name is 'criteria' -->
+    @if($addType == 'criteria')
+        <x-add-modal-data name="description" label="Criteria Description:">
+            <input 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                type="text" 
+                id="description" 
+                wire:model="description">
+        </x-add-modal-data>
+    @endif
+
+    <!-- Show only if the 'add' name is 'question' -->
+    @if($addType == 'question')
+        <x-add-modal-data name="question_text" label="Question Text:">
+            <textarea 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                id="question_text" 
+                rows="3"
+                wire:model="question_text"></textarea>
+        </x-add-modal-data>
+    @endif
+
+</x-add-modal>
     
 
 </div>

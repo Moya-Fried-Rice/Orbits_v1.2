@@ -23,15 +23,15 @@ class Survey extends Model
         return $this->hasMany(SurveyRole::class, 'survey_id', 'survey_id');
     }
     
-    public function surveyCriteria()
+    public function questionCriteria()
     {
-        return $this->hasMany(SurveyCriteria::class, 'survey_id', 'survey_id');
+        return $this->hasMany(QuestionCriteria::class, 'survey_id', 'survey_id');
     }
 
     public function getTotalQuestionsAttribute()
     {
-        return $this->surveyCriteria->sum(function ($sc) {
-            return $sc->questionCriteria ? $sc->questionCriteria->questions->count() : 0;
+        return $this->questionCriteria->sum(function ($sc) {
+            return $sc->questions ? $sc->questions->count() : 0;
         });
     }
     

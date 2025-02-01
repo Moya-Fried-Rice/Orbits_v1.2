@@ -29,7 +29,7 @@
                     <span class="text-xs">Roles</span>
                 </div>
                 <div class="py-2 px-4 w-24 justify-center flex flex-col items-center text-center">
-                    <span class="text-black">{{ $survey->surveyCriteria->count() }}</span>
+                    <span class="text-black">{{ $survey->questionCriteria->count() }}</span>
                     <span class="text-xs">Criterias</span>
                 </div>
                 <div class="border-l border-[#D4D4D4] py-2 px-4 w-24 justify-center flex flex-col items-center text-center">
