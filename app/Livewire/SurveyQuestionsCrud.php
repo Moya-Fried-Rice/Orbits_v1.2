@@ -96,6 +96,15 @@ class SurveyQuestionsCrud extends Component
         // Reset specific properties that should be reset, excluding `$uuid`
         $this->reset(['deleteType', 'editType', 'survey_name', 'description', 'question_text', 'survey_id', 'question_id', 'criteria_id']);
     }
+
+
+
+    public function updateOrder($list) 
+    {
+        foreach($list as $item) {
+            QuestionCriteria::find($item['value'])->update(['position' => $item['order']]);
+        }
+    }
     //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
 
