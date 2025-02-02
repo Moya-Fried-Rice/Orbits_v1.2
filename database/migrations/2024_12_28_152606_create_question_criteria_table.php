@@ -16,7 +16,7 @@ class CreateQuestionCriteriaTable extends Migration
     {
         Schema::create('question_criteria', function (Blueprint $table) {
             $table->id('criteria_id'); // Auto-increment primary key
-            $table->string('description')->unique(); // Description of the criteria
+            $table->string('description'); // Description of the criteria
             $table->integer('position')->nullable(false)->default(0);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));

@@ -1,6 +1,9 @@
-<div class="bg-white h-full">
-    <div class="font-TT p-5 flex flex-wrap justify-start gap-5 items-center">
-                
+<div class="bg-white">
+
+    <x-system-notification />
+
+    <div class="font-TT p-5 flex flex-wrap justify-center md:justify-start gap-5 items-center">
+
         @if($surveys->isEmpty())
             No surveys found.
         @else
@@ -14,7 +17,7 @@
                     >
                         View Survey
                     </a>
-                    <button wire:click="delete()" class="w-8 h-8">
+                    <button wire:click="delete({{ $survey->survey_id }})" class="w-8 h-8">
                         <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                     </button>
                 </div>
@@ -42,7 +45,31 @@
         </div>
         @endforeach
         @endif
-
+        <div class="border-[#DDD] border ">
+            <button wire:click="add()">
+                <img src="{{ asset('assets/icons/add-black.svg') }}" alt="Delete" class="hover:scale-110 hover:border-[#923534] transition duration-100 mx-16 my-8 bg-green-100 border border-[#666] p-3 w-12 h-12 rounded-full">
+            </button>
+        </div>
     </div>
+
+<x-delete-modal label="survey"/>
+
+<x-add-modal label="survey">
+
+        <x-add-modal-data name="survey_name" label="Survey Name:">
+            <input 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
+                type="text" 
+                id="survey_name" 
+                wire:model="survey_name">
+        </x-add-modal-data>
+
+        <x-add-modal-data name="role_id" label="Target Roles:">
+
+            <x-select-role :roles="$this->getRoles()" :role_id="$role_id" />
+    
+        </x-add-modal-data>
+
+</x-add-modal>
 
 </div>
