@@ -87,20 +87,37 @@ Route::get('/evaluation', function () {
     return view('evaluation.evaluation');
 })->middleware(['auth', 'check_role:4'])->name('evaluation');
 
+// Route to dashboard with conditioning
+Route::get('/evaluation', function () {
+    $user = Auth::user();
+    switch ($user->role_id) {
+        case '4':
+            return view('evaluation.evaluation-settings');
+        case '1':
+            return view('evaluation.evaluation');
+        case '2':
+            return view('evaluation.evaluation');
+        default:
+            abort(403, 'Unauthorized');
+    }
+})
+->middleware(['auth', 'check_role:4,1,2']) // Filter role: all
+->name('evaluation'); // Route name
+
 // Route to results page
 Route::get('/results', function () {
     return view('results.results');
-})->middleware(['auth', 'check_role:4'])->name('results');
+})->middleware(['auth', 'check_role:4,3'])->name('results');
 
 // Route to monitor page
 Route::get('/monitor', function () {
     return view('monitor.monitor');
-})->middleware(['auth', 'check_role:4'])->name('monitor');
+})->middleware(['auth', 'check_role:4,3'])->name('monitor');
 
 // Route to ranking page
 Route::get('/ranking', function () {
     return view('ranking.ranking');
-})->middleware(['auth', 'check_role:4'])->name('ranking');
+})->middleware(['auth', 'check_role:4,3'])->name('ranking');
 
 // Route to dashboard with conditioning
 Route::get('/dashboard', function () {
