@@ -69,16 +69,12 @@
                                     <x-table-header
                                     :allowSort="false"
                                     label="Criteria Name"/>
-
-                                    <x-table-header
-                                    :allowSort="false"
-                                    label="Updated At"/>
                 
                                 </x-slot>
                                 <x-slot name="body">
 
-                                    <button wire:click="add('criteria')" class="bg-green-100 hover:bg-green-200 transition duration-100 w-full rounded flex justify-center p-1 mb-2 border">
-                                        <img src="{{ asset('assets/icons/add-black.svg') }}" class="opacity-50" alt="Add">
+                                    <button wire:click="add('criteria')" class="bg-green-100 hover:bg-green-200 transition duration-100 w-full rounded flex justify-center p-1 mb-2 border border-[#666]">
+                                        <img src="{{ asset('assets/icons/add-black.svg') }}" alt="Add">
                                     </button>
 
                                     @if($survey->questionCriteria->isEmpty())
@@ -98,8 +94,7 @@
                                             <img src="{{ asset('assets/icons/drag.svg') }}" class="opacity-50" alt="Add">
                                         </td>                                        
                                         <td class="p-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $criteria->position }}</td>
-                                        <td class="p-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $criteria->description ?? 'No description' }}</td>
-                                        <td class="p-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $criteria->updated_at }}</td>
+                                        <td class="p-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $criteria->description ?? 'No description' }}</td>c
                                         <td class="py-2 whitespace-nowrap px-4 w-24">
                                             <div class="flex items-center justify-end space-x-2">
                                                 <button wire:click="selectCriteria({{ $criteria->criteria_id }})" class="w-8 h-8">
@@ -170,8 +165,8 @@
                                     </x-slot>
                                     <x-slot name="body">
 
-                                        <button wire:click="add('question')" class="bg-green-100 hover:bg-green-200 transition duration-100 w-full rounded flex mb-2 justify-center p-1 border">
-                                            <img src="{{ asset('assets/icons/add-black.svg') }}" class="opacity-50" alt="Add">
+                                        <button wire:click="add('question')" class="bg-green-100 hover:bg-green-200 transition duration-100 w-full rounded flex mb-2 justify-center p-1 border border-[#666]">
+                                            <img src="{{ asset('assets/icons/add-black.svg') }}" alt="Add">
                                         </button>
                                         @if($criterion->questions->isEmpty())
                                         <tr>
