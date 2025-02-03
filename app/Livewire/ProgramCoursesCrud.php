@@ -18,8 +18,7 @@ class ProgramCoursesCrud extends Component
 {
 
     public $uuid;
-    public $program_id, $program_name, $program_code, $abbreviation, 
-    $program_description, $department_id, $programCourse, $course_id, $year_level, $semester;
+    public $program_id, $program_name, $program_code, $abbreviation, $program_description, $department_id, $programCourse, $course_id, $year_level, $semester;
     public $showDeleteConfirmation = false;
     public $showEditForm = false, $showEditConfirmation = false;
     public $showAddForm = false, $showAddConfirmation = false;
@@ -396,6 +395,7 @@ class ProgramCoursesCrud extends Component
         ]);
         
         try {
+            $this->validate($this->rules);
 
             // Attempt to create the course
             $course = $this->createCourse();

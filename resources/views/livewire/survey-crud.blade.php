@@ -45,7 +45,7 @@
         </div>
         @endforeach
         @endif
-        <div class="border-[#DDD] border ">
+        <div class="border-[#DDD] border border-dashed">
             <button wire:click="add()">
                 <img src="{{ asset('assets/icons/add-black.svg') }}" alt="Delete" class="hover:scale-110 hover:border-[#923534] transition duration-100 mx-16 my-8 bg-green-100 border border-[#666] p-3 w-12 h-12 rounded-full">
             </button>
