@@ -21,9 +21,9 @@
                         <img src="{{ asset('assets/icons/delete.svg') }}" alt="Delete" class="hover:transform hover:rotate-12 bg-[#666] p-1.5 w-8 h-8 rounded transition duration-100 border hover:border-[#923534]">
                     </button>
                 </div>
-                <img src="{{ asset('assets/icons/info2.svg') }}" alt="Edit" class="p-1 w-8 h-8 ">
+                {{-- <img src="{{ asset('assets/icons/info2.svg') }}" alt="Edit" class="p-1 w-8 h-8 "> --}}
             </div>
-            <div class="text-center py-8 text-2xl">
+            <div class="text-center py-8 px-2 text-2xl">
                 {{ $survey->survey_name }}
             </div>
             <div class="bg-[#F8F8F8] border-t border-[#D4D4D4] flex">
