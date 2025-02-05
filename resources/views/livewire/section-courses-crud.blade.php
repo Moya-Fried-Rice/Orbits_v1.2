@@ -76,6 +76,10 @@
                                     </button>
                                 </div>
                             </td>
+                            {{-- FOR TRACKING --}}
+                            {{-- <td>
+                                {{ $courseSection->total_evaluated }}
+                            </td> --}}
                         </tr>
                     @endforeach
             

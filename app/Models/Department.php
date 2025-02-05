@@ -25,16 +25,6 @@ class Department extends Model
         return $this->hasMany(Course::class, 'department_id', 'department_id');
     }
 
-    public function getTotalEvaluatedAttribute()
-    {
-        return $this->courses()->with(['courseSections' => function ($query) {
-            $query->withCount('studentEvaluation');
-        }])->get()->sum(function ($course) {
-            return $course->courseSections->sum('student_evaluation_count');
-        });
-    }
-    
-
     public function faculties()
     {
         return $this->hasMany(Faculty::class, 'department_id', 'department_id');
@@ -49,4 +39,10 @@ class Department extends Model
     {
         return $this->hasOne(ProgramChair::class, 'department_id', 'department_id');
     }
+
+    // FOR TRACKING
+    public function getTotalEvaluatedAttribute()
+    {
+        return $this->courses->sum('total_evaluated');
+    }  
 }

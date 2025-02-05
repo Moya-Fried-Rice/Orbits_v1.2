@@ -80,6 +80,10 @@
                             </button>
                         </div>
                     </td>
+                    {{-- FOR TRACKING --}}
+                    {{-- <td>
+                        {{ $department->total_evaluated }}
+                    </td> --}}
                 </tr>            
                 @endforeach
                 @endif

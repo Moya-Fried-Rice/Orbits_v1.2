@@ -38,13 +38,14 @@ class Course extends Model
         return $this->hasMany(ProgramCourse::class, 'course_id', 'course_id');
     }
 
-    public function getTotalEvaluatedAttribute()
-    {
-        return $this->courseSections()->withCount('studentEvaluation')->get()->sum('student_evaluation_count');
-    }
-
     public function department()
     {
         return $this->belongsTo(Department::class, 'department_id', 'department_id');
     }
+
+    // FOR TRACKING
+    public function getTotalEvaluatedAttribute()
+    {
+        return $this->courseSections->sum('total_evaluated');
+    }   
 }
