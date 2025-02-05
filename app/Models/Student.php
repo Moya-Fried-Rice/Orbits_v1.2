@@ -29,12 +29,12 @@ class Student extends Authenticatable
         return $this->first_name . ' ' . $this->last_name;
     }
 
-    public function studentCourse()
+    public function studentCourses()
     {
         return $this->hasMany(StudentCourse::class, 'student_id', 'student_id'); 
     }
 
-    public function studentEvaluation()
+    public function studentEvaluations()
     {
         return $this->hasMany(StudentEvaluation::class, 'student_id', 'student_id'); 
     }

@@ -376,15 +376,15 @@ class DepartmentCrud extends Component
             }
 
             // Check for related records (dependencies) that prevent deletion
-            if ($record->faculty()->exists()) { // Check if there are faculty members linked to the department
+            if ($record->faculties()->exists()) { // Check if there are faculty members linked to the department
                 return $this->logRemoveError('Cannot delete the department due to existing faculty members.', $record, 400);
             }
 
-            if ($record->course()->exists()) { // Check if there are courses linked to the department
+            if ($record->courses()->exists()) { // Check if there are courses linked to the department
                 return $this->logRemoveError('Cannot delete the department due to existing courses.', $record, 400);
             }
 
-            if ($record->program()->exists()) { // Check if there are programs linked to the department
+            if ($record->programs()->exists()) { // Check if there are programs linked to the department
                 return $this->logRemoveError('Cannot delete the department due to existing programs.', $record, 400);
             }
 

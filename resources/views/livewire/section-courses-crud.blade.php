@@ -49,17 +49,17 @@
             </x-slot>
 
             <x-slot name="body">
-                @if($section && $section->courseSection->isEmpty())
+                @if($section && $section->courseSections->isEmpty())
                     <tr>
                         <td colspan="6" class="text-center py-2 px-4">
                             No courses found.
                         </td>
                     </tr>
                 @else
-                    @foreach($section->courseSection as $courseSection)
+                    @foreach($section->courseSections as $courseSection)
                         @php
                             $course = $courseSection->course;
-                            $faculty = $courseSection->facultyCourse->first()->faculty ?? null;
+                            $faculty = $courseSection->facultyCourses->first()->faculty ?? null;
                         @endphp
                         <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
                             <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $course->course_code }}</td>

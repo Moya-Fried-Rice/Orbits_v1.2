@@ -20,7 +20,7 @@ class Section extends Model
         'period_id',
     ];
 
-    public function courseSection()
+    public function courseSections()
     {
         return $this->hasMany(CourseSection::class, 'section_id', 'section_id');
     }

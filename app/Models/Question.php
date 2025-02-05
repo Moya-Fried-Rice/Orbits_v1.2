@@ -20,6 +20,11 @@ class Question extends Model
         'position'
     ];
 
+    public function responseStudents()
+    {
+        return $this->hasMany(ResponseStudent::class, 'question_id', 'question_id');
+    }
+    
     public function questionCriteria()
     {
         return $this->belongsTo(QuestionCriteria::class, 'criteria_id', 'criteria_id');

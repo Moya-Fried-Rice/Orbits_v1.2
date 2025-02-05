@@ -50,8 +50,8 @@ class SurveyQuestionsCrud extends Component
         }
 
         // Set default selected criteria if it's not already set
-        if (!$this->selectedCriteria && $survey->questionCriteria->isNotEmpty()) {
-            $this->selectedCriteria = $survey->questionCriteria->first()->criteria_id;
+        if (!$this->selectedCriteria && $survey->questionCriterias->isNotEmpty()) {
+            $this->selectedCriteria = $survey->questionCriterias->first()->criteria_id;
         }
 
         return view('livewire.survey-questions-crud', compact('survey'));
@@ -71,7 +71,7 @@ class SurveyQuestionsCrud extends Component
     protected function getSurveyByUuid($uuid)
     {
         $survey = Survey::where('uuid', $uuid)
-            ->with('questionCriteria.questions') // Eager load all related data
+            ->with('questionCriterias.questions') // Eager load all related data
             ->first();
     
         return $survey;

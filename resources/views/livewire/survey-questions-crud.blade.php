@@ -15,7 +15,7 @@
                     <span class="flex items-center gap-2 justify-start">
                         
                         Target Roles: 
-                        @foreach ($survey->surveyRole as $index => $surveyRole)
+                        @foreach ($survey->surveyRoles as $index => $surveyRole)
                             {{ ucfirst(str_replace('_', ' ', $surveyRole->role->role_name)) }}@if(!$loop->last), @endif
                         @endforeach
 
@@ -77,12 +77,12 @@
                                         <img src="{{ asset('assets/icons/add-black.svg') }}" alt="Add">
                                     </button>
 
-                                    @if($survey->questionCriteria->isEmpty())
+                                    @if($survey->questionCriterias->isEmpty())
                                     <tr>
                                         <td colspan="7" class="text-center py-4">No criteria found.</td>
                                     </tr>
                                     @else
-                                    @foreach($survey->questionCriteria->sortBy('position') as $criteria)
+                                    @foreach($survey->questionCriterias->sortBy('position') as $criteria)
 
                                     <tr 
                                     wire:sortable.item="{{ $criteria->criteria_id }}" wire:key="criteria-{{ $criteria->criteria_id }}" 
@@ -126,12 +126,12 @@
     
         <!-- Survey Criteria section -->
         <div class="order-2 xl:order-1">
-            @if($survey->questionCriteria->isEmpty())
+            @if($survey->questionCriterias->isEmpty())
             <div class="flex justify-center">
                 No criteria selected.
             </div>
             @else
-            @foreach($survey->questionCriteria->where('criteria_id', $selectedCriteria) as $criterion)
+            @foreach($survey->questionCriterias->where('criteria_id', $selectedCriteria) as $criterion)
             <div>
                 <x-table :action="false">
                     <x-slot name="header">

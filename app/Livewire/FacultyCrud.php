@@ -371,7 +371,7 @@ class FacultyCrud extends Component
             }
 
             // Check for related records (dependencies) that prevent deletion
-            if ($faculty->facultyCourse()->exists()) { 
+            if ($faculty->facultyCourses()->exists()) { 
                 return $this->logRemoveError('Cannot delete the faculty as they are currently assigned with a course.', $faculty, 400);
             }
 

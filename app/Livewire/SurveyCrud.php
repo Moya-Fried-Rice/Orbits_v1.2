@@ -289,7 +289,7 @@ class SurveyCrud extends Component
             }
 
             // Check for related records (dependencies) that prevent deletion
-            if ($survey->questionCriteria()->exists()) {
+            if ($survey->questionCriterias()->exists()) {
                 return $this->logRemoveError('Cannot delete the survey as it has assigned criterias.', $survey, 400);
             }
 

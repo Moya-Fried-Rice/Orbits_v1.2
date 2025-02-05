@@ -18,19 +18,19 @@ class Survey extends Model
         'survey_name',
     ];
 
-    public function surveyRole()
+    public function surveyRoles()
     {
         return $this->hasMany(SurveyRole::class, 'survey_id', 'survey_id');
     }
     
-    public function questionCriteria()
+    public function questionCriterias()
     {
         return $this->hasMany(QuestionCriteria::class, 'survey_id', 'survey_id');
     }
 
     public function getTotalQuestionsAttribute()
     {
-        return $this->questionCriteria->sum(function ($sc) {
+        return $this->questionCriterias->sum(function ($sc) {
             return $sc->questions ? $sc->questions->count() : 0;
         });
     }

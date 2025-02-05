@@ -5,7 +5,7 @@
     <option value="">Select a course</option>
     @foreach ($this->getDepartments() as $department)
         <optgroup label="{{ $department->department_name }}"> 
-            @foreach ($department->course as $course) <!-- Assuming courses is a relationship -->
+            @foreach ($department->courses as $course) <!-- Assuming courses is a relationship -->
                 <option value="{{ $course->course_id }}">{{ $course->course_name }}</option>
             @endforeach
         </optgroup>

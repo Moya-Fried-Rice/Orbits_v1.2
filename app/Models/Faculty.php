@@ -29,7 +29,7 @@ class Faculty extends Authenticatable
         return $this->first_name . ' ' . $this->last_name;
     }
 
-    public function facultyCourse()
+    public function facultyCourses()
     {
         return $this->hasMany(FacultyCourse::class, 'faculty_id', 'faculty_id');
     }

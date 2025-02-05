@@ -46,7 +46,7 @@ class StudentProfileCrud extends Component
     protected function getStudentByUuid($uuid)
     {
         // Return the student record along with its associated course section
-        return Student::with('studentCourse.courseSection')->where('uuid', $uuid)->first();
+        return Student::with('studentCourses.courseSection')->where('uuid', $uuid)->first();
     }
 
     // Validation rules for updating student profile
@@ -71,7 +71,7 @@ class StudentProfileCrud extends Component
         $programId = $student->program_id;
 
         // Retrieve sections related to the student's program
-        return CourseSection::whereHas('course.programCourse.program', function ($query) use ($programId) {
+        return CourseSection::whereHas('course.programCourses.program', function ($query) use ($programId) {
             $query->where('programs.program_id', $programId);
         })->get();
     }
