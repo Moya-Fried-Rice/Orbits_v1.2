@@ -30,11 +30,6 @@ class CourseSection extends Model
         return $this->hasMany(StudentEvaluation::class, 'course_section_id', 'course_section_id'); 
     }
 
-    public function getTotalEvaluatedAttribute()
-    {
-        return $this->studentEvaluation->count();
-    }
-
     public function facultyCourses()
     {
         return $this->hasMany(FacultyCourse::class, 'course_section_id', 'course_section_id'); 
@@ -50,29 +45,9 @@ class CourseSection extends Model
         return $this->belongsTo(Section::class, 'section_id');
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    // public function evaluationPeriod()
-    // {
-    //     return $this->belongsTo(EvaluationPeriod::class, 'period_id', 'period_id');
-    // }
-    
+    // FOR TRACKING
+    public function getTotalEvaluatedAttribute()
+    {
+        return $this->studentEvaluations()->where('is_completed', true)->count();
+    }   
 }
