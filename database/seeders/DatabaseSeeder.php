@@ -19,7 +19,6 @@ class DatabaseSeeder extends Seeder
             AdminsTableSeeder::class,
             DepartmentsTableSeeder::class,
             CoursesTableSeeder::class,
-            EvaluationPeriodsTableSeeder::class,
             ProgramsTableSeeder::class,
             SectionsTableSeeder::class,
             CourseSectionsTableSeeder::class,
@@ -31,7 +30,6 @@ class DatabaseSeeder extends Seeder
             QuestionCriteriaTableSeeder::class,
             QuestionsTableSeeder::class,
             StudentsTableSeeder::class,
-            SurveyPeriodTableSeeder::class,
         ]);
     }
 }

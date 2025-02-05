@@ -16,7 +16,6 @@ return new class extends Migration
             $table->id('section_id');
             $table->uuid('uuid')->default(DB::raw('UUID()'))->nullable(false);
             $table->foreignId('program_id')->constrained('programs', 'program_id')->onDelete('cascade'); // Foreign key to the programs table
-            $table->foreignId('period_id')->default(1)->constrained('evaluation_periods', 'period_id')->onDelete('cascade'); // Foreign key to the evaluation_periods table with default value 1
             $table->integer('year_level'); // Year level (e.g., 1st year, 2nd year, etc.)
             $table->integer('section_number'); // Section number (e.g., 102 for 1st year, 2nd section)
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
