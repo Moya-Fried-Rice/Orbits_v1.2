@@ -19,6 +19,8 @@
     </div>
 </div>
     
+@livewire('evaluation')
+
 @endsection
 
 @section('scripts')
