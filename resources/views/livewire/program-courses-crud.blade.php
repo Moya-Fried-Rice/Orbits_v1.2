@@ -34,19 +34,19 @@
 
 <div class="py-5 pt-0">
 
-    @if ($program && $program->programCourse->isEmpty())
+    @if ($program && $program->programCourses->isEmpty())
         <div class="text-center text-[#666] pt-10">
             No courses found.
         </div>
     @else
     
-        @foreach ($program->programCourse->pluck('year_level')->unique()->sort() as $year_level)
+        @foreach ($program->programCourses->pluck('year_level')->unique()->sort() as $year_level)
 
             <div class="pt-10 text-[#2A2723] text-center w-full">** {{ strtoupper($this->ordinalWord($year_level)) }} YEAR **</div>
 
             <div class="grid grid-cols-1 xl:grid-cols-2">
 
-                @foreach ($program->programCourse->where('year_level', $year_level)->pluck('semester')->unique()->sort() as $semester)
+                @foreach ($program->programCourses->where('year_level', $year_level)->pluck('semester')->unique()->sort() as $semester)
 
                     <div class="p-5">
                         <div>{{ $this->ordinal($semester) }} Semester</div>
@@ -79,10 +79,10 @@
 
                             <x-slot name="body">
                                 @php
-                                    $coursesInSemester = $program->programCourse->where('year_level', $year_level)->where('semester', $semester);
+                                    $coursesInSemester = $program->programCourses->where('year_level', $year_level)->where('semester', $semester);
                                 @endphp
 
-                                @if ($program && $program->programCourse->isEmpty())
+                                @if ($program && $program->programCourses->isEmpty())
                                     <tr>
                                         <td colspan="6" class="text-center py-2 px-4">
                                             No courses found.

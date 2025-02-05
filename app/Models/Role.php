@@ -11,12 +11,12 @@ class Role extends Model
 
     protected $fillable = ['role_name'];
 
-    public function surveyRole()
+    public function surveyRoles()
     {
         return $this->hasMany(SurveyRole::class, 'role_id', 'role_id');
     }
 
-    public function user()
+    public function users()
     {
         return $this->hasMany(User::class);
     }

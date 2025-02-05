@@ -6,7 +6,7 @@
     
     @foreach ($this->getDepartments() as $department)
         <optgroup label="{{ $department->department_name }}">
-            @foreach ($department->faculty as $faculty)
+            @foreach ($department->faculties as $faculty)
                 <option value="{{ $faculty->faculty_id }}">{{ $faculty->first_name }} {{ $faculty->last_name }}</option>
             @endforeach
         </optgroup>

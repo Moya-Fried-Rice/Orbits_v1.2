@@ -59,14 +59,14 @@
             </x-slot>
     
             <x-slot name="body">
-                @if($faculty && $faculty->facultyCourse->isEmpty())
+                @if($faculty && $faculty->facultyCourses->isEmpty())
                     <tr>
                         <td colspan="5" class="text-center py-2 px-4">
                             No courses assigned.
                         </td>
                     </tr>
                 @else
-                    @foreach($faculty->facultyCourse as $facultyCourse)
+                    @foreach($faculty->facultyCourses as $facultyCourse)
                         @php
                             $course = $facultyCourse->courseSection->course;
                             $section = $facultyCourse->courseSection->section;

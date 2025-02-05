@@ -25,12 +25,17 @@ class CourseSection extends Model
         return $this->hasMany(StudentCourse::class, 'course_section_id', 'course_section_id'); 
     }
 
-    public function studentEvaluation()
+    public function studentEvaluations()
     {
         return $this->hasMany(StudentEvaluation::class, 'course_section_id', 'course_section_id'); 
     }
 
-    public function facultyCourse()
+    public function getTotalEvaluatedAttribute()
+    {
+        return $this->studentEvaluation->count();
+    }
+
+    public function facultyCourses()
     {
         return $this->hasMany(FacultyCourse::class, 'course_section_id', 'course_section_id'); 
     }

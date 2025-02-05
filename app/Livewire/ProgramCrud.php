@@ -364,7 +364,7 @@ class ProgramCrud extends Component
             }
 
             // Check for related records (dependencies) that prevent deletion
-            if ($program->programCourse()->exists()) { 
+            if ($program->programCourses()->exists()) { 
                 return $this->logRemoveError('Cannot delete the program as it has related courses.', $program, 400);
             }
 

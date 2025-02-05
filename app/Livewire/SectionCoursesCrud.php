@@ -35,7 +35,7 @@ class SectionCoursesCrud extends Component
     protected function getSectionByUuid($uuid)
     {
         // Return the Section record along with its associated course section
-        return Section::with('courseSection')->where('uuid', $uuid)->first();
+        return Section::with('courseSections')->where('uuid', $uuid)->first();
     }
 
     public function clearMessage()

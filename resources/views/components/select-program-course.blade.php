@@ -5,7 +5,7 @@
         wire:model="course_id"
         size="10" 
         multiple>
-        @foreach ($this->getPrograms()->programCourse->groupBy(function($programCourse) {
+        @foreach ($this->getPrograms()->programCourses->groupBy(function($programCourse) {
             return $this->ordinal($programCourse->year_level) . ' Year - ' . $this->ordinal($programCourse->semester) . ' Semester:';
         }) as $yearSemester => $programCourses)
             <optgroup class="mb-2" label="{{ $yearSemester }}">

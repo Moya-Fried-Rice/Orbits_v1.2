@@ -19,6 +19,11 @@ class StudentEvaluation extends Model
         'evaluated_at'
     ];
 
+    public function responseStudents()
+    {
+        return $this->hasMany(ResponseStudent::class, 'student_evaluation_id', 'student_evaluation_id');
+    }
+
     public function student()
     {
         return $this->belongsTo(Student::class, 'student_id');

@@ -65,18 +65,18 @@
             </x-slot>
 
             <x-slot name="body">
-                @if($student && $student->studentCourse->isEmpty())
+                @if($student && $student->studentCourses->isEmpty())
                     <tr>
                         <td colspan="6" class="text-center py-2 px-4">
                             No courses assigned.
                         </td>
                     </tr>
                 @else
-                    @foreach($student->studentCourse as $studentCourse)
+                    @foreach($student->studentCourses as $studentCourse)
                         @php
                             $course = $studentCourse->courseSection->course;
                             $section = $studentCourse->courseSection->section;
-                            $faculty = $studentCourse->courseSection->facultyCourse->first()->faculty ?? null;
+                            $faculty = $studentCourse->courseSection->facultyCourses->first()->faculty ?? null;
                         @endphp
                         <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
                             <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $section->section_code }}</td>

@@ -35,17 +35,15 @@ class ProgramCoursesCrud extends Component
     }
 
     protected $rules = [
-        'program_name' => 'required|string|max:255', // Required, must be unique
-        'program_code' => 'required|string|max:50', // Required, must be unique
-        'abbreviation' => 'nullable|string|max:10', // Optional, string, max length of 10
-        'program_description' => 'nullable|string|max:1000', // Optional, string, max length of 1000
-        'department_id' => 'required|integer|exists:departments,department_id', // Required, must be an integer, and exist in the 'departments' table
+        'year_level' => 'required|integer|max:10', // Required, must be unique
+        'semester' => 'required|integer|max:10', // Required, must be unique
+        'course_id' => 'required|integer|exists:courses,course_id', // Required, must be an integer, and exist in the 'departments' table
     ];
 
     protected function getProgramByUuid($uuid)
     {
         // Return the Section record along with its associated course section
-        return Program::with('programCourse')->where('uuid', $uuid)->first();
+        return Program::with('programCourses')->where('uuid', $uuid)->first();
     }
 
     public function clearMessage()

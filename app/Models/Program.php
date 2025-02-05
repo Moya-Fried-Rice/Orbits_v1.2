@@ -22,12 +22,12 @@ class Program extends Model
         'department_id',
     ];
 
-    public function student()
+    public function students()
     {
         return $this->hasMany(Student::class, 'program_id', 'program_id');
     }
 
-    public function programCourse()
+    public function programCourses()
     {
         return $this->hasMany(ProgramCourse::class, 'program_id', 'program_id');
     }

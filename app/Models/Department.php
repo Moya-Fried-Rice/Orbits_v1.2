@@ -20,17 +20,27 @@ class Department extends Model
         'department_code',
     ];
 
-    public function course()
+    public function courses()
     {
         return $this->hasMany(Course::class, 'department_id', 'department_id');
     }
 
-    public function faculty()
+    public function getTotalEvaluatedAttribute()
+    {
+        return $this->courses()->with(['courseSections' => function ($query) {
+            $query->withCount('studentEvaluation');
+        }])->get()->sum(function ($course) {
+            return $course->courseSections->sum('student_evaluation_count');
+        });
+    }
+    
+
+    public function faculties()
     {
         return $this->hasMany(Faculty::class, 'department_id', 'department_id');
     }
 
-    public function program()
+    public function programs()
     {
         return $this->hasMany(Program::class, 'department_id', 'department_id');
     }

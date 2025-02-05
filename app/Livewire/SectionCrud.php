@@ -201,7 +201,7 @@ class SectionCrud extends Component
             }
 
             // Check for related records (dependencies) that prevent deletion
-            if ($section->courseSection()->exists()) { 
+            if ($section->courseSections()->exists()) { 
                 return $this->logRemoveError('Cannot delete the section as it currently contains enrolled courses.', $section, 400);
             }
 

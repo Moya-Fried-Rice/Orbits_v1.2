@@ -28,14 +28,19 @@ class Course extends Model
         return $this->lab + $this->lec;
     }
 
-    public function courseSection()
+    public function courseSections()
     {
         return $this->hasMany(CourseSection::class, 'course_id', 'course_id');
     }
 
-    public function programCourse()
+    public function programCourses()
     {
         return $this->hasMany(ProgramCourse::class, 'course_id', 'course_id');
+    }
+
+    public function getTotalEvaluatedAttribute()
+    {
+        return $this->courseSections()->withCount('studentEvaluation')->get()->sum('student_evaluation_count');
     }
 
     public function department()
