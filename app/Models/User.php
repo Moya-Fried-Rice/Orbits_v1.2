@@ -47,22 +47,22 @@ class User extends Authenticatable
 
     public function faculty()
     {
-        return $this->hasOne(Faculty::class, 'user_id', 'faculty_id');
+        return $this->hasOne(Faculty::class, 'user_id', 'user_id');
     }
 
     public function student()
     {
-        return $this->hasOne(Student::class, 'user_id', 'student_id');
+        return $this->hasOne(Student::class, 'user_id', 'user_id');
     }
 
     public function programChair()
     {
-        return $this->hasOne(ProgramChair::class, 'user_id', 'chair_id');
+        return $this->hasOne(ProgramChair::class, 'user_id', 'user_id');
     }
 
     public function admin()
     {
-        return $this->hasOne(Admin::class, 'user_id', 'admin_id');
+        return $this->hasOne(Admin::class, 'user_id', 'user_id');
     }
 
     public function role()

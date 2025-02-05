@@ -34,37 +34,4 @@ class Survey extends Model
             return $sc->questions ? $sc->questions->count() : 0;
         });
     }
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-    public function evaluationsPeriod()
-    {
-        return $this->belongsToMany(EvaluationPeriod::class, 'survey_period', 'survey_id', 'period_id')
-                    ->withTimestamps()
-                    ->withPivot('deleted_at');
-    }
-
 }
