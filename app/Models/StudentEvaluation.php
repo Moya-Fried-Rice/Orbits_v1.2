@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class StudentEvaluation extends Model
 {
     protected $table = 'student_evaluations';
-    protected $primaryKey = 'student_evaluation_id	';
+    protected $primaryKey = 'student_evaluation_id';
     public $timestamps = false;
 
     protected $fillable = [
@@ -27,5 +27,10 @@ class StudentEvaluation extends Model
     public function courseSection()
     {
         return $this->belongsTo(CourseSection::class, 'course_section_id');
+    }
+
+    public function survey()
+    {
+        return $this->belongsTo(Survey::class, 'survey_id');
     }
 }
