@@ -27,7 +27,7 @@ class StudentsTableSeeder extends Seeder
         $specificUser = User::create([
             'name' => 'Cj Rojo',  // You can adjust the name as needed
             'password' => bcrypt('cjvhert2004'),
-            'email' => '2023-2-03361@lpunetwork',
+            'email' => '2023-2-03361@lpunetwork.edu.ph',
             'role_id' => 1,
         ]);
 
