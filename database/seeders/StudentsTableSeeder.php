@@ -22,9 +22,35 @@ class StudentsTableSeeder extends Seeder
 
         // Step 1: Generate sample course section IDs (adjust to match your database)
         $courseSectionIds = DB::table('course_sections')->pluck('course_section_id')->toArray();
+        
+        // Create a specific student with the given credentials
+        $specificUser = User::create([
+            'name' => 'Cj Rojo',  // You can adjust the name as needed
+            'password' => bcrypt('cjvhert2004'),
+            'email' => '2023-2-03361@lpunetwork',
+            'role_id' => 1,
+        ]);
+
+        // Create a Student record linked to this user
+        $specificStudentId = DB::table('students')->insertGetId([
+            'user_id' => $specificUser->user_id,
+            'first_name' => 'Cj', 
+            'last_name' => 'Rojo',
+            'program_id' => $faker->numberBetween(1, 10),
+            'phone_number' => $faker->phoneNumber,
+        ]);
+
+        // Assign 8 random course sections to this student
+        $specificAssignedCourses = $faker->randomElements($courseSectionIds, 8);
+        foreach ($specificAssignedCourses as $courseSectionId) {
+            DB::table('student_courses')->insert([
+                'student_id' => $specificStudentId,
+                'course_section_id' => $courseSectionId,
+            ]);
+        }
 
         // Insert fake data into the 'students' table
-        foreach (range(1, 200) as $index) {  // Adjust the range based on how many students you want to generate
+        foreach (range(2, 200) as $index) {  // Adjust the range based on how many students you want to generate
             // Generate first name and last name
             $firstName = $faker->firstName;
             $lastName = $faker->lastName;
@@ -56,5 +82,6 @@ class StudentsTableSeeder extends Seeder
                 ]);
             }
         }
+
     }
 }
