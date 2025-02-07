@@ -19,6 +19,10 @@
                 Home
             </a>
             <span class="text-xs opacity-50"><i class="fa-solid fa-chevron-right"></i></span>
+            <a href="{{ route('evaluation') }}" class="opacity-50 hover:opacity-100 transition-all duration-100">
+                Evaluation
+            </a>
+            <span class="text-xs opacity-50"><i class="fa-solid fa-chevron-right"></i></span>
             <a href="{{ route('evaluate', ['uuid' => $uuid]) }}" class="opacity-50 hover:opacity-100 transition-all duration-100">
                 Evaluate
             </a>
