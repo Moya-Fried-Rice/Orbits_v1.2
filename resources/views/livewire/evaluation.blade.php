@@ -11,7 +11,7 @@
 
             <form wire:submit.prevent="submitEvaluation({{ $evaluation->student_evaluation_id }})">
 
-                @foreach($evaluation->survey->questionCriteria as $criteria)
+                @foreach($evaluation->survey->questionCriterias as $criteria)
                     <div class="mt-4">
                         <h4 class="font-medium text-gray-700">{{ $criteria->description }}</h4>
 

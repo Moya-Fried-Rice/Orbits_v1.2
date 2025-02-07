@@ -19,7 +19,7 @@ class Evaluation extends Component
 
         $evaluations = StudentEvaluation::where('student_id', $studentId)
         ->where('is_completed', false)
-        ->with('courseSection.course', 'survey.questionCriteria.questions') // Eager load relationships
+        ->with('courseSection.course', 'survey.questionCriterias.questions') // Eager load relationships
         ->get();    
 
         return view('livewire.evaluation', compact('evaluations'));
