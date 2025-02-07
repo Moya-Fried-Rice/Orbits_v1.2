@@ -6,6 +6,8 @@ use App\Models\Section;
 use App\Models\Faculty;
 use App\Models\Program;
 use App\Models\Survey;
+use App\Models\StudentEvaluation;
+
 use Illuminate\Support\Facades\Auth;
 
 // Route home direct to login
@@ -92,12 +94,19 @@ Route::get('/evaluation', function () {
             return view('evaluation.evaluation');
         case '2':
             return view('evaluation.evaluation');
+        case '3':
+            return view('evaluation.evaluation');
         default:
             abort(403, 'Unauthorized');
     }
 })
 ->middleware(['auth', 'check_role:4,1,2']) // Filter role: all
 ->name('evaluation'); // Route name
+
+    // Route to evaluate
+    Route::get('/evaluate/{uuid}', function (string $uuid) {
+        return view('evaluation.evaluate', ['uuid' => $uuid]);
+    })->middleware(['auth', 'check_role:1,2,3', 'verify_uuid:' . StudentEvaluation::class])->name('evaluate');
 
 // Route to results page
 Route::get('/results', function () {
