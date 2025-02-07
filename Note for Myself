@@ -1,32 +1,29 @@
-Sa course section, palitan mo yung add course. Dapat yung add course is mag rerefer sa program course sa program ng section.
-The same lang din to sa student at faculty. :D
+✔  - Sa course section, palitan mo yung add course. Dapat yung add course is mag rerefer sa program course sa program ng section.
 
+✔  - The same lang din to sa student at faculty. :D
 
+✔  - STOP NA TAYO SA DATA MANAGEMENT, MAY SURVEY PA >:|
 
+    - Add change faculty sa section courses
 
-STOP NA TAYO SA DATA MANAGEMENT, MAY SURVEY PA >:|
+    - Linis onti sa error handling message tas linis na din code tas survey na :D.
 
-Add change faculty sa section courses
+✔  - Remove Question Code in questions table, ung question code is dapat every first letter of word ng criteria.
 
-Linis onti sa error handling message tas linis na din code tas survey na :D.
+    - May defect sa ui ng notification pag dalawa yung notification.
 
+    - After natin matapos sa survey management, linisin muna natin yung code.
 
+    - Gamit ng Boot sa mga models, especially sa faculty and student kapag nag cecreate
 
+✔  - Gamit ng Boot sa student evaluation
 
-- Remove Question Code in questions table, ung question code is dapat every first letter of word ng criteria.
+    - Ayusin UI sa survey kapag mahaba masyado yung pangalan
 
-- May defect sa ui ng notification pag dalawa yung notification.
+✔  - IGNORE EVALUATION FORMS AND EVALUATION PERIOD
 
-- After natin matapos sa survey management, linisin muna natin yung code.
+✔  - Temporary removed periods, di pa sure kung pano gagawin
 
+    - Focus muna sa student evaluation results
 
-- Gamit ng Boot sa mga models, especially sa faculty and student kapag nag cecreate
-- Gamit ng Boot sa student evaluation
-- Ayusin UI sa survey kapag mahaba masyado yung pangalan
-
-
-
-- IGNORE EVALUATION FORMS AND EVALUATION PERIOD
-
-- Temporary removed periods, di pa sure kung pano gagawin
-- Focus muna sa student evaluation results
+    - Iba UI perspective ng Program Chair sa result faculty list compared sa Admin.
