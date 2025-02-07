@@ -82,11 +82,6 @@ Route::get('/accounts', function () {
     return view('accounts.accounts');
 })->middleware(['auth', 'check_role:4'])->name('accounts');
 
-// Route to accounts page
-Route::get('/evaluation', function () {
-    return view('evaluation.evaluation');
-})->middleware(['auth', 'check_role:4'])->name('evaluation');
-
 // Route to dashboard with conditioning
 Route::get('/evaluation', function () {
     $user = Auth::user();
