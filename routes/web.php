@@ -113,6 +113,10 @@ Route::get('/results', function () {
     return view('results.results');
 })->middleware(['auth', 'check_role:4,3'])->name('results');
 
+    Route::get('/summary/{uuid}', function (string $uuid) {
+        return view('results.results-summary', ['uuid' => $uuid]);
+    })->middleware(['auth', 'check_role:4,3', 'verify_uuid:' . Faculty::class])->name('summary');
+
 // Route to monitor page
 Route::get('/monitor', function () {
     return view('monitor.monitor');
