@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('sections', function (Blueprint $table) {
             $table->id('section_id');
-            $table->uuid('uuid')->default(DB::raw('UUID()'))->nullable(false);
+            $table->uuid('uuid')->unique()->default(DB::raw('(UUID())'))->nullable(false);
             $table->foreignId('program_id')->constrained('programs', 'program_id')->onDelete('cascade'); // Foreign key to the programs table
             $table->integer('year_level'); // Year level (e.g., 1st year, 2nd year, etc.)
             $table->integer('section_number'); // Section number (e.g., 102 for 1st year, 2nd section)
