@@ -62,7 +62,7 @@
         @endif
 
         <!-- Evaluation (For Admin, Program Chair, Faculty, and Student) -->
-        @if(in_array(auth()->user()->role->role_name, ['admin', 'faculty', 'student']))
+        @if(in_array(auth()->user()->role->role_name, ['admin', 'faculty', 'student', 'program_chair']))
             <x-nav-link 
                 :href="route('evaluation')" 
                 :active="request()->routeIs('evaluation')" 
