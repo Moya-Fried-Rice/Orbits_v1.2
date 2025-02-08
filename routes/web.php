@@ -99,7 +99,7 @@ Route::get('/evaluation', function () {
             abort(403, 'Unauthorized');
     }
 })
-->middleware(['auth', 'check_role:4,1,2']) // Filter role: all
+->middleware(['auth', 'check_role:4,1,2,3']) // Filter role: all
 ->name('evaluation'); // Route name
 
     // Route to evaluate
