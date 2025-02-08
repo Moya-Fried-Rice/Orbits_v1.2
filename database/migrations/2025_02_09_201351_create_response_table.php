@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('response_selves', function (Blueprint $table) {
+        Schema::create('responses', function (Blueprint $table) {
             $table->id('response_id');
-            $table->foreignId('self_evaluation_id')->constrained('self_evaluations', 'self_evaluation_id')->onDelete('cascade');
+            $table->foreignId('user_evaluation_id')->constrained('user_evaluations', 'user_evaluation_id')->onDelete('cascade');
             $table->foreignId('question_id')->constrained('questions', 'question_id')->onDelete('cascade');
             $table->integer('rating');
         });
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('response');
     }
 };

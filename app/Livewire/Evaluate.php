@@ -3,8 +3,8 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\StudentEvaluation;
-use App\Models\ResponseStudent;
+use App\Models\UserEvaluation;
+use App\Models\Response;
 
 class Evaluate extends Component
 {
@@ -24,16 +24,16 @@ class Evaluate extends Component
     protected function getEvaluationByUuid($uuid)
     {
         // Return the Section record along with its associated course section
-        return StudentEvaluation::with('responseStudents')->where('uuid', $uuid)->first();
+        return UserEvaluation::with('responses')->where('uuid', $uuid)->first();
     }
 
-    public function submitEvaluation($studentEvaluationId)
+    public function submitEvaluation($userEvaluationId)
     {
         // Ensure we only process evaluations that are valid and not yet completed
-        $studentEvaluation = StudentEvaluation::find($studentEvaluationId);
-        $responses = $this->responses[$studentEvaluationId] ?? [];
+        $userEvaluation = UserEvaluation::find($userEvaluationId);
+        $responses = $this->responses[$userEvaluationId] ?? [];
 
-        if (!$studentEvaluation) {
+        if (!$userEvaluation) {
             // Handle case where evaluation is not found
             session()->flash('error', 'Evaluation not found.');
             return;
@@ -44,8 +44,8 @@ class Evaluate extends Component
             // Validate that a rating was provided
             if ($rating) {
                 // Store the response in the response_students table
-                ResponseStudent::create([
-                    'student_evaluation_id' => $studentEvaluationId,
+                Response::create([
+                    'user_evaluation_id' => $userEvaluationId,
                     'question_id' => $questionId,
                     'rating' => $rating,
                 ]);
@@ -53,15 +53,15 @@ class Evaluate extends Component
         }
 
         // Store comments if provided
-        if (isset($this->comments[$studentEvaluationId]) && $this->comments[$studentEvaluationId]) {
+        if (isset($this->comments[$userEvaluationId]) && $this->comments[$userEvaluationId]) {
             // Assuming you have a field for storing comments, if necessary
-            $studentEvaluation->update([
-                'comment' => $this->comments[$studentEvaluationId], // Assuming there's a comments column
+            $userEvaluation->update([
+                'comment' => $this->comments[$userEvaluationId], // Assuming there's a comments column
             ]);
         }
 
         // Optionally mark the evaluation as completed
-        $studentEvaluation->update([
+        $userEvaluation->update([
             'is_completed' => true,
             'evaluated_at' => now(), // Sets the current timestamp
         ]);        

@@ -33,45 +33,53 @@ class StudentCourse extends Model
     // Boot method to handle create, delete, and restore events
     protected static function booted()
     {
-        // Create a StudentEvaluation record when a StudentCourse is created
+        // Create a UserEvaluation record when a StudentCourse is created
         static::created(function ($studentCourse) {
-            // Retrieve all survey_roles where the role is 'student' and the course_section_id matches
-            $surveyRoles = SurveyRole::where('role_id', '1')->get(); // Retrieve all matching roles
-
-            // Loop through each survey role and create a StudentEvaluation
-            foreach ($surveyRoles as $surveyRole) {
-                StudentEvaluation::create([
-                    'student_id' => $studentCourse->student_id,
-                    'course_section_id' => $studentCourse->course_section_id,
-                    'survey_id' => $surveyRole->survey_id, // Insert the survey_id from the SurveyRole
+            // Retrieve all evaluations where the survey has a role_id of 1
+            $evaluations = Evaluation::whereHas('survey.surveyRoles', function ($query) {
+                $query->where('role_id', '1');
+            })->where('course_section_id', $studentCourse->course_section_id)
+              ->get(); // Ensure it matches the student's course section
+    
+            // Loop through each evaluation and create a UserEvaluation
+            foreach ($evaluations as $evaluation) {
+                UserEvaluation::create([
+                    'evaluation_id' => $evaluation->evaluation_id, // Assign correct evaluation_id
+                    'user_id' => $studentCourse->student->user_id,
                     'is_completed' => false,
                     'evaluated_at' => null,
                 ]);
             }
         });
-
-        // Delete the related StudentEvaluation record when a StudentCourse is deleted
+    
+        // Delete related UserEvaluation records when a StudentCourse is deleted
         static::deleted(function ($studentCourse) {
-            StudentEvaluation::where('student_id', $studentCourse->student_id)
-                ->where('course_section_id', $studentCourse->course_section_id)
-                ->delete();
+            UserEvaluation::where('user_id', $studentCourse->student->user_id)
+                ->whereHas('evaluation', function ($query) use ($studentCourse) {
+                    $query->where('course_section_id', $studentCourse->course_section_id)
+                          ->whereHas('survey.surveyRoles', function ($roleQuery) {
+                              $roleQuery->where('role_id', '1');
+                          });
+                })->delete();
         });
-
-        // Restore the corresponding StudentEvaluation when a StudentCourse is restored
+    
+        // Restore corresponding UserEvaluation records when a StudentCourse is restored
         static::restored(function ($studentCourse) {
-            // Retrieve all survey_roles where the role is 'student' and the course_section_id matches
-            $surveyRoles = SurveyRole::where('role_id', '1')->get(); // Retrieve all matching roles
-
-            // Loop through each survey role and recreate the StudentEvaluation
-            foreach ($surveyRoles as $surveyRole) {
-                StudentEvaluation::create([
-                    'student_id' => $studentCourse->student_id,
-                    'course_section_id' => $studentCourse->course_section_id,
-                    'survey_id' => $surveyRole->survey_id, // Insert the survey_id from the SurveyRole
+            // Retrieve all evaluations where the survey has a role_id of 1
+            $evaluations = Evaluation::whereHas('survey.surveyRoles', function ($query) {
+                $query->where('role_id', '1');
+            })->where('course_section_id', $studentCourse->course_section_id)
+              ->get();
+    
+            // Loop through each evaluation and recreate UserEvaluation
+            foreach ($evaluations as $evaluation) {
+                UserEvaluation::create([
+                    'evaluation_id' => $evaluation->evaluation_id,
+                    'user_id' => $studentCourse->student->user_id,
                     'is_completed' => false,
                     'evaluated_at' => null,
                 ]);
             }
         });
-    }   
+    }    
 }
