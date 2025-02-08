@@ -23,10 +23,10 @@
     </div>
     
     @foreach ($evaluationData['data'] as $role => $evaluations)
-        <div class="mb-8">
-            <div class="text-lg pl-5">{{ ucfirst($role) }} Evaluations</div>
+        <div>
+            <div class="text-lg pl-5 pt-5">{{ ucfirst($role) }} Evaluations</div>
 
-            <div class="p-5 overflow-x-auto w-full">
+            <div class="p-5 pt-0 overflow-x-auto w-full">
                 <table class="table table-bordered font-TT w-full table-auto">
                     <thead>
                         <tr class="uppercase font-normal bg-[#F8F8F8] text-black">
@@ -35,7 +35,7 @@
                             <th class="border border-[#DDD] py-2 px-4 font-light">N</th>
 
                             @foreach ($evaluationData['criteriaQuestions'][$role] ?? [] as $criteria => $questions)
-                                <th class="border border-[#DDD] py-2 px-4 font-light" colspan="{{ count($questions) }}">{{ $criteria }}</th>
+                                <th class="border border-[#DDD] py-2 opacity-50 text-xs font-light" colspan="{{ count($questions) }}">{{ $criteria }}</th>
                             @endforeach
 
                             <th class="border border-[#DDD] py-2 px-4 font-light">AVG</th>
@@ -59,7 +59,7 @@
 
                                 @foreach ($evaluationData['criteriaQuestions'][$role] ?? [] as $questions)
                                     @foreach ($questions as $questionId)
-                                        <td class="border border-[#DDD] py-2 px-4 font-light text-center">
+                                        <td class="border border-[#DDD] py-2 px-4 font-light text-xs text-center">
                                             {{ $row['ratings'][$questionId] ?? '-' }}
                                         </td>
                                     @endforeach

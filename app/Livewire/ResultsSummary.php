@@ -52,12 +52,11 @@ class ResultsSummary extends Component
                         continue;
                     }
 
-                    $role = $userEvaluation->user->role->role_name;  
+                    $role = $userEvaluation->user->role->role_name;
 
                     $responses = $userEvaluation->responses;
                     $questionRatings = $responses->groupBy('question.question_code')
                         ->map(fn ($r) => $r->avg('rating') ?? 0);
-                    $AVG = $questionRatings->filter()->avg() ?? 0;
 
                     foreach ($responses as $response) {
                         $question = $response->question;
@@ -98,7 +97,7 @@ class ResultsSummary extends Component
                     $totalRatings[] = $avgRating;
                 }
 
-                // ✅ Compute section-wide average
+                // ✅ Compute section-wide average and store in $AVG
                 $data['AVG'] = count($totalRatings) > 0 ? number_format(array_sum($totalRatings) / count($totalRatings), 2) : '0.00';
             }
         }
@@ -107,9 +106,5 @@ class ResultsSummary extends Component
             'data' => $groupedData,
             'criteriaQuestions' => $criteriaQuestionsByRole,
         ];
-
-
-        // dd($this->evaluationData);
-
     }
 }
