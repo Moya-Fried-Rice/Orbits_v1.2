@@ -44,8 +44,8 @@ class Course extends Model
     }
 
     // FOR TRACKING
-    public function getTotalEvaluatedAttribute()
-    {
-        return $this->courseSections->sum('total_evaluated');
-    }   
+    // public function getTotalEvaluatedAttribute()
+    // {
+    //     return $this->courseSections->sum('total_evaluated');
+    // }   
 }

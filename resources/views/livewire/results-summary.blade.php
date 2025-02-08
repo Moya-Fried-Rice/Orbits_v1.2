@@ -21,51 +21,58 @@
             </div>
         </div>
     </div>
-
-    <div class="p-5 overflow-x-auto w-full">
-        <table class="table table-bordered font-TT w-full table-auto">
-            <thead>
-                <tr class="uppercase font-normal bg-[#F8F8F8] text-black">
-                    <th class="border border-[#DDD] py-2 px-4 font-light">Subject</th>
-                    <th class="border border-[#DDD] py-2 px-4 font-light">Section</th>
-                    <th class="border border-[#DDD] py-2 px-4 font-light">N</th>
-                    
-                    @foreach ($evaluationData['criteriaQuestions'] as $criteria => $questions)
-                        <th class="border border-[#DDD] py-2 px-4 font-light" colspan="{{ count($questions) }}">{{ $criteria }}</th>
-                    @endforeach
-                    
-                    <th class="border border-[#DDD] py-2 px-4 font-light">AVG</th>
-                </tr>
-                <tr class="bg-gray-100">
-                    <th colspan="3" class="border border-[#DDD] font-light"></th>
-                    @foreach ($evaluationData['criteriaQuestions'] as $questions)
-                        @foreach ($questions as $questionCode => $value)
-                            <th class="border border-[#DDD] font-light">{{ $questionCode }}</th>
-                        @endforeach
-                    @endforeach
-                    <th class="border border-[#DDD] font-light"></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($evaluationData['data'] as $row)
-                    <tr>
-                        <td class="border border-[#DDD] py-2 px-4 font-light">{{ $row['subject'] }}</td>
-                        <td class="border border-[#DDD] py-2 px-4 font-light">{{ $row['section'] }}</td>
-                        <td class="border border-[#DDD] py-2 px-4 font-light text-center">{{ $row['N'] }}</td>
-                        
-                        @foreach ($evaluationData['criteriaQuestions'] as $questions)
-                            @foreach ($questions as $questionId)
-                                <td class="border border-[#DDD] py-2 px-4 font-light text-center">
-                                    {{ $row['ratings'][$questionId] ?? '-' }}
-                                </td>
-                            @endforeach
-                        @endforeach
-                        
-                        <td class="border border-[#DDD] py-2 px-4 font-light text-center">{{ $row['AVG'] }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
     
+    @foreach ($evaluationData['data'] as $role => $evaluations)
+        <div class="mb-8">
+            <div class="text-lg pl-5">{{ ucfirst($role) }} Evaluations</div>
+
+            <div class="p-5 overflow-x-auto w-full">
+                <table class="table table-bordered font-TT w-full table-auto">
+                    <thead>
+                        <tr class="uppercase font-normal bg-[#F8F8F8] text-black">
+                            <th class="border border-[#DDD] py-2 px-4 font-light">Subject</th>
+                            <th class="border border-[#DDD] py-2 px-4 font-light">Section</th>
+                            <th class="border border-[#DDD] py-2 px-4 font-light">N</th>
+
+                            @foreach ($evaluationData['criteriaQuestions'][$role] ?? [] as $criteria => $questions)
+                                <th class="border border-[#DDD] py-2 px-4 font-light" colspan="{{ count($questions) }}">{{ $criteria }}</th>
+                            @endforeach
+
+                            <th class="border border-[#DDD] py-2 px-4 font-light">AVG</th>
+                        </tr>
+                        <tr class="bg-gray-100">
+                            <th colspan="3" class="border border-[#DDD] font-light"></th>
+                            @foreach ($evaluationData['criteriaQuestions'][$role] ?? [] as $questions)
+                                @foreach ($questions as $questionId)
+                                    <th class="border border-[#DDD] font-light">{{ $questionId }}</th>
+                                @endforeach
+                            @endforeach
+                            <th class="border border-[#DDD] font-light"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($evaluations as $row)
+                            <tr>
+                                <td class="border border-[#DDD] py-2 px-4 font-light">{{ $row['subject'] }}</td>
+                                <td class="border border-[#DDD] py-2 px-4 font-light">{{ $row['section'] }}</td>
+                                <td class="border border-[#DDD] py-2 px-4 font-light text-center">{{ $row['N'] }}</td>
+
+                                @foreach ($evaluationData['criteriaQuestions'][$role] ?? [] as $questions)
+                                    @foreach ($questions as $questionId)
+                                        <td class="border border-[#DDD] py-2 px-4 font-light text-center">
+                                            {{ $row['ratings'][$questionId] ?? '-' }}
+                                        </td>
+                                    @endforeach
+                                @endforeach
+
+                                <td class="border border-[#DDD] py-2 px-4 font-light text-center">{{ $row['AVG'] }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    @endforeach
+
+
 </div>
