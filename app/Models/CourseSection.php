@@ -25,9 +25,9 @@ class CourseSection extends Model
         return $this->hasMany(StudentCourse::class, 'course_section_id', 'course_section_id'); 
     }
 
-    public function studentEvaluations()
+    public function evaluations()
     {
-        return $this->hasMany(StudentEvaluation::class, 'course_section_id', 'course_section_id'); 
+        return $this->hasMany(Evaluation::class, 'course_section_id', 'course_section_id'); 
     }
 
     public function facultyCourses()
@@ -46,8 +46,16 @@ class CourseSection extends Model
     }
 
     // FOR TRACKING
-    public function getTotalEvaluatedAttribute()
+    public function totalEvaluated($roleName)
     {
-        return $this->studentEvaluations()->where('is_completed', true)->count();
-    }   
+        return $this->evaluations()
+            ->whereHas('userEvaluations', function ($query) use ($roleName) {
+                $query->where('is_completed', true)
+                      ->whereHas('user', function ($query) use ($roleName) {
+                          $query->whereHas('role', function ($query) use ($roleName) {
+                              $query->where('role_name', $roleName);
+                          });
+                      });
+            })->count();
+    }
 }

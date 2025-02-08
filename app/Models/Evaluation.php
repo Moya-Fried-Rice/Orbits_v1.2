@@ -17,7 +17,7 @@ class Evaluation extends Model
 
     public function userEvaluations()
     {
-        return $this->hasMany(UserEvaluation::class, 'user_evaluation_id', 'user_evaluation_id');
+        return $this->hasMany(UserEvaluation::class, 'evaluation_id', 'evaluation_id');
     }
 
     public function courseSection()

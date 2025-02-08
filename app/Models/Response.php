@@ -19,7 +19,7 @@ class Response extends Model
 
     public function userEvaluation()
     {
-        return $this->belongsTo(UserEvaluation::class, 'user_evaluation_id', 'user_evaluation_id'); // Fixed typo here
+        return $this->belongsTo(UserEvaluation::class, 'user_evaluation_id'); // Fixed typo here
     }
 
     public function question()

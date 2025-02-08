@@ -4,11 +4,12 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Faculty;
+use App\Models\Role;
 
 class ResultsSummary extends Component
 {   
     public $uuid;
-    public $evaluationData = [];
+    public $evaluationData;
 
     public function mount($uuid)
     {
@@ -30,64 +31,85 @@ class ResultsSummary extends Component
 
     public function loadEvaluationData()
     {
-        // Fetch the faculty data along with related models using eager loading.
-        // The 'facultyCourses' relationship includes 'courseSection', 'studentEvaluations', 
-        // 'responseStudents', 'question', and 'questionCriteria' relationships.
-        $faculty = Faculty::with(['facultyCourses.courseSection.studentEvaluations.responseStudents.question.questionCriteria'])
-            ->where('uuid', $this->uuid) // Filter by the faculty UUID
-            ->first(); // Retrieve the first result (expecting only one faculty)
+        $faculty = Faculty::with(['facultyCourses.courseSection.evaluations.userEvaluations.responses.question.questionCriteria'])
+            ->where('uuid', $this->uuid)
+            ->first();
     
-        // If no faculty is found, exit the function early.
         if (!$faculty) {
             return;
         }
     
-        // Initialize empty arrays to store data and criteria questions
-        $data = [];
-        $criteriaQuestions = [];
-    
-        // Loop through each course that the faculty is teaching.
+        $groupedData = [];
+        $criteriaQuestionsByRole = [];
+
         foreach ($faculty->facultyCourses as $facultyCourse) {
-            // Get the associated course section for each faculty course.
             $courseSection = $facultyCourse->courseSection;
-            
-            // Get the student evaluations for this course section, filtering for completed evaluations.
-            $evaluations = $courseSection->studentEvaluations->where('is_completed', true);
-    
-            // Count the number of completed evaluations (N).
-            $N = $evaluations->count();
-    
-            // Flatten the student evaluation responses, which are linked to multiple questions.
-            $responses = $evaluations->flatMap->responseStudents;
-            
-            // Group the responses by question ID and calculate the average rating per question.
-            // If there are no ratings, the result is 0.
-            $questionRatings = $responses->groupBy('question_id')->map(fn($r) => $r->avg('rating') ?? 0);
-    
-            // Calculate the average rating for all questions (AVG) excluding null values.
-            $AVG = $questionRatings->filter()->avg() ?? 0;
-    
-            // Loop through the responses to group the question codes by their respective criteria descriptions.
-            foreach ($responses as $response) {
-                $question = $response->question;
-                // Store the question ID under its criteria description and question code.
-                $criteriaQuestions[$question->questionCriteria->description][$question->questionCode] = $question->question_id;
+            $sectionKey = $courseSection->course->course_code . '-' . $courseSection->section->section_code;
+
+            foreach ($courseSection->evaluations as $evaluation) {
+                foreach ($evaluation->userEvaluations as $userEvaluation) {
+                    if (!$userEvaluation->is_completed) {
+                        continue;
+                    }
+
+                    $role = $userEvaluation->user->role->role_name;  
+
+                    $responses = $userEvaluation->responses;
+                    $questionRatings = $responses->groupBy('question.question_code')
+                        ->map(fn ($r) => $r->avg('rating') ?? 0);
+                    $AVG = $questionRatings->filter()->avg() ?? 0;
+
+                    foreach ($responses as $response) {
+                        $question = $response->question;
+                        $criteriaDesc = $question->questionCriteria->description;
+                        $criteriaQuestionsByRole[$role][$criteriaDesc][$question->question_code] = $question->question_code;
+                    }
+
+                    // ✅ Aggregate ratings per section
+                    if (!isset($groupedData[$role][$sectionKey])) {
+                        $groupedData[$role][$sectionKey] = [
+                            'subject' => $courseSection->course->course_code,
+                            'section' => $courseSection->section->section_code,
+                            'N' => 0,
+                            'ratings' => [],
+                            'AVG' => 0,
+                        ];
+                    }
+
+                    // ✅ Merge ratings (sum and count for average calculation)
+                    foreach ($questionRatings as $questionCode => $rating) {
+                        $groupedData[$role][$sectionKey]['ratings'][$questionCode][] = $rating;
+                    }
+
+                    // ✅ Increase evaluation count (N)
+                    $groupedData[$role][$sectionKey]['N'] += 1;
+                }
             }
-    
-            // Append the evaluation data for this course section to the `$data` array.
-            // Include course code, section name, the number of evaluations (N), ratings per question, and the overall average (AVG).
-            $data[] = [
-                'subject' => $courseSection->course->course_code,
-                'section' => $courseSection->section->section_code,
-                'N' => $N,
-                'ratings' => $questionRatings,
-                'AVG' => number_format($AVG, 2), // Format the average to 2 decimal places
-            ];
         }
-    
-        // Store the final evaluation data and grouped criteria questions in the `$evaluationData` property.
-        $this->evaluationData = ['data' => $data, 'criteriaQuestions' => $criteriaQuestions];
-        // Uncomment the line below for debugging purposes to check the structure of the data.
+
+        // ✅ Final processing: Compute actual averages
+        foreach ($groupedData as $role => &$sections) {
+            foreach ($sections as &$data) {
+                $totalRatings = [];
+
+                foreach ($data['ratings'] as $questionCode => $ratings) {
+                    $avgRating = count($ratings) > 0 ? array_sum($ratings) / count($ratings) : 0;
+                    $data['ratings'][$questionCode] = number_format($avgRating, 2);
+                    $totalRatings[] = $avgRating;
+                }
+
+                // ✅ Compute section-wide average
+                $data['AVG'] = count($totalRatings) > 0 ? number_format(array_sum($totalRatings) / count($totalRatings), 2) : '0.00';
+            }
+        }
+
+        $this->evaluationData = [
+            'data' => $groupedData,
+            'criteriaQuestions' => $criteriaQuestionsByRole,
+        ];
+
+
         // dd($this->evaluationData);
-    }    
+
+    }
 }
