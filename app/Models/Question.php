@@ -24,6 +24,11 @@ class Question extends Model
     {
         return $this->hasMany(ResponseStudent::class, 'question_id', 'question_id');
     }
+
+    public function responseSelves()
+    {
+        return $this->hasMany(ResponseSelf::class, 'question_id', 'question_id');
+    }
     
     public function questionCriteria()
     {

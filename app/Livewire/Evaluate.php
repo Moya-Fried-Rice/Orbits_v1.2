@@ -61,7 +61,10 @@ class Evaluate extends Component
         }
 
         // Optionally mark the evaluation as completed
-        $studentEvaluation->update(['is_completed' => true]);
+        $studentEvaluation->update([
+            'is_completed' => true,
+            'evaluated_at' => now(), // Sets the current timestamp
+        ]);        
 
         // Provide a success message
         session()->flash('success', 'Evaluation submitted successfully!');
