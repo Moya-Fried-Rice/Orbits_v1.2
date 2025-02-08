@@ -65,8 +65,13 @@ class User extends Authenticatable
         return $this->hasOne(Admin::class, 'user_id', 'user_id');
     }
 
+    public function userEvaluations()
+    {
+        return $this->hasMany(UserEvaluation::class, 'user_id', 'user_id');
+    }
+
     public function role()
     {
-        return $this->belongsTo(Role::class, 'role_id', 'role_id');
+        return $this->belongsTo(Role::class, 'role_id');
     }
 }

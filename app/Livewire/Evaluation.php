@@ -4,8 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
-use App\Models\StudentEvaluation;
-use App\Models\ResponseStudent;
+use App\Models\UserEvaluation;
 
 class Evaluation extends Component
 {
@@ -13,11 +12,11 @@ class Evaluation extends Component
 
     public function render()
     {   
-        $studentId = Auth::user()->student->student_id;
+        $user = Auth::user()->user_id;
 
-        $evaluations = StudentEvaluation::where('student_id', $studentId)
+        $evaluations = UserEvaluation::where('user_id', $user)
         ->where('is_completed', false)
-        ->with('courseSection.course', 'survey.questionCriterias.questions') // Eager load relationships
+        ->with('evaluation.courseSection.course', 'evaluation.survey.questionCriterias.questions') // Eager load relationships
         ->get();    
 
         return view('livewire.evaluation', compact('evaluations'));

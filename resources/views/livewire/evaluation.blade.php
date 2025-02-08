@@ -5,11 +5,11 @@
         @foreach($evaluations as $evaluation)
             <div class="bg-white border p-4 mb-4 border-[#DDD]">
                 <h3 class="text-lg font-semibold text-gray-800">
-                    {{ $evaluation->courseSection->course->course_code }} | {{ $evaluation->courseSection->course->course_name }}
+                    {{ $evaluation->evaluation->courseSection->course->course_code }} | {{ $evaluation->evaluation->courseSection->course->course_name }}
                 </h3>
-                <p class="text-gray-600">Survey: {{ $evaluation->survey->survey_name }}</p>
+                <p class="text-gray-600">Survey: {{ $evaluation->evaluation->survey->survey_name }}</p>
                 <p class="text-gray-600">
-                    Faculty: {{ $evaluation->courseSection->facultyCourses->first()->faculty->faculty_name ?? 'No Faculty' }}
+                    Faculty: {{ $evaluation->evaluation->courseSection->facultyCourses->first()->faculty->faculty_name ?? 'No Faculty' }}
                 </p>
                 <br>
                 <a 

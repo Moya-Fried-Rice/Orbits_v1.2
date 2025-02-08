@@ -12,12 +12,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('self_evaluations', function (Blueprint $table) {
-            $table->id('self_evaluation_id');
+        Schema::create('user_evaluations', function (Blueprint $table) {
+            $table->id('user_evaluation_id');
             $table->uuid('uuid')->unique()->default(DB::raw('(UUID())'))->nullable(false);
-            $table->foreignId('faculty_id')->constrained('faculties', 'faculty_id')->onDelete('cascade');
-            $table->foreignId('course_section_id')->constrained('course_sections', 'course_section_id')->onDelete('cascade');
-            $table->foreignId('survey_id')->constrained('surveys', 'survey_id')->onDelete('cascade');
+            $table->foreignId('evaluation_id')->constrained('evaluations', 'evaluation_id')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users', 'user_id')->onDelete('cascade');
             $table->string('comment')->nullable();
             $table->boolean('is_completed')->default(false);
             $table->timestamp('evaluated_at')->nullable();
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('self_evaluations');
+        Schema::dropIfExists('user_evaluations');
     }
 };
