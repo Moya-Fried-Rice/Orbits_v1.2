@@ -28,5 +28,117 @@
 @endsection
 
 @section('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
+    @stack('chartData')
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Object.keys(window.chartData).forEach(function (role) {
+                var chartOptions = {
+                    chart: {
+                        type: 'bar',
+                        height: 250,
+                        fontFamily: 'TT',
+                        events: {
+                            click: function(event, chartContext, opts) {
+                                if (opts.dataPointIndex !== undefined) {
+                                    let clickedIndex = opts.dataPointIndex; // Get index of clicked bar
+                                    let clickedRole = role; // Assuming `role` is a variable holding the current role
+
+                                    let rowId = "row-" + clickedRole + "-" + clickedIndex; // Ensure this matches your table row IDs
+                                    console.log("Row ID:", rowId);
+
+                                    // Remove previous highlights
+                                    document.querySelectorAll("tr").forEach(row => row.classList.remove("bg-blue-50"));
+
+                                    // Highlight the selected row
+                                    let selectedRow = document.getElementById(rowId);
+                                    if (selectedRow) {
+                                        selectedRow.classList.add("bg-blue-50");
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    states: {
+                        active: {
+                        allowMultipleDataPointsSelection: false,
+                        filter: {
+                            type: 'none', // You can use 'darken' as well
+                            value: 0.5, // Adjust intensity
+                        }
+                        }
+                    },
+                    colors: ['#923534'],
+                    dataLabels: {
+                        enabled: true,
+                        style: {
+                            fontSize: '0.75rem',
+                            fontFamily: 'TT',
+                            colors: ['#FFFFFF']
+                        }
+                    },
+                    xaxis: {
+                        categories: window.chartData[role].labels,
+                        labels: {
+                            style: {
+                                fontSize: '0.75rem',
+                                fontFamily: 'TT',
+                                colors: ['#4B5563'],
+                                whiteSpace: 'pre-line' // Ensures multi-line rendering
+                            }
+                        }
+                    },
+                    yaxis: {
+                        min: 0,
+                        max: 5,
+                        tickAmount: 5,
+                        labels: {
+                            style: {
+                                fontSize: '0.75rem',
+                                fontFamily: 'TT',
+                                colors: ['#4B5563']
+                            },
+                            formatter: function (val) {
+                                return val.toFixed(1);
+                            }
+                        }
+                    },
+                    series: [{
+                        name: "Average Rating",
+                        data: window.chartData[role].data
+                    }]
+                };
+
+                var chart = new ApexCharts(document.querySelector("#chart-" + role), chartOptions);
+                chart.render();
+            });
+        });
+
+        document.addEventListener("click", function(event) {
+            // Select all chart containers by their common prefix "chart-"
+            let chartContainers = document.querySelectorAll("[id^='chart-']");
+            
+            // Check if the clicked target is inside any chart container
+            let clickedInsideChart = Array.from(chartContainers).some(chart => chart.contains(event.target));
+
+            if (!clickedInsideChart) {
+                document.querySelectorAll("tr").forEach(row => row.classList.remove("bg-blue-50"));
+            }
+        });
+
+        document.querySelectorAll("[id^='chart-']").forEach(chart => {
+            chart.addEventListener("click", function(event) {
+                let chartId = this.id; // Get the clicked chart's ID
+                console.log("Clicked Chart ID:", chartId);
+                
+                // Fetch corresponding chart data (if stored in a dataset)
+                let chartData = this.dataset.chartData ? JSON.parse(this.dataset.chartData) : null;
+                console.log("Chart Data:", chartData);
+            });
+        });
+
+
+    </script>
 @endsection
