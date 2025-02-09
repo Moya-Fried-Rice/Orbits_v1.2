@@ -127,9 +127,16 @@ Route::get('/ranking', function () {
     return view('ranking.ranking');
 })->middleware(['auth', 'check_role:4,3'])->name('ranking');
 
-// Route to dashboard with conditioning
+Auth::routes(['verify' => true]); 
+
+// Route to dashboard with email verification check
 Route::get('/dashboard', function () {
     $user = Auth::user();
+
+    if (!$user->hasVerifiedEmail) {
+        session()->flash('warning', 'You must verify your email to fully access the system.');
+    }
+
     switch ($user->role_id) {
         case '4':
             return view('dashboard.admin-dashboard');
@@ -143,7 +150,7 @@ Route::get('/dashboard', function () {
             abort(403, 'Unauthorized');
     }
 })
-->middleware(['auth', 'check_role:4,1,2,3']) // Filter role: all
+->middleware(['auth', 'check_role:4,1,2,3']) // Apply role-based access control
 ->name('dashboard'); // Route name
     
 

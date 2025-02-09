@@ -7,6 +7,7 @@
 @endsection
 
 @section('content')
+@include('components.verify-email-message') <!-- Include the email verification message -->
 
 <div class="font-TT mb-2 flex justify-between items-center gap-2 hover:opacity-100 transition-all duration-100">
 
