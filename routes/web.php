@@ -127,7 +127,7 @@ Route::get('/ranking', function () {
     return view('ranking.ranking');
 })->middleware(['auth', 'check_role:4,3'])->name('ranking');
 
-Auth::routes(['verify' => true]); 
+// Auth::routes(['verify' => true]); 
 
 // Route to dashboard with email verification check
 Route::get('/dashboard', function () {
