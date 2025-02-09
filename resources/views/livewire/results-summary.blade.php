@@ -22,57 +22,93 @@
         </div>
     </div>
     
-    @foreach ($evaluationData['data'] as $role => $evaluations)
-        <div>
-            <div class="text-lg pl-5 pt-5">{{ ucfirst($role) }} Evaluations</div>
+    @foreach ($evaluationData['data'] as $role => $roleData)
+    <div>
+        <div class="text-lg pl-5 pt-5">{{ ucfirst($role) }} Evaluations</div>
 
-            <div class="p-5 pt-0 overflow-x-auto w-full">
-                <table class="table table-bordered font-TT w-full table-auto">
-                    <thead>
-                        <tr class="uppercase font-normal bg-[#F8F8F8] text-black">
-                            <th class="border border-[#DDD] py-2 px-4 font-light">Subject</th>
-                            <th class="border border-[#DDD] py-2 px-4 font-light">Section</th>
-                            <th class="border border-[#DDD] py-2 px-4 font-light">N</th>
+        {{-- Full Table with All Ratings --}}
+        <div class="p-5 pt-0 pb-0 overflow-x-auto w-full">
+            <table class="table table-bordered font-TT w-full table-auto">
+                <thead>
+                    <tr class="uppercase font-normal bg-[#F8F8F8] text-black">
+                        <th class="border border-[#DDD] py-2 px-4 font-light">Subject</th>
+                        <th class="border border-[#DDD] py-2 px-4 font-light">Section</th>
+                        <th class="border border-[#DDD] py-2 px-4 font-light">N</th>
 
-                            @foreach ($evaluationData['criteriaQuestions'][$role] ?? [] as $criteria => $questions)
-                                <th class="border border-[#DDD] py-2 opacity-50 text-xs font-light" colspan="{{ count($questions) }}">{{ $criteria }}</th>
-                            @endforeach
+                        @php
+                            // ✅ Extract criteria and questions dynamically
+                            $criteriaQuestions = [];
+                            foreach ($roleData['sections'] as $section) {
+                                foreach ($section['ratings'] as $criteria => $questions) {
+                                    $criteriaQuestions[$criteria] = array_unique(array_merge($criteriaQuestions[$criteria] ?? [], array_keys($questions)));
+                                }
+                            }
+                        @endphp
 
-                            <th class="border border-[#DDD] py-2 px-4 font-light">AVG</th>
-                        </tr>
-                        <tr class="bg-gray-100">
-                            <th colspan="3" class="border border-[#DDD] font-light"></th>
-                            @foreach ($evaluationData['criteriaQuestions'][$role] ?? [] as $questions)
-                                @foreach ($questions as $questionId)
-                                    <th class="border border-[#DDD] font-light">{{ $questionId }}</th>
-                                @endforeach
-                            @endforeach
-                            <th class="border border-[#DDD] font-light"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($evaluations as $row)
-                            <tr>
-                                <td class="border border-[#DDD] py-2 px-4 font-light">{{ $row['subject'] }}</td>
-                                <td class="border border-[#DDD] py-2 px-4 font-light">{{ $row['section'] }}</td>
-                                <td class="border border-[#DDD] py-2 px-4 font-light text-center">{{ $row['N'] }}</td>
-
-                                @foreach ($evaluationData['criteriaQuestions'][$role] ?? [] as $questions)
-                                    @foreach ($questions as $questionId)
-                                        <td class="border border-[#DDD] py-2 px-4 font-light text-xs text-center">
-                                            {{ $row['ratings'][$questionId] ?? '-' }}
-                                        </td>
-                                    @endforeach
-                                @endforeach
-
-                                <td class="border border-[#DDD] py-2 px-4 font-light text-center">{{ $row['AVG'] }}</td>
-                            </tr>
+                        @foreach ($criteriaQuestions as $criteria => $questions)
+                            <th class="border border-[#DDD] px-2 text-[#666] text-xs font-light whitespace-nowrap truncate max-w-2" colspan="{{ count($questions) }}">{{ $criteria }}</th>
                         @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    @endforeach
 
+                        <th class="border border-[#DDD] py-2 px-4 font-light">AVG</th>
+                    </tr>
+                    <tr class="bg-gray-100">
+                        <th colspan="3" class="border border-[#DDD] font-light"></th>
+                        @foreach ($criteriaQuestions as $questions)
+                            @foreach ($questions as $questionCode)
+                                <th class="border border-[#DDD] font-light">{{ $questionCode }}</th>
+                            @endforeach
+                        @endforeach
+                        <th class="border border-[#DDD] font-light"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($roleData['sections'] as $section)
+                        <tr>
+                            <td class="border border-[#DDD] py-2 px-4 font-light">{{ $section['subject'] }}</td>
+                            <td class="border border-[#DDD] py-2 px-4 font-light">{{ $section['section'] }}</td>
+                            <td class="border border-[#DDD] py-2 px-4 font-light text-center">{{ $section['N'] }}</td>
+
+                            @foreach ($criteriaQuestions as $criteria => $questions)
+                                @foreach ($questions as $questionCode)
+                                    <td class="border border-[#DDD] py-2 px-4 font-light text-xs text-center">
+                                        {{ $section['ratings'][$criteria][$questionCode] ?? '-' }}
+                                    </td>
+                                @endforeach
+                            @endforeach
+
+                            <td class="border border-[#DDD] py-2 px-4 font-light text-center">{{ $section['AVG'] }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+        {{-- Summary Table with Only Subject, Section, and AVG --}}
+        <div class="p-5 overflow-x-auto w-full">
+            <table class="table table-bordered font-TT table-auto">
+                <thead>
+                    <tr class="uppercase font-normal bg-[#F8F8F8] text-black">
+                        <th class="border border-[#DDD] py-2 px-4 font-light">Subject</th>
+                        <th class="border border-[#DDD] py-2 px-4 font-light">Section</th>
+                        <th class="border border-[#DDD] py-2 px-4 font-light">AVG</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($roleData['sections'] as $section)
+                        <tr>
+                            <td class="border border-[#DDD] py-2 px-4 font-light">{{ $section['subject'] }}</td>
+                            <td class="border border-[#DDD] py-2 px-4 font-light">{{ $section['section'] }}</td>
+                            <td class="border border-[#DDD] py-2 px-4 font-light text-center text-xs">{{ $section['AVG'] }}</td>
+                        </tr>
+                    @endforeach
+                        <tr>
+                            <td class="border border-[#DDD] py-2 px-4 font-light text-right" colspan="2">Overall Average</td>
+                            <td class="border border-[#DDD] py-2 px-4 font-light text-center"> {{ $roleData['overall_avg'] }} </td>
+                        </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+@endforeach
 
 </div>

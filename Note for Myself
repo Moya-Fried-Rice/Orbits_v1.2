@@ -27,3 +27,7 @@
     - Focus muna sa student evaluation results
 
     - Iba UI perspective ng Program Chair sa result faculty list compared sa Admin.
+
+✔   - Total Evaluation attribute sa model hindi pa gumagana.
+
+    - Use boot sa question code at section code instead na getAttributes.
