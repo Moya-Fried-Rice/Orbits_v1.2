@@ -34,40 +34,40 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            if (!window.chartData) {
+                console.error("window.chartData is undefined.");
+                return;
+            }
+
             Object.keys(window.chartData).forEach(function (role) {
+                let numBars = window.chartData[role].data.length; // Get number of bars
+                let barWidth = 150; // Approximate width per bar in pixels
+                let minWidth = 200; // Ensure a minimum width
+                let chartWidth = Math.max(minWidth, numBars * barWidth); // Dynamically calculate width
+
                 var chartOptions = {
                     chart: {
                         type: 'bar',
                         height: 250,
+                        width: chartWidth, // Auto-adjust width
                         fontFamily: 'TT',
                         events: {
                             click: function(event, chartContext, opts) {
                                 if (opts.dataPointIndex !== undefined) {
-                                    let clickedIndex = opts.dataPointIndex; // Get index of clicked bar
-                                    let clickedRole = role; // Assuming `role` is a variable holding the current role
+                                    let clickedIndex = opts.dataPointIndex;
+                                    let clickedRole = role;
 
-                                    let rowId = "row-" + clickedRole + "-" + clickedIndex; // Ensure this matches your table row IDs
+                                    let rowId = "row-" + clickedRole + "-" + clickedIndex; // Ensure row IDs match
                                     console.log("Row ID:", rowId);
 
-                                    // Remove previous highlights
                                     document.querySelectorAll("tr").forEach(row => row.classList.remove("bg-blue-50"));
 
-                                    // Highlight the selected row
                                     let selectedRow = document.getElementById(rowId);
                                     if (selectedRow) {
                                         selectedRow.classList.add("bg-blue-50");
                                     }
                                 }
                             }
-                        }
-                    },
-                    states: {
-                        active: {
-                        allowMultipleDataPointsSelection: false,
-                        filter: {
-                            type: 'none', // You can use 'darken' as well
-                            value: 0.5, // Adjust intensity
-                        }
                         }
                     },
                     colors: ['#923534'],
@@ -79,6 +79,15 @@
                             colors: ['#FFFFFF']
                         }
                     },
+                    states: {
+                        active: {
+                        allowMultipleDataPointsSelection: false,
+                        filter: {
+                            type: 'none', // You can use 'darken' as well
+                            value: 0.5, // Adjust intensity
+                        }
+                        }
+                    },
                     xaxis: {
                         categories: window.chartData[role].labels,
                         labels: {
@@ -86,7 +95,7 @@
                                 fontSize: '0.75rem',
                                 fontFamily: 'TT',
                                 colors: ['#4B5563'],
-                                whiteSpace: 'pre-line' // Ensures multi-line rendering
+                                whiteSpace: 'pre-line'
                             }
                         }
                     },
@@ -127,18 +136,5 @@
                 document.querySelectorAll("tr").forEach(row => row.classList.remove("bg-blue-50"));
             }
         });
-
-        document.querySelectorAll("[id^='chart-']").forEach(chart => {
-            chart.addEventListener("click", function(event) {
-                let chartId = this.id; // Get the clicked chart's ID
-                console.log("Clicked Chart ID:", chartId);
-                
-                // Fetch corresponding chart data (if stored in a dataset)
-                let chartData = this.dataset.chartData ? JSON.parse(this.dataset.chartData) : null;
-                console.log("Chart Data:", chartData);
-            });
-        });
-
-
     </script>
 @endsection
