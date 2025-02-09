@@ -45,17 +45,15 @@ class CourseSection extends Model
         return $this->belongsTo(Section::class, 'section_id');
     }
 
-    // FOR TRACKING
-    public function totalEvaluated($roleName)
+    public function totalEvaluated($role)
     {
-        return $this->evaluations()
-            ->whereHas('userEvaluations', function ($query) use ($roleName) {
-                $query->where('is_completed', true)
-                      ->whereHas('user', function ($query) use ($roleName) {
-                          $query->whereHas('role', function ($query) use ($roleName) {
-                              $query->where('role_name', $roleName);
-                          });
-                      });
-            })->count();
-    }
+        $evaluationIds = $this->evaluations()->pluck('evaluation_id'); // Fetch evaluation IDs first
+    
+        return UserEvaluation::whereIn('evaluation_id', $evaluationIds)
+            ->whereHas('user.role', function ($query) use ($role) { // Directly access `role` relationship
+                $query->where('role_name', $role); // Change 'role_name' if your column is different
+            })
+            ->where('is_completed', true)
+            ->count();
+    }     
 }
