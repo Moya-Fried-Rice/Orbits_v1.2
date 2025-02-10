@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 use Livewire\Component;
 use App\Models\User;
@@ -18,6 +19,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Hash;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+
+use Illuminate\Support\Str;
+use App\Mail\Welcome;
 
 class StudentCrud extends Component
 {
@@ -161,7 +165,7 @@ class StudentCrud extends Component
     }
 
     // Function to show the confirmation modal after clicking "Store"
-    public function storeConfirmation() 
+    public function storeConfirmation()
     {
         if ($this->isPopulated()) {
             $this->showAddForm = false; // Close the add form modal
@@ -170,7 +174,7 @@ class StudentCrud extends Component
             session()->flash('info', 'Please fill in all required fields before proceeding.'); // Error message
             $this->showAddForm = false; // Close the add form modal
         }
-    }    
+    }
 
     // Function to check if form is empty
     public function isPopulated()
@@ -183,7 +187,7 @@ class StudentCrud extends Component
     }
 
     // Function that is called if the user confirms to store the student
-    public function confirmStore() 
+    public function confirmStore()
     {
         $this->store(); // Call the store method to save the new student
         $this->showAddConfirmation = false; // Close the confirmation modal
@@ -192,7 +196,7 @@ class StudentCrud extends Component
     }
 
     // Function that is called if the user cancels the store action
-    public function cancelStore() 
+    public function cancelStore()
     {
         $this->showAddConfirmation = false; // Close the confirmation modal
         $this->showAddForm = true; // Show the add form modal again
@@ -200,7 +204,7 @@ class StudentCrud extends Component
     }
 
     // Function to validate inputs and handle student creation
-    public function validateQueryStore() 
+    public function validateQueryStore()
     {
         // Initialize $student with the intended input values
         $student = new Student([
@@ -220,14 +224,12 @@ class StudentCrud extends Component
 
             // Log success and return a success response
             return $this->logAdd('Student successfully added!', $student, 201);
-
         } catch (ValidationException $e) {
             // Log validation error with the initialized $student
             $errors = $e->validator->errors()->all();
             $errorMessages = implode(' | ', $errors);
 
             return $this->logAddError('Invalid inputs: ' . $errorMessages, $student, 422);
-
         } catch (QueryException $e) {
             // Handle duplicate entry error
             if ($e->errorInfo[1] == 1062) {
@@ -250,12 +252,22 @@ class StudentCrud extends Component
         }
 
         // Ensure a user is created or exists in the `users` table
+        // Generate a random password with the prefix "LPUeval_"
+        $randomPassword = 'LPUeval_' . Str::random(8); // Generates "LPUeval_xxxxxxxx"
+
+        // Create the user with the generated password
         $user = User::create([
             'name' => $this->first_name . ' ' . $this->last_name,
-            'email' => $this->email, // Assuming email is captured
-            'password' => Hash::make('password'), // Use a secure password
+            'email' => $this->email,
+            'password' => Hash::make($randomPassword), // Hash for security
             'role_id' => 1,
         ]);
+
+        // Send the welcome email with the generated password
+        Mail::to($user->email)->send(new Welcome($user, $randomPassword));
+        return 'Email sent successfully!';
+
+        session()->flash('message', 'Student created and email sent successfully.');
 
         // Create the student record and link it to the user's ID
         return Student::create([
@@ -273,7 +285,7 @@ class StudentCrud extends Component
     {
         // Flash success message to the session for user feedback
         session()->flash('success', $message);
-        
+
         // Log the activity using Spatie Activitylog
         activity()
             ->performedOn($student) // Attach the log to the student object
@@ -292,7 +304,7 @@ class StudentCrud extends Component
     {
         // Flash error message to the session for user feedback
         session()->flash('error', $message);
-        
+
         // Log the activity using Spatie Activitylog
         activity()
             ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
@@ -306,7 +318,7 @@ class StudentCrud extends Component
     }
 
     // Function to close the add student form and reset everything
-    public function closeAdd() 
+    public function closeAdd()
     {
         $this->showAddForm = false; // Close the add form modal
         $this->showAddConfirmation = false; // Close the confirmation modal
@@ -331,29 +343,29 @@ class StudentCrud extends Component
         $this->deleteId = $id;
         $this->showDeleteConfirmation = true;
     }
-    
+
     // Step 2: Confirm/Cancel delete
-    
+
     // If confirmed
     public function confirmDelete()
     {
         $this->remove(); // Proceed to delete student from database
         $this->resetDeleteState(); // Close confirmation modal and reset state
     }
-    
+
     // If canceled
     public function cancelDelete()
     {
         $this->resetDeleteState(); // Close confirmation modal and reset state
     }
-    
+
     // Reset delete state to prepare for next action
     private function resetDeleteState()
     {
         $this->showDeleteConfirmation = false;
         $this->deleteId = null;
     }
-    
+
     // Main method to handle deletion
     public function remove()
     {
@@ -365,32 +377,31 @@ class StudentCrud extends Component
             session()->forget('deleteId');
         }
     }
-    
+
     // Validate and process deletion
     public function validateQueryRemove()
     {
         try {
             // Retrieve student by ID
             $student = Student::find($this->deleteId);
-    
+
             if (!$student) {
                 return $this->logRemoveError('Student not found!', $student, 404);
             }
-    
+
             // Check for related records (dependencies) that prevent deletion
-            if ($student->studentCourses()->exists()) { 
+            if ($student->studentCourses()->exists()) {
                 return $this->logRemoveError('Cannot delete the student as they are currently enrolled in a course.', $student, 400);
             }
-    
+
             // Soft delete the student
             $this->deleteStudent($student);
-
         } catch (QueryException $e) {
             // Handle database query exceptions
             return $this->logRemoveError('Database error: ' . $e->getMessage(), $student, 500);
         }
     }
-    
+
     // Soft delete the student and log success
     private function deleteStudent($student)
     {
@@ -401,16 +412,16 @@ class StudentCrud extends Component
 
         return redirect()->route('students');
     }
-    
+
     // Log successful student removal
     private function logRemove($message, $student, $statusCode)
     {
         // Flash deleted id for restoration to the session
         session()->put('deleted_record_id', $this->deleteId);
-    
+
         // Flash success message to the session
         session()->flash('deleted', $message);
-    
+
         // Log the activity using Spatie Activitylog
         activity()
             ->performedOn($student)
@@ -423,13 +434,13 @@ class StudentCrud extends Component
             ->event('Student Removed') // Event: Student Removed
             ->log($message); // Log the custom success message
     }
-    
+
     // Log an error when student removal fails
     private function logRemoveError($message, $student, $statusCode)
     {
         // Flash error message to the session
         session()->flash('error', $message);
-    
+
         // Log the activity using Spatie Activitylog
         activity()
             ->performedOn($student)
@@ -499,7 +510,7 @@ class StudentCrud extends Component
         try {
             // Attempt to restore the student
             $student->restore();
-            
+
             // Clear the session for deleted student ID
             session()->forget('deleted_record_id');
 
@@ -581,5 +592,5 @@ class StudentCrud extends Component
             ->event('System Error') // Event name for clarity
             ->log($message); // Log the custom error message
     }
-     //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 }
