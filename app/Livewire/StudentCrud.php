@@ -23,13 +23,16 @@ use Livewire\WithPagination;
 use Illuminate\Support\Str;
 use App\Mail\Welcome;
 
+use Illuminate\Support\Facades\Log; //debugging
+
+
 class StudentCrud extends Component
 {
     use WithPagination, WithFileUploads;
 
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
     // Properties
-    public $first_name, $last_name, $program_id, $phone_number, $profile_image, $email;
+    public $first_name, $last_name, $program_id, $phone_number, $profile_image, $email, $randomPassword;
     public $showDeleteConfirmation = false;
     public $showEditForm = false, $showEditConfirmation = false;
     public $showAddForm = false, $showAddConfirmation = false;
@@ -186,10 +189,36 @@ class StudentCrud extends Component
             !empty($this->profile_image);
     }
 
+    // Function to send email to the student
+    public function sendEmail()
+    {
+        $user = User::where('email', $this->email)->first();
+        Log::info("sendEmail() - Email value: '" . ($this->email ?? 'NULL') . "'");
+        if ($user && $this->randomPassword) {
+            try {
+                Mail::to($user->email)->send(new Welcome($user, $this->randomPassword));
+                Log::info("Email sent successfully to: " . $user->email);
+                session()->flash('message', 'Student created and email sent successfully.');
+                return $this->logAdd('Email sent successfully', $user, 201);
+            } catch (\Exception $e) {
+                Log::error("Failed to send email to {$user->email}: " . $e->getMessage());
+                session()->flash('error', 'Failed to send email.');
+                return $this->logAdd('Email sending failed: ' . $e->getMessage(), $user, 500);
+            }
+        } else {
+            Log::warning("Email not sent: User not found or password missing.");
+            session()->flash('error', 'Email could not be sent.');
+        }
+    }
+
+
+
+
     // Function that is called if the user confirms to store the student
     public function confirmStore()
     {
         $this->store(); // Call the store method to save the new student
+        $this->sendEmail(); // Send the welcome email to the student
         $this->showAddConfirmation = false; // Close the confirmation modal
         $this->showAddForm = false; // Close the add form modal
         $this->resetInputFields(); // Reset the input fields after storing the student
@@ -247,29 +276,19 @@ class StudentCrud extends Component
         if ($this->profile_image) {
             $imagePath = $this->profile_image->store('profile_images', 'public');
         } else {
-            // If no image is provided, use a default image path
-            $imagePath = 'default_images/default_profile.png'; // Provide the path to a default image
+            $imagePath = 'default_images/default_profile.png';
         }
 
-        // Ensure a user is created or exists in the `users` table
-        // Generate a random password with the prefix "LPUeval_"
-        $randomPassword = 'LPUeval_' . Str::random(8); // Generates "LPUeval_xxxxxxxx"
+        // Generate and store password in Livewire property
+        $this->randomPassword = 'LPUeval_' . Str::random(8);
 
-        // Create the user with the generated password
         $user = User::create([
             'name' => $this->first_name . ' ' . $this->last_name,
             'email' => $this->email,
-            'password' => Hash::make($randomPassword), // Hash for security
+            'password' => Hash::make($this->randomPassword),
             'role_id' => 1,
         ]);
 
-        // Send the welcome email with the generated password
-        Mail::to($user->email)->send(new Welcome($user, $randomPassword));
-        return 'Email sent successfully!';
-
-        session()->flash('message', 'Student created and email sent successfully.');
-
-        // Create the student record and link it to the user's ID
         return Student::create([
             'user_id' => $user->user_id,
             'first_name' => $this->first_name,
@@ -279,6 +298,7 @@ class StudentCrud extends Component
             'profile_image' => $imagePath,
         ]);
     }
+
 
     // Function to log a successful student creation
     private function logAdd($message, $student, $statusCode)
