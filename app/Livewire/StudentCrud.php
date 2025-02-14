@@ -39,6 +39,8 @@ class StudentCrud extends Component
     public $search = null, $deleteId, $selectedProgram = null;
     public $sortField = 'created_at', $sortDirection = 'asc';
 
+    protected $storedEmail;
+
     public function render()
     {
         $students = Student::query()
@@ -192,24 +194,25 @@ class StudentCrud extends Component
     // Function to send email to the student
     public function sendEmail()
     {
-        $user = User::where('email', $this->email)->first();
-        Log::info("sendEmail() - Email value: '" . ($this->email ?? 'NULL') . "'");
+        Log::info("sendEmail() - Stored email: '" . ($this->storedEmail ?? 'NULL') . "'");
+
+        if (!$this->storedEmail) {
+            Log::warning("sendEmail() - Email is NULL, skipping email sending.");
+            return;
+        }
+
+        $user = User::where('email', $this->storedEmail)->first();
+
         if ($user && $this->randomPassword) {
             try {
                 Mail::to($user->email)->send(new Welcome($user, $this->randomPassword));
                 Log::info("Email sent successfully to: " . $user->email);
-                session()->flash('message', 'Student created and email sent successfully.');
-                return $this->logAdd('Email sent successfully', $user, 201);
             } catch (\Exception $e) {
-                Log::error("Failed to send email to {$user->email}: " . $e->getMessage());
-                session()->flash('error', 'Failed to send email.');
-                return $this->logAdd('Email sending failed: ' . $e->getMessage(), $user, 500);
+                Log::error("Failed to send email: " . $e->getMessage());
             }
-        } else {
-            Log::warning("Email not sent: User not found or password missing.");
-            session()->flash('error', 'Email could not be sent.');
         }
     }
+
 
 
 
@@ -217,11 +220,21 @@ class StudentCrud extends Component
     // Function that is called if the user confirms to store the student
     public function confirmStore()
     {
-        $this->store(); // Call the store method to save the new student
-        $this->sendEmail(); // Send the welcome email to the student
-        $this->showAddConfirmation = false; // Close the confirmation modal
-        $this->showAddForm = false; // Close the add form modal
-        $this->resetInputFields(); // Reset the input fields after storing the student
+        Log::info("confirmStore() - Before store(), Email: '" . ($this->email ?? 'NULL') . "'");
+
+        $this->store(); // Store student, which should also set $this->storedEmail
+    
+        Log::info("confirmStore() - After store(), Before sendEmail(), Stored Email: '" . ($this->storedEmail ?? 'NULL') . "'");
+    
+        $this->sendEmail(); // Now send email using the stored property
+    
+        Log::info("confirmStore() - After sendEmail(), resetting fields");
+    
+        $this->resetInputFields(); // Reset fields AFTER sending the email
+        $this->storedEmail = null; // Explicitly clear after sending email
+
+        $this->showAddConfirmation = false;
+        $this->showAddForm = false;
     }
 
     // Function that is called if the user cancels the store action
@@ -289,6 +302,9 @@ class StudentCrud extends Component
             'role_id' => 1,
         ]);
 
+        $this->storedEmail = $user->email; // Store email in Livewire property
+        Log::info("createStudent() - Email set to: '" . ($this->email ?? 'NULL') . "'");
+
         return Student::create([
             'user_id' => $user->user_id,
             'first_name' => $this->first_name,
@@ -297,6 +313,8 @@ class StudentCrud extends Component
             'phone_number' => $this->phone_number,
             'profile_image' => $imagePath,
         ]);
+
+        session()->put('new_user_email', $user->email); // Store in session
     }
 
 
