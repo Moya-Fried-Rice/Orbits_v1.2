@@ -158,7 +158,7 @@ class SurveyQuestionsCrud extends Component
         // Populate input fields with course data
         $this->survey_id = $survey->survey_id;
         $this->survey_name = $survey->survey_name;
-        $this->role_id = $survey->surveyRole->pluck('role_id')->toArray();
+        $this->role_id = $survey->surveyRoles->pluck('role_id')->toArray();
     }
 
     public function populateCriteria($id) 
