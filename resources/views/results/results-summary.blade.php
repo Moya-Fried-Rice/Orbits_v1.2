@@ -41,14 +41,14 @@
 
             Object.keys(window.chartData).forEach(function (role) {
                 let numBars = window.chartData[role].data.length; // Get number of bars
-                let barWidth = 150; // Approximate width per bar in pixels
-                let minWidth = 200; // Ensure a minimum width
+                let barWidth = 120; // Approximate width per bar in pixels
+                let minWidth = 300; // Ensure a minimum width
                 let chartWidth = Math.max(minWidth, numBars * barWidth); // Dynamically calculate width
 
                 var chartOptions = {
                     chart: {
                         type: 'bar',
-                        height: 250,
+                        height: 300,
                         width: chartWidth, // Auto-adjust width
                         fontFamily: 'TT',
                         events: {
@@ -72,12 +72,7 @@
                     },
                     colors: ['#923534'],
                     dataLabels: {
-                        enabled: true,
-                        style: {
-                            fontSize: '0.75rem',
-                            fontFamily: 'TT',
-                            colors: ['#FFFFFF']
-                        }
+                        enabled: false,
                     },
                     states: {
                         active: {
