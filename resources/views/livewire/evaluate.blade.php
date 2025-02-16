@@ -1,9 +1,13 @@
-<div class="min-h-screen bg-white p-8">
+<div class="min-h-screen bg-white p-8 font-TT">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
         * {
             font-family: 'Poppins', sans-serif;
+        }
+
+        .font-TT, .font-silka {
+            font-family: 'TT', 'Silka', sans-serif;
         }
 
         .rating {
@@ -18,14 +22,22 @@
 
         .rating label {
             cursor: pointer;
-            width: 2rem;
-            height: 2rem;
+            width: 2.5rem;
+            height: 2.5rem;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.5rem;
+            font-size: 2rem;
             color: #CBD5E1; /* Tailwind slate-300 */
             transition: all 0.3s;
+        }
+
+        @media (min-width: 640px) {
+            .rating label {
+                width: 3rem;
+                height: 3rem;
+                font-size: 2.5rem;
+            }
         }
 
         .rating label:hover,
@@ -52,12 +64,18 @@
             display: none;
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .question-page.active {
             display: block;
+            animation: fadeIn 0.3s ease-out;
         }
     </style>
 
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <x-system-notification />
 
         @if(!$evaluation)
@@ -65,9 +83,9 @@
                 <p class="text-slate-600 text-xl">No pending evaluations.</p>
             </div>
         @else
-            <div class="rounded-xl p-8 border border-slate-200">
-                <h1 class="text-3xl font-bold text-slate-900 text-center mb-8">Course Evaluation</h1>
-                <h2 class="text-2xl font-semibold text-slate-700 text-center mb-4">
+            <div class="rounded-xl p-4 sm:p-8 border-0 sm:border sm:border-slate-200">
+                <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 text-center mb-4 sm:mb-8">Course Evaluation</h1>
+                <h2 class="text-xl sm:text-2xl font-semibold text-slate-700 text-center mb-4">
                     {{ $evaluation->evaluation->courseSection->course->course_code }} | {{ $evaluation->evaluation->courseSection->course->course_name }}
                 </h2>
 
@@ -83,10 +101,10 @@
 
                     @foreach($evaluation->evaluation->survey->questionCriterias as $criteriaIndex => $criteria)
                         @foreach ($criteria->questions as $question)
-                            <div id="question-{{ $questionIndex }}" class="question-page {{ $questionIndex === 0 ? 'active' : '' }} mb-8 p-6 rounded-lg border border-slate-200 bg-slate-50">
-                                <h3 class="text-xl font-medium text-slate-900 mb-6">{{ $criteria->description }}</h3>
-                                <div class="mb-6">
-                                    <p class="text-slate-700 mb-3">{{ $question->question_text }}</p>
+                            <div id="question-{{ $questionIndex }}" class="question-page {{ $questionIndex === 0 ? 'active' : '' }} mb-4 sm:mb-8">
+                                <h3 class="text-lg sm:text-xl font-medium text-slate-900 mb-4 sm:mb-6">{{ $criteria->description }}</h3>
+                                <div class="mb-4 sm:mb-6">
+                                    <p class="text-base sm:text-lg text-slate-700 mb-3">{{ $question->question_text }}</p>
                                     <div class="rating flex justify-center">
                                         @for ($i = 5; $i >= 1; $i--)
                                             <input 
@@ -96,16 +114,16 @@
                                                 value="{{ $i }}"
                                                 wire:model.defer="responses.{{ $evaluation->user_evaluation_id }}.{{ $question->question_id }}"
                                             >
-                                            <label for="star{{ $question->question_id }}-{{ $i }}">★</label>
+                                            <label for="star{{ $question->question_id }}-{{ $i }}" class="text-3xl sm:text-4xl">★</label>
                                         @endfor
                                     </div>
                                 </div>
 
-                                <div class="flex justify-between mt-6">
+                                <div class="flex justify-between mt-4 sm:mt-6">
                                     @if($questionIndex > 0)
                                         <button 
                                             type="button"
-                                            class="px-6 py-2 rounded-full bg-slate-300 text-slate-700 font-medium transition hover:bg-opacity-90"
+                                            class="px-4 sm:px-6 py-2 rounded-full bg-slate-300 text-slate-700 font-medium transition hover:bg-opacity-90 text-sm sm:text-base"
                                             onclick="previousQuestion({{ $questionIndex }})"
                                         >
                                             Previous
@@ -114,7 +132,7 @@
                                     @if($questionIndex < $totalQuestions - 1)
                                         <button 
                                             type="button"
-                                            class="px-6 py-2 rounded-full bg-[#923534] text-white font-medium transition hover:bg-opacity-90"
+                                            class="px-4 sm:px-6 py-2 rounded-full bg-[#923534] text-white font-medium transition hover:bg-opacity-90 text-sm sm:text-base"
                                             onclick="nextQuestion({{ $questionIndex }})"
                                         >
                                             Next
@@ -122,7 +140,7 @@
                                     @else
                                         <button 
                                             type="button"
-                                            class="px-6 py-2 rounded-full bg-[#923534] text-white font-medium transition hover:bg-opacity-90"
+                                            class="px-4 sm:px-6 py-2 rounded-full bg-[#923534] text-white font-medium transition hover:bg-opacity-90 text-sm sm:text-base"
                                             onclick="showComments()"
                                         >
                                             Next
@@ -134,28 +152,28 @@
                         @endforeach
                     @endforeach
 
-                    <div id="comments-section" class="question-page mb-8 p-6 rounded-lg border border-slate-200 bg-slate-50">
-                        <h3 class="text-xl font-medium text-slate-900 mb-4">Additional Comments</h3>
+                    <div id="comments-section" class="question-page mb-4 sm:mb-8">
+                        <h3 class="text-lg sm:text-xl font-medium text-slate-900 mb-4">Additional Comments</h3>
                         <textarea 
                             wire:model.defer="comments.{{ $evaluation->user_evaluation_id }}"
-                            class="w-full p-4 rounded-lg bg-white text-slate-900 placeholder-slate-400 border border-slate-200 focus:ring-2 focus:ring-[#923534] focus:border-[#923534] focus:outline-none resize-none"
+                            class="w-full p-3 sm:p-4 rounded-lg bg-white text-slate-900 placeholder-slate-400 border border-slate-200 focus:ring-2 focus:ring-[#923534] focus:border-[#923534] focus:outline-none resize-none text-sm sm:text-base"
                             rows="4"
                             placeholder="Share your thoughts with us..."
                         ></textarea>
 
-                        <div class="flex justify-between mt-6">
+                        <div class="flex justify-between mt-4 sm:mt-6">
                             <button 
                                 type="button"
-                                class="px-6 py-2 rounded-full bg-slate-300 text-slate-700 font-medium transition hover:bg-opacity-90"
+                                class="px-4 sm:px-6 py-2 rounded-full bg-slate-300 text-slate-700 font-medium transition hover:bg-opacity-90 text-sm sm:text-base"
                                 onclick="previousQuestion({{ $totalQuestions - 1 }})"
                             >
                                 Previous
                             </button>
                             <button 
                                 type="submit"
-                                class="px-8 py-3 rounded-full bg-[#923534] text-white font-medium transition hover:bg-opacity-90"
+                                class="px-6 sm:px-8 py-2 sm:py-3 rounded-full bg-[#923534] text-white font-medium transition hover:bg-opacity-90 text-sm sm:text-base"
                             >
-                                Submit Evaluation
+                                Submit
                             </button>
                         </div>
                     </div>
@@ -165,10 +183,10 @@
     </div>
 
     <div id="successMessage" class="fixed inset-0 flex items-center justify-center bg-black/50 hidden">
-        <div class="bg-white rounded-xl p-12 text-center shadow-xl">
-            <div class="text-6xl mb-4">🎉</div>
-            <h2 class="text-3xl font-bold text-slate-900 mb-4">Thank You!</h2>
-            <p class="text-xl text-slate-600">Your feedback has been submitted successfully</p>
+        <div class="bg-white rounded-xl p-6 sm:p-12 text-center shadow-xl mx-4 sm:mx-0">
+            <div class="text-4xl sm:text-6xl mb-4">🎉</div>
+            <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">Thank You!</h2>
+            <p class="text-lg sm:text-xl text-slate-600">Your feedback has been submitted successfully</p>
         </div>
     </div>
 
@@ -180,10 +198,14 @@
             if (index > 0) {
                 if (document.getElementById('comments-section').classList.contains('active')) {
                     document.getElementById('comments-section').classList.remove('active');
-                    document.getElementById(`question-${index}`).classList.add('active');
+                    const lastQuestion = document.getElementById(`question-${index}`);
+                    lastQuestion.classList.add('active');
+                    lastQuestion.offsetHeight; // Trigger reflow
                 } else {
                     document.getElementById(`question-${index}`).classList.remove('active');
-                    document.getElementById(`question-${index - 1}`).classList.add('active');
+                    const prevQuestion = document.getElementById(`question-${index - 1}`);
+                    prevQuestion.classList.add('active');
+                    prevQuestion.offsetHeight; // Trigger reflow
                 }
                 currentQuestion = index - 1;
                 updateProgressBar();
@@ -193,7 +215,9 @@
         function nextQuestion(index) {
             if (index < totalQuestions - 1) {
                 document.getElementById(`question-${index}`).classList.remove('active');
-                document.getElementById(`question-${index + 1}`).classList.add('active');
+                const nextQuestion = document.getElementById(`question-${index + 1}`);
+                nextQuestion.classList.add('active');
+                nextQuestion.offsetHeight; // Trigger reflow
                 currentQuestion = index + 1;
                 updateProgressBar();
             }
@@ -201,7 +225,9 @@
 
         function showComments() {
             document.getElementById(`question-${totalQuestions - 1}`).classList.remove('active');
-            document.getElementById('comments-section').classList.add('active');
+            const commentsSection = document.getElementById('comments-section');
+            commentsSection.classList.add('active');
+            commentsSection.offsetHeight; // Trigger reflow
             currentQuestion = totalQuestions;
             updateProgressBar();
         }
