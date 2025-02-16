@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 use Livewire\Component;
 use App\Models\User;
@@ -19,18 +20,23 @@ use Illuminate\Support\Facades\Hash;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
+use Illuminate\Support\Str;
+use App\Mail\Welcome;
+
 class StudentCrud extends Component
 {
     use WithPagination, WithFileUploads;
 
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
     // Properties
-    public $first_name, $last_name, $program_id, $phone_number, $profile_image, $email;
+    public $first_name, $last_name, $program_id, $phone_number, $profile_image, $email, $randomPassword;
     public $showDeleteConfirmation = false;
     public $showEditForm = false, $showEditConfirmation = false;
     public $showAddForm = false, $showAddConfirmation = false;
     public $search = null, $deleteId, $selectedProgram = null;
     public $sortField = 'created_at', $sortDirection = 'asc';
+
+    protected $storedEmail;
 
     public function render()
     {
@@ -161,7 +167,7 @@ class StudentCrud extends Component
     }
 
     // Function to show the confirmation modal after clicking "Store"
-    public function storeConfirmation() 
+    public function storeConfirmation()
     {
         if ($this->isPopulated()) {
             $this->showAddForm = false; // Close the add form modal
@@ -170,7 +176,7 @@ class StudentCrud extends Component
             session()->flash('info', 'Please fill in all required fields before proceeding.'); // Error message
             $this->showAddForm = false; // Close the add form modal
         }
-    }    
+    }
 
     // Function to check if form is empty
     public function isPopulated()
@@ -182,17 +188,42 @@ class StudentCrud extends Component
             !empty($this->profile_image);
     }
 
-    // Function that is called if the user confirms to store the student
-    public function confirmStore() 
+    // Function to send email to the student
+    public function sendEmail()
     {
-        $this->store(); // Call the store method to save the new student
-        $this->showAddConfirmation = false; // Close the confirmation modal
-        $this->showAddForm = false; // Close the add form modal
-        $this->resetInputFields(); // Reset the input fields after storing the student
+
+        if (!$this->storedEmail) {
+            return;
+        }
+
+        $user = User::where('email', $this->storedEmail)->first();
+
+        if ($user && $this->randomPassword) {
+            try {
+                Mail::to($user->email)->send(new Welcome($user, $this->randomPassword));
+            } catch (\Exception $e) {
+            }
+        }
+    }
+
+
+
+
+
+    // Function that is called if the user confirms to store the student
+    public function confirmStore()
+    {
+        $this->store(); // Store student, which should also set $this->storedEmail    
+        $this->sendEmail(); // Now send email using the stored property    
+        $this->resetInputFields(); // Reset fields AFTER sending the email
+        $this->storedEmail = null; // Explicitly clear after sending email
+
+        $this->showAddConfirmation = false;
+        $this->showAddForm = false;
     }
 
     // Function that is called if the user cancels the store action
-    public function cancelStore() 
+    public function cancelStore()
     {
         $this->showAddConfirmation = false; // Close the confirmation modal
         $this->showAddForm = true; // Show the add form modal again
@@ -200,7 +231,7 @@ class StudentCrud extends Component
     }
 
     // Function to validate inputs and handle student creation
-    public function validateQueryStore() 
+    public function validateQueryStore()
     {
         // Initialize $student with the intended input values
         $student = new Student([
@@ -220,14 +251,12 @@ class StudentCrud extends Component
 
             // Log success and return a success response
             return $this->logAdd('Student successfully added!', $student, 201);
-
         } catch (ValidationException $e) {
             // Log validation error with the initialized $student
             $errors = $e->validator->errors()->all();
             $errorMessages = implode(' | ', $errors);
 
             return $this->logAddError('Invalid inputs: ' . $errorMessages, $student, 422);
-
         } catch (QueryException $e) {
             // Handle duplicate entry error
             if ($e->errorInfo[1] == 1062) {
@@ -245,19 +274,21 @@ class StudentCrud extends Component
         if ($this->profile_image) {
             $imagePath = $this->profile_image->store('profile_images', 'public');
         } else {
-            // If no image is provided, use a default image path
-            $imagePath = 'default_images/default_profile.png'; // Provide the path to a default image
+            $imagePath = 'default_images/default_profile.png';
         }
 
-        // Ensure a user is created or exists in the `users` table
+        // Generate and store password in Livewire property
+        $this->randomPassword = 'LPUeval_' . Str::random(8);
+
         $user = User::create([
             'name' => $this->first_name . ' ' . $this->last_name,
-            'email' => $this->email, // Assuming email is captured
-            'password' => Hash::make('password'), // Use a secure password
+            'email' => $this->email,
+            'password' => Hash::make($this->randomPassword),
             'role_id' => 1,
         ]);
 
-        // Create the student record and link it to the user's ID
+        $this->storedEmail = $user->email; // Store email in Livewire property
+        
         return Student::create([
             'user_id' => $user->user_id,
             'first_name' => $this->first_name,
@@ -266,14 +297,17 @@ class StudentCrud extends Component
             'phone_number' => $this->phone_number,
             'profile_image' => $imagePath,
         ]);
+
+        session()->put('new_user_email', $user->email); // Store in session
     }
+
 
     // Function to log a successful student creation
     private function logAdd($message, $student, $statusCode)
     {
         // Flash success message to the session for user feedback
         session()->flash('success', $message);
-        
+
         // Log the activity using Spatie Activitylog
         activity()
             ->performedOn($student) // Attach the log to the student object
@@ -292,7 +326,7 @@ class StudentCrud extends Component
     {
         // Flash error message to the session for user feedback
         session()->flash('error', $message);
-        
+
         // Log the activity using Spatie Activitylog
         activity()
             ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
@@ -306,7 +340,7 @@ class StudentCrud extends Component
     }
 
     // Function to close the add student form and reset everything
-    public function closeAdd() 
+    public function closeAdd()
     {
         $this->showAddForm = false; // Close the add form modal
         $this->showAddConfirmation = false; // Close the confirmation modal
@@ -331,29 +365,29 @@ class StudentCrud extends Component
         $this->deleteId = $id;
         $this->showDeleteConfirmation = true;
     }
-    
+
     // Step 2: Confirm/Cancel delete
-    
+
     // If confirmed
     public function confirmDelete()
     {
         $this->remove(); // Proceed to delete student from database
         $this->resetDeleteState(); // Close confirmation modal and reset state
     }
-    
+
     // If canceled
     public function cancelDelete()
     {
         $this->resetDeleteState(); // Close confirmation modal and reset state
     }
-    
+
     // Reset delete state to prepare for next action
     private function resetDeleteState()
     {
         $this->showDeleteConfirmation = false;
         $this->deleteId = null;
     }
-    
+
     // Main method to handle deletion
     public function remove()
     {
@@ -365,32 +399,31 @@ class StudentCrud extends Component
             session()->forget('deleteId');
         }
     }
-    
+
     // Validate and process deletion
     public function validateQueryRemove()
     {
         try {
             // Retrieve student by ID
             $student = Student::find($this->deleteId);
-    
+
             if (!$student) {
                 return $this->logRemoveError('Student not found!', $student, 404);
             }
-    
+
             // Check for related records (dependencies) that prevent deletion
-            if ($student->studentCourses()->exists()) { 
+            if ($student->studentCourses()->exists()) {
                 return $this->logRemoveError('Cannot delete the student as they are currently enrolled in a course.', $student, 400);
             }
-    
+
             // Soft delete the student
             $this->deleteStudent($student);
-
         } catch (QueryException $e) {
             // Handle database query exceptions
             return $this->logRemoveError('Database error: ' . $e->getMessage(), $student, 500);
         }
     }
-    
+
     // Soft delete the student and log success
     private function deleteStudent($student)
     {
@@ -401,16 +434,16 @@ class StudentCrud extends Component
 
         return redirect()->route('students');
     }
-    
+
     // Log successful student removal
     private function logRemove($message, $student, $statusCode)
     {
         // Flash deleted id for restoration to the session
         session()->put('deleted_record_id', $this->deleteId);
-    
+
         // Flash success message to the session
         session()->flash('deleted', $message);
-    
+
         // Log the activity using Spatie Activitylog
         activity()
             ->performedOn($student)
@@ -423,13 +456,13 @@ class StudentCrud extends Component
             ->event('Student Removed') // Event: Student Removed
             ->log($message); // Log the custom success message
     }
-    
+
     // Log an error when student removal fails
     private function logRemoveError($message, $student, $statusCode)
     {
         // Flash error message to the session
         session()->flash('error', $message);
-    
+
         // Log the activity using Spatie Activitylog
         activity()
             ->performedOn($student)
@@ -499,7 +532,7 @@ class StudentCrud extends Component
         try {
             // Attempt to restore the student
             $student->restore();
-            
+
             // Clear the session for deleted student ID
             session()->forget('deleted_record_id');
 
@@ -581,5 +614,5 @@ class StudentCrud extends Component
             ->event('System Error') // Event name for clarity
             ->log($message); // Log the custom error message
     }
-     //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 }
