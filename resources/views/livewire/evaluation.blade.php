@@ -1,31 +1,32 @@
-<div class="bg-white">
+<!-- Evaluation Section -->
+<div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 md:p-8">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+        📜 Pending Evaluations
+    </h2>
 
-    <div class="p-5">
-
+    <!-- Multiple Evaluation Boxes -->
+    <div class="space-y-4">
         @foreach($evaluations as $evaluation)
-            <div class="bg-white border p-4 mb-4 border-[#DDD]">
-                <h3 class="text-lg font-semibold text-gray-800">
-                    {{ $evaluation->evaluation->courseSection->course->course_code }} | {{ $evaluation->evaluation->courseSection->course->course_name }}
+            <div class="bg-white rounded-lg p-4 sm:p-6 border-0 sm:border border-gray-200">
+                <h3 class="text-lg font-semibold text-[#923534] mb-2">
+                    📘 {{ $evaluation->evaluation->courseSection->course->course_code }} | {{ $evaluation->evaluation->courseSection->course->course_name }}
                 </h3>
-                <p class="text-gray-600">Survey: {{ $evaluation->evaluation->survey->survey_name }}</p>
-                <p class="text-gray-600">
-                    Faculty: {{ $evaluation->evaluation->courseSection->facultyCourses->first()->faculty->faculty_name ?? 'No Faculty' }}
-                </p>
-                <br>
+                <p class="text-gray-600 mb-1">📑 Survey: <span class="font-medium">{{ $evaluation->evaluation->survey->survey_name }}</span></p>
+                <p class="text-gray-600 mb-3">👨‍🏫 Faculty: <span class="font-medium">{{ $evaluation->evaluation->courseSection->facultyCourses->first()->faculty->faculty_name ?? 'No Faculty' }}</span></p>
                 <a 
-                href="{{ route('evaluate', ['uuid' => $evaluation->uuid]) }}" 
-                class="bg-[#F8F8F8] text-[#2A2723] px-3 py-1 text-sm transition duration-100 border hover:border-[#923534]"
+                    href="{{ route('evaluate', ['uuid' => $evaluation->uuid]) }}" 
+                    class="inline-block bg-[#923534] text-white px-6 py-2 text-sm font-medium rounded-full hover:bg-[#7A2C2B] transition-colors"
                 >
                     Evaluate
-                </a>            
-                
+                </a>
             </div>
         @endforeach
 
         @if($evaluations->isEmpty())
-            <p class="text-gray-500 mt-4">No pending evaluations.</p>
+            <div class="text-center py-8">
+                <p class="text-gray-500">No pending evaluations.</p>
+            </div>
         @endif
-
     </div>
-
 </div>
+
