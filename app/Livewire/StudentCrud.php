@@ -23,9 +23,6 @@ use Livewire\WithPagination;
 use Illuminate\Support\Str;
 use App\Mail\Welcome;
 
-use Illuminate\Support\Facades\Log; //debugging
-
-
 class StudentCrud extends Component
 {
     use WithPagination, WithFileUploads;
@@ -194,10 +191,8 @@ class StudentCrud extends Component
     // Function to send email to the student
     public function sendEmail()
     {
-        Log::info("sendEmail() - Stored email: '" . ($this->storedEmail ?? 'NULL') . "'");
 
         if (!$this->storedEmail) {
-            Log::warning("sendEmail() - Email is NULL, skipping email sending.");
             return;
         }
 
@@ -206,9 +201,7 @@ class StudentCrud extends Component
         if ($user && $this->randomPassword) {
             try {
                 Mail::to($user->email)->send(new Welcome($user, $this->randomPassword));
-                Log::info("Email sent successfully to: " . $user->email);
             } catch (\Exception $e) {
-                Log::error("Failed to send email: " . $e->getMessage());
             }
         }
     }
@@ -220,16 +213,8 @@ class StudentCrud extends Component
     // Function that is called if the user confirms to store the student
     public function confirmStore()
     {
-        Log::info("confirmStore() - Before store(), Email: '" . ($this->email ?? 'NULL') . "'");
-
-        $this->store(); // Store student, which should also set $this->storedEmail
-    
-        Log::info("confirmStore() - After store(), Before sendEmail(), Stored Email: '" . ($this->storedEmail ?? 'NULL') . "'");
-    
-        $this->sendEmail(); // Now send email using the stored property
-    
-        Log::info("confirmStore() - After sendEmail(), resetting fields");
-    
+        $this->store(); // Store student, which should also set $this->storedEmail    
+        $this->sendEmail(); // Now send email using the stored property    
         $this->resetInputFields(); // Reset fields AFTER sending the email
         $this->storedEmail = null; // Explicitly clear after sending email
 
@@ -303,8 +288,7 @@ class StudentCrud extends Component
         ]);
 
         $this->storedEmail = $user->email; // Store email in Livewire property
-        Log::info("createStudent() - Email set to: '" . ($this->email ?? 'NULL') . "'");
-
+        
         return Student::create([
             'user_id' => $user->user_id,
             'first_name' => $this->first_name,
