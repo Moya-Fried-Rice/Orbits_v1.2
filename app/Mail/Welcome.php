@@ -25,7 +25,7 @@ class Welcome extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Welcome to Orbits - Your Account Details',
+            subject: 'Welcome to Orbits!',
         );
     }
 
