@@ -81,7 +81,7 @@
                     x-transition:leave-start="opacity-100 transform translate-y-0" 
                     x-transition:leave-end="opacity-0 transform -translate-y-4" 
                     class="absolute right-2 mt-2 border w-28 bg-white rounded z-50">
-                    <a href="#" class="block px-6 py-2 text-[#666] hover:bg-gray-100">Profile</a>
+                    <a href="{{ route('profile') }}" class="block px-6 py-2 text-[#666] hover:bg-gray-100">Profile</a>
                     <a href="#" class="block px-6 py-2 text-[#666] hover:bg-gray-100">Settings</a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
