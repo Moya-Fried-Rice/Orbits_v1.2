@@ -46,7 +46,11 @@ class FacultyProfileCrud extends Component
     protected function getFacultyByUuid($uuid)
     {
         // Return the faculty record along with its associated department
-        return Faculty::with('facultyCourses')->where('uuid', $uuid)->first();
+        return Faculty::with('facultyCourses')
+        ->whereHas('user', function ($query) use ($uuid) {
+            $query->where('uuid', $uuid);
+        })->first();
+    
     }
 
     // Validation rules for updating faculty profile

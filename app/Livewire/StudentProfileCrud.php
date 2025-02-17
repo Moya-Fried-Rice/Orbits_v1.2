@@ -46,7 +46,10 @@ class StudentProfileCrud extends Component
     protected function getStudentByUuid($uuid)
     {
         // Return the student record along with its associated course section
-        return Student::with('studentCourses.courseSection')->where('uuid', $uuid)->first();
+        return Student::with('studentCourses.courseSection')
+        ->whereHas('user', function ($query) use ($uuid) {
+            $query->where('uuid', $uuid);
+        })->first();
     }
 
     // Validation rules for updating student profile
