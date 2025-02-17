@@ -29,7 +29,6 @@ class ProgramChairsTableSeeder extends Seeder
             // Step 2: Create a Program Chair record and link it to the User
             DB::table('program_chairs')->insert([
                 [
-                    'uuid' => (string) Str::uuid(),
                     'chair_id' => $index, // Auto-increment primary key for program_chairs
                     'user_id' => $user->user_id, // Link to the created user's user_id
                     'first_name' => $firstName, // Store the first name

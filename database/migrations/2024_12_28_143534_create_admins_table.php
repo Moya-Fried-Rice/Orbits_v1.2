@@ -16,7 +16,6 @@ class CreateAdminsTable extends Migration
     {
         Schema::create('admins', function (Blueprint $table) {
             $table->id('admin_id'); // Primary key
-            $table->uuid('uuid')->unique()->default(DB::raw('(UUID())'))->nullable(false);
             $table->foreignId('user_id')->unique()->constrained('users', 'user_id')->onDelete('cascade');
             $table->string('first_name'); // Admin's first name
             $table->string('last_name'); // Admin's last name

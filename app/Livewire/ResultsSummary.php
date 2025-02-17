@@ -26,7 +26,10 @@ class ResultsSummary extends Component
     protected function getFacultyByUuid($uuid)
     {
         // Return the faculty record along with its associated department
-        return Faculty::with('facultyCourses')->where('uuid', $uuid)->first();
+        return Faculty::with('facultyCourses')
+        ->whereHas('user', function ($query) use ($uuid) {
+            $query->where('uuid', $uuid);
+        })->first();
     }
 
     public function loadEvaluationData()
@@ -74,7 +77,12 @@ class ResultsSummary extends Component
         return Faculty::with([
             'facultyCourses.courseSection.evaluations.userEvaluations.responses.question.questionCriteria',
             'facultyCourses.courseSection.evaluations.userEvaluations.user.role' // Preload role
-        ])->where('uuid', $this->uuid)->first();
+        ])
+            ->whereHas('user', function ($query) {
+                $query->where('uuid', $this->uuid);
+            })
+            ->first();
+        
     }
 
     private function getSectionKey($courseSection)

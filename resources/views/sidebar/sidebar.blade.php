@@ -111,7 +111,7 @@
         @endif
 
         <!-- Sign-out -->
-        <form method="POST" action="{{ route('logout') }}">
+        {{-- <form method="POST" action="{{ route('logout') }}">
             @csrf
             <button type="submit" class="nav-btn group nav-btn-hover cursor-pointer flex items-center justify-start">
                 <img src="{{ asset('assets/icons/logout.svg') }}" alt="Logout Icon" class="icon" aria-hidden="true">
@@ -120,7 +120,7 @@
                 </span>
                 <x-tooltip label="Sign out" />
             </button>
-        </form>
+        </form> --}}
 
     </div>
 </div>

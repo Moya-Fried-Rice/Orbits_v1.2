@@ -1,9 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Models\Student;
+use App\Models\User;
 use App\Models\Section;
-use App\Models\Faculty;
 use App\Models\Program;
 use App\Models\Survey;
 use App\Models\UserEvaluation;
@@ -37,7 +36,7 @@ Route::get('/faculties', function () {
     // Route to faculty profile
     Route::get('/faculty/{uuid}', function (string $uuid) {
         return view('faculties.faculty-profile', ['uuid' => $uuid]);
-    })->middleware(['auth', 'check_role:4', 'verify_uuid:' . Faculty::class])->name('faculty.profile');
+    })->middleware(['auth', 'check_role:4', 'verify_uuid:' . User::class])->name('faculty.profile');
 
 // Route to student page
 Route::get('/students', function () {
@@ -47,7 +46,7 @@ Route::get('/students', function () {
     // Route to student profile
     Route::get('/student/{uuid}', function (string $uuid) {
         return view('students.student-profile', ['uuid' => $uuid]);
-    })->middleware(['auth', 'check_role:4', 'verify_uuid:' . Student::class])->name('student.profile');
+    })->middleware(['auth', 'check_role:4', 'verify_uuid:' . User::class])->name('student.profile');
 
 // Route to program page
 Route::get('/programs', function () {
@@ -114,7 +113,7 @@ Route::get('/results', function () {
 
     Route::get('/summary/{uuid}', function (string $uuid) {
         return view('results.results-summary', ['uuid' => $uuid]);
-    })->middleware(['auth', 'check_role:4,3', 'verify_uuid:' . Faculty::class])->name('summary');
+    })->middleware(['auth', 'check_role:4,3', 'verify_uuid:' . User::class])->name('summary');
 
 // Route to monitor page
 Route::get('/monitor', function () {
@@ -144,7 +143,11 @@ Route::get('/dashboard', function () {
 })
 ->middleware(['auth', 'check_role:4,1,2,3']) // Filter role: all
 ->name('dashboard'); // Route name
-    
+
+// Route to faculty profile
+Route::get('/profile/{uuid}', function (string $uuid) {
+    return view('faculties.faculty-profile', ['uuid' => $uuid]);
+})->middleware(['auth', 'check_role:4', 'verify_uuid:' . User::class])->name('faculty.profile');
 
 require __DIR__.'/auth.php';
 
