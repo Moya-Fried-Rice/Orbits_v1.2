@@ -145,9 +145,8 @@ Route::get('/dashboard', function () {
 ->name('dashboard'); // Route name
 
 // Route to faculty profile
-Route::get('/profile/{uuid}', function (string $uuid) {
-    return view('faculties.faculty-profile', ['uuid' => $uuid]);
-})->middleware(['auth', 'check_role:4', 'verify_uuid:' . User::class])->name('faculty.profile');
+Route::get('/profile', function () {
+    return view('profile.profile');
+})->middleware(['auth', 'check_role:1,2,3,4'])->name('profile');
 
 require __DIR__.'/auth.php';
-
