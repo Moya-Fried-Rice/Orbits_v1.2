@@ -1,45 +1,5 @@
-<div class="min-h-screen bg-white p-8 font-TT">
+<div class="bg-white p-4 font-TT flex justify-center">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
-        * {
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .font-TT, .font-silka {
-            font-family: 'TT', 'Silka', sans-serif;
-        }
-
-        .rating {
-            display: inline-flex;
-            flex-direction: row-reverse;
-            gap: 0.5rem;
-        }
-
-        .rating input {
-            display: none;
-        }
-
-        .rating label {
-            cursor: pointer;
-            width: 2.5rem;
-            height: 2.5rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2rem;
-            color: #CBD5E1; /* Tailwind slate-300 */
-            transition: all 0.3s;
-        }
-
-        @media (min-width: 640px) {
-            .rating label {
-                width: 3rem;
-                height: 3rem;
-                font-size: 2.5rem;
-            }
-        }
-
         .rating label:hover,
         .rating label:hover ~ label,
         .rating input:checked ~ label {
@@ -75,7 +35,6 @@
         }
     </style>
 
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <x-system-notification />
 
         @if(!$evaluation)
@@ -83,16 +42,24 @@
                 <p class="text-slate-600 text-xl">No pending evaluations.</p>
             </div>
         @else
-            <div class="rounded-xl p-4 sm:p-8 border-0 sm:border sm:border-slate-200">
-                <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 text-center mb-4 sm:mb-8">Course Evaluation</h1>
+            <div class="p-4 sm:p-8w w-full lg:w-1/2">
+                <h2 class="text-lg sm:text-xl font-normal text-slate-700 text-center mb-4 flex justify-between">
+                    <div>{{ $evaluation->evaluation->courseSection->facultyCourses->first()->faculty->faculty_name }}</div>
+                    <div>{{ $evaluation->evaluation->courseSection->section->section_code }}</div>
+                </h2>
                 <h2 class="text-xl sm:text-2xl font-semibold text-slate-700 text-center mb-4">
                     {{ $evaluation->evaluation->courseSection->course->course_code }} | {{ $evaluation->evaluation->courseSection->course->course_name }}
                 </h2>
 
+                <div class="text-center mb-4">
+                    {{-- <p class="text-sm sm:text-base text-slate-600"><strong>Rating Guide:</strong></p> --}}
+                    <p class="text-xs sm:text-sm text-slate-500">1 - Does Not Met Standard | 2 - Partially Meets Standard | 3 - Meets Standard | 4 - Exceeds Standard | 5 - Outstanding</p>
+                </div>
+
                 <div class="progress-bar mb-8">
                     <div id="progressFill" class="progress-bar-fill" style="width: 0%"></div>
                 </div>
-
+                
                 <form wire:submit.prevent="submitEvaluation({{ $evaluation->user_evaluation_id }})">
                     @php
                         $questionIndex = 0;
@@ -101,32 +68,49 @@
 
                     @foreach($evaluation->evaluation->survey->questionCriterias as $criteriaIndex => $criteria)
                         @foreach ($criteria->questions as $question)
-                            <div id="question-{{ $questionIndex }}" class="question-page {{ $questionIndex === 0 ? 'active' : '' }} mb-4 sm:mb-8">
-                                <h3 class="text-lg sm:text-xl font-medium text-slate-900 mb-4 sm:mb-6">{{ $criteria->description }}</h3>
-                                <div class="mb-4 sm:mb-6">
-                                    <p class="text-base sm:text-lg text-slate-700 mb-3">{{ $question->question_text }}</p>
-                                    <div class="rating flex justify-center">
-                                        @for ($i = 5; $i >= 1; $i--)
-                                            <input 
-                                                type="radio" 
-                                                id="star{{ $question->question_id }}-{{ $i }}"
-                                                name="responses[{{ $evaluation->user_evaluation_id }}][{{ $question->question_id }}]"
-                                                value="{{ $i }}"
-                                                wire:model.defer="responses.{{ $evaluation->user_evaluation_id }}.{{ $question->question_id }}"
-                                            >
-                                            <label for="star{{ $question->question_id }}-{{ $i }}" class="text-3xl sm:text-4xl">★</label>
-                                        @endfor
-                                    </div>
+                            <div id="question-{{ $questionIndex }}" 
+                                class="question-page hidden {{ $questionIndex === 0 ? 'active' : '' }} mb-4 sm:mb-8" 
+                                data-criteria="{{ $criteria->description }}">
+                                
+                                {{-- Criteria --}}
+                                <h3 class="text-center font-medium text-slate-900 mb-4 sm:mb-6">**{{ $criteria->description }}**</h3>
+
+                                <!-- Question Text -->
+                                <div class="flex justify-center">
+                                    <h3 class="text-md sm:text-xl font-silka text-center font-normal text-slate-900 mb-4 sm:mb-6">
+                                        {{ $question->question_text }}
+                                    </h3>
                                 </div>
 
-                                <div class="flex justify-between mt-4 sm:mt-6">
+                                <!-- Rating System -->
+                                <div class="rating flex flex-row-reverse justify-center items-center">
+                                    @for ($i = 5; $i >= 1; $i--)
+                                        <input 
+                                            class="hidden"
+                                            type="radio" 
+                                            id="star{{ $question->question_id }}-{{ $i }}"
+                                            name="responses[{{ $evaluation->user_evaluation_id }}][{{ $question->question_id }}]"
+                                            value="{{ $i }}"
+                                            required
+                                            wire:model.defer="responses.{{ $evaluation->user_evaluation_id }}.{{ $question->question_id }}"
+                                        >
+                                        <label 
+                                            for="star{{ $question->question_id }}-{{ $i }}" 
+                                            class="p-2 text-3xl sm:p-5 sm:text-4xl transition-all ease-custom-bezier duration-300 text-[#DDD] cursor-pointer flex justify-center items-center transform origin-center hover:text-[#923534] hover:scale-110"
+                                        >
+                                            <i class="fa fa-star align-middle" aria-hidden="true"></i>
+                                        </label>
+                                    @endfor
+                                </div>
+                                
+                                <div class="flex justify-center mt-8 sm:mt-12 gap-5">
                                     @if($questionIndex > 0)
                                         <button 
                                             type="button"
-                                            class="px-4 sm:px-6 py-2 rounded-full bg-slate-300 text-slate-700 font-medium transition hover:bg-opacity-90 text-sm sm:text-base"
+                                            class="px-4 sm:px-6 py-2 rounded-full bg-[#DDD] text-slate-700 font-medium transition hover:bg-opacity-90 text-sm sm:text-base"
                                             onclick="previousQuestion({{ $questionIndex }})"
                                         >
-                                            Previous
+                                            <i class="fa-solid fa-arrow-left"></i>
                                         </button>
                                     @endif
                                     @if($questionIndex < $totalQuestions - 1)
@@ -135,7 +119,7 @@
                                             class="px-4 sm:px-6 py-2 rounded-full bg-[#923534] text-white font-medium transition hover:bg-opacity-90 text-sm sm:text-base"
                                             onclick="nextQuestion({{ $questionIndex }})"
                                         >
-                                            Next
+                                            <i class="fa-solid fa-arrow-right"></i>
                                         </button>
                                     @else
                                         <button 
@@ -143,7 +127,7 @@
                                             class="px-4 sm:px-6 py-2 rounded-full bg-[#923534] text-white font-medium transition hover:bg-opacity-90 text-sm sm:text-base"
                                             onclick="showComments()"
                                         >
-                                            Next
+                                            <i class="fa-solid fa-arrow-right"></i>
                                         </button>
                                     @endif
                                 </div>
@@ -152,7 +136,7 @@
                         @endforeach
                     @endforeach
 
-                    <div id="comments-section" class="question-page mb-4 sm:mb-8">
+                    <div id="comments-section" class="question-page hidden mb-4 sm:mb-8">
                         <h3 class="text-lg sm:text-xl font-medium text-slate-900 mb-4">Additional Comments</h3>
                         <textarea 
                             wire:model.defer="comments.{{ $evaluation->user_evaluation_id }}"
@@ -167,7 +151,7 @@
                                 class="px-4 sm:px-6 py-2 rounded-full bg-slate-300 text-slate-700 font-medium transition hover:bg-opacity-90 text-sm sm:text-base"
                                 onclick="previousQuestion({{ $totalQuestions - 1 }})"
                             >
-                                Previous
+                                <i class="fa-solid fa-arrow-left"></i>
                             </button>
                             <button 
                                 type="submit"
@@ -178,17 +162,16 @@
                         </div>
                     </div>
                 </form>
-            </div>
         @endif
     </div>
 
-    <div id="successMessage" class="fixed inset-0 flex items-center justify-center bg-black/50 hidden">
+    {{-- <div id="successMessage" class="fixed inset-0 flex items-center justify-center bg-black/50">
         <div class="bg-white rounded-xl p-6 sm:p-12 text-center shadow-xl mx-4 sm:mx-0">
             <div class="text-4xl sm:text-6xl mb-4">🎉</div>
             <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">Thank You!</h2>
             <p class="text-lg sm:text-xl text-slate-600">Your feedback has been submitted successfully</p>
         </div>
-    </div>
+    </div> --}}
 
     <script>
         let currentQuestion = 0;
@@ -237,43 +220,43 @@
             document.getElementById('progressFill').style.width = `${progress}%`;
         }
 
-        document.addEventListener('livewire:load', function () {
-            Livewire.on('evaluationSubmitted', () => {
-                const duration = 3000;
-                const animationEnd = Date.now() + duration;
-                const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+        // document.addEventListener('livewire:load', function () {
+        //     Livewire.on('evaluationSubmitted', () => {
+        //         const duration = 3000;
+        //         const animationEnd = Date.now() + duration;
+        //         const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
 
-                function randomInRange(min, max) {
-                    return Math.random() * (max - min) + min;
-                }
+        //         function randomInRange(min, max) {
+        //             return Math.random() * (max - min) + min;
+        //         }
 
-                const interval = setInterval(function() {
-                    const timeLeft = animationEnd - Date.now();
+        //         const interval = setInterval(function() {
+        //             const timeLeft = animationEnd - Date.now();
 
-                    if (timeLeft <= 0) {
-                        return clearInterval(interval);
-                    }
+        //             if (timeLeft <= 0) {
+        //                 return clearInterval(interval);
+        //             }
 
-                    const particleCount = 50 * (timeLeft / duration);
+        //             const particleCount = 50 * (timeLeft / duration);
                     
-                    confetti({
-                        ...defaults,
-                        particleCount,
-                        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
-                    });
-                    confetti({
-                        ...defaults,
-                        particleCount,
-                        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
-                    });
-                }, 250);
+        //             confetti({
+        //                 ...defaults,
+        //                 particleCount,
+        //                 origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+        //             });
+        //             confetti({
+        //                 ...defaults,
+        //                 particleCount,
+        //                 origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+        //             });
+        //         }, 250);
 
-                document.getElementById('successMessage').classList.remove('hidden');
-                setTimeout(() => {
-                    document.getElementById('successMessage').classList.add('hidden');
-                }, 3000);
-            });
-        });
+        //         document.getElementById('successMessage').classList.remove('hidden');
+        //         setTimeout(() => {
+        //             document.getElementById('successMessage').classList.add('hidden');
+        //         }, 3000);
+        //     });
+        // });
 
         updateProgressBar();
     </script>
