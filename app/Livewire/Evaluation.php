@@ -22,4 +22,9 @@ class Evaluation extends Component
         return view('livewire.evaluation', compact('evaluations'));
 
     }
+
+    public function clearMessage()
+    {
+        session()->forget(['success', 'error', 'info', 'deleted']);
+    }
 }

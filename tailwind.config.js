@@ -16,6 +16,9 @@ export default {
                 TT: ['TT'],
                 silka: ['silka'],
             },
+            transitionTimingFunction: {
+                'custom-bezier': 'cubic-bezier(.67, .61, .28, 1.27)',
+            },
         },
     },
     plugins: [],

@@ -145,7 +145,7 @@
 
                         <!-- Large Rating Number -->
                         <div class="text-5xl font-bold font-TT text-[#2A2723]">
-                            {{ number_format($roleData['overall_avg'], 1) }}
+                            {{ number_format($roleData['overall_avg'], 2) }}
                         </div>
 
                         @php

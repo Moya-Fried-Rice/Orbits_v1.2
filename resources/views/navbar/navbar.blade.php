@@ -85,7 +85,7 @@
                     <a href="#" class="block px-6 py-2 text-[#666] hover:bg-gray-100">Settings</a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="block px-6 py-2 text-[#666] hover:bg-gray-100">Logout</a>
+                        <button type="submit" class="block px-6 py-2 text-[#666] hover:bg-gray-100 w-full">Logout</a>
                     </form>
                 </div>
             </div>
