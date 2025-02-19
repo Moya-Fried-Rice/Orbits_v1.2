@@ -38,35 +38,105 @@ class ResultsSummary extends Component
         if (!$faculty) {
             return;
         }
-    
+
         $groupedData = [];
+        $allRatings = []; // Store all ratings across all roles for overall average
+        $criteriaRatings = []; // Store ratings grouped by criteria for radar chart
+        $rolePercentages = [
+            'student' => 0.50,
+            'faculty' => 0.05,
+            'self' => 0.05,
+            'program_chair' => 0.40,
+        ];
+
+        // Store role-wise data separately
+        $roleData = [];
+
         foreach ($faculty->facultyCourses as $facultyCourse) {
             $courseSection = $facultyCourse->courseSection;
             $sectionKey = $this->getSectionKey($courseSection);
             $completedEvaluations = $this->getCompletedEvaluationsByRole($courseSection);
-    
+
             foreach ($courseSection->evaluations as $evaluation) {
                 foreach ($evaluation->userEvaluations as $userEvaluation) {
                     if (!$userEvaluation->is_completed) {
                         continue;
                     }
-    
+
                     $role = $userEvaluation->user->role->role_name;
                     $questionRatings = $this->getQuestionRatings($userEvaluation);
-    
-                    // ✅ Ensure "sections" key exists before storing data
+
+                    // Ensure "sections" key exists before storing data
                     if (!isset($groupedData[$role]['sections'][$sectionKey])) {
                         $groupedData[$role]['sections'][$sectionKey] = $this->initializeSectionData($courseSection, $completedEvaluations, $role);
                     }
-    
+
                     $this->storeRatings($groupedData[$role]['sections'][$sectionKey]['ratings'], $questionRatings);
+
+                    // Collect data for overall average and radar chart
+                    foreach ($questionRatings as $criteriaAndQuestion => $rating) {
+                        [$criteriaDesc, $questionCode] = explode('|', $criteriaAndQuestion);
+                        
+                        // Store for overall calculation
+                        $allRatings[] = $rating;
+
+                        // Store for criteria-based radar chart
+                        $criteriaRatings[$criteriaDesc][] = $rating;
+                    }
                 }
             }
         }
-    
-        // ✅ Compute averages
+
+        // Compute averages
         $this->computeFinalAverages($groupedData);
-        $this->evaluationData = ['data' => $groupedData];
+
+        // Compute average per criteria (for radar chart)
+        $criteriaAverages = [];
+        foreach ($criteriaRatings as $criteriaDesc => $ratings) {
+            $criteriaAverages[$criteriaDesc] = count($ratings) > 0 ? number_format(array_sum($ratings) / count($ratings), 2) : '0.00';
+        }
+
+        // Calculate total and weighted average for each role
+        foreach ($rolePercentages as $role => $percentage) {
+            if (isset($groupedData[$role]['overall_avg'])) {
+                $totalAvg = $groupedData[$role]['overall_avg'];
+                
+                // Ensure totalAvg is numeric before performing the calculation
+                if (is_numeric($totalAvg)) {
+                    $roleData[$role] = [
+                        'percentage' => $percentage * 100, // Store percentage in whole number format
+                        'total_avg' => $totalAvg,
+                        'computed_avg' => number_format($totalAvg * $percentage, 2), // Weighted avg based on role percentage
+                    ];
+                } else {
+                    // Handle case if 'overall_avg' is not numeric
+                    $roleData[$role] = [
+                        'percentage' => $percentage * 100,
+                        'total_avg' => 'N/A',
+                        'computed_avg' => 'N/A',
+                    ];
+                }
+            }
+        }
+
+        // Compute the final weighted overall average using role percentages
+        $finalOverallAvg = 0;
+        foreach ($roleData as $data) {
+            if (isset($data['computed_avg']) && is_numeric($data['computed_avg'])) {
+                $finalOverallAvg += floatval($data['computed_avg']);
+            }
+        }
+
+        // Format final overall average
+        $finalOverallAvg = number_format($finalOverallAvg, 2);
+
+        // Store the evaluation data
+        $this->evaluationData = [
+            'data' => $groupedData, // Keep grouped data inside "data"
+            'final_overall_avg' => $finalOverallAvg, // Store final overall average outside "data"
+            'criteria_avg' => $criteriaAverages, // Store criteria averages outside "data"
+            'role_data' => $roleData, // Store the role-wise data
+        ];
 
         // dd($this->evaluationData);
     }

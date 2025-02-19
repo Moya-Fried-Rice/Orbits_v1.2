@@ -118,7 +118,45 @@
                 var chart = new ApexCharts(document.querySelector("#chart-" + role), chartOptions);
                 chart.render();
             });
+
+
+
+
+
+
+            var options = {
+                series: [{
+                name: 'Series 1',
+                data: [80, 50, 30],
+            }],
+                chart: {
+                height: 350,
+                type: 'radar',
+            },
+            title: {
+                text: 'Basic Radar Chart'
+            },
+            yaxis: {
+                stepSize: 20
+            },
+            xaxis: {
+                categories: ['January', 'February', 'March', '2']
+            }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#radar-chart"), options);
+            chart.render();
         });
+
+
+
+
+
+
+
+
+
+
 
         document.addEventListener("click", function(event) {
             // Select all chart containers by their common prefix "chart-"

@@ -1,27 +1,77 @@
 <div class="bg-white">
 
-    <div class="p-5 pb-0 gap-2 flex flex-wrap items-center md:justify-start justify-center relative">
-        <img src="{{ asset('storage/' . $faculty->profile_image) }}" alt="Profile Image" class="
-        ring-1 ring-[#DDD] border-8 border-[#F8F8F8]
-        object-cover rounded-full w-40 h-40">
+    <div class="flex items-center justify-start gap-5 p-5">
+        
+        <div class="gap-2 flex flex-col flex-wrap items-center justify-start">
+            <img src="{{ asset('storage/' . $faculty->profile_image) }}" alt="Profile Image" class="
+            ring-1 ring-[#DDD] border-8 border-[#F8F8F8]
+            object-cover rounded-full w-40 h-40">
 
-        <div class="flex items-center flex-col md:flex-row w-full md:w-auto">
-            <div class="ml-0 md:ml-5 flex-col flex gap-5 w-full">
-                <!-- Name and Action Buttons -->
-                <div class="py-2 flex justify-between w-full items-center border-b border-[#DDD] gap-5 md:mt-0 mt-5">
-                    <span class="font-silka font-semibold text-[#2A2723] text-xl md:text-3xl">{{ $faculty->faculty_name }}</span>
-                </div>
+            <div class="flex items-center flex-col md:flex-row w-full md:w-auto">
+                <div class="ml-0 md:ml-5 flex-col flex gap-5 w-full">
+                    <!-- Name and Action Buttons -->
+                    <div class="py-2 flex justify-between w-full items-center border-b border-[#DDD] gap-5 md:mt-0 mt-5">
+                        <span class="font-silka font-semibold text-[#2A2723] text-xl md:text-3xl">{{ $faculty->faculty_name }}</span>
+                    </div>
 
-                <!-- Profile Details -->
-                <div class="text-gray-600">
-                    <span class="flex items-center gap-2 justify-start"><img class="w-5" src="{{ asset('assets/icons/message.svg') }}" alt="Email">: <span>{{ $faculty->user->email }}</span></span>
-                    <span class="flex items-center gap-2 justify-start"><img class="w-5" src="{{ asset('assets/icons/call.svg') }}" alt="Number">: <span>{{ $faculty->phone_number }}</span></span>
-                    <span class="flex items-center gap-2 justify-start"><img class="w-5" src="{{ asset('assets/icons/department.svg') }}" alt="Department">: <span>{{ $faculty->department->department_name }}</span></span>
+                    <!-- Profile Details -->
+                    <div class="text-gray-600">
+                        <span class="flex items-center gap-2 justify-start"><img class="w-5" src="{{ asset('assets/icons/message.svg') }}" alt="Email">: <span>{{ $faculty->user->email }}</span></span>
+                        <span class="flex items-center gap-2 justify-start"><img class="w-5" src="{{ asset('assets/icons/call.svg') }}" alt="Number">: <span>{{ $faculty->phone_number }}</span></span>
+                        <span class="flex items-center gap-2 justify-start"><img class="w-5" src="{{ asset('assets/icons/department.svg') }}" alt="Department">: <span>{{ $faculty->department->department_name }}</span></span>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div class="flex justify-center items-center">
+            <div>
+                <div>
+
+                @php
+                    $overall = $evaluationData['final_overall_avg'];
+                @endphp
+
+                <x-rating-card 
+                    label='Overall' 
+                    :rating="$overall" 
+                    :totalN="2" 
+                />
+                </div>
+                <table class="table table-bordered font-TT w-full table-auto">
+                    <thead>
+                        <tr class="uppercase font-normal bg-[#F8F8F8] text-black">
+                            <th class="border border-[#DDD] py-2 px-4 font-light">Evaluators</th>
+                            <th class="border border-[#DDD] py-2 px-4 font-light">AVG</th>
+                            <th class="border border-[#DDD] py-2 px-4 font-light">Scoring</th>
+                            <td class="border border-[#DDD] py-2 px-4 font-light">Totals</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($evaluationData['role_data'] as $role => $data)
+                            <tr>
+                                <td class="border border-[#DDD] py-2 px-4 font-light">{{ ucwords(str_replace('_', ' ', $role)) }}</td>
+                                <td class="border border-[#DDD] py-2 px-4 font-light">{{ $data['total_avg'] }}</td>
+                                <td class="border border-[#DDD] py-2 px-4 font-light">{{ $data['percentage'] }}%</td>
+                                <td class="border border-[#DDD] py-2 px-4 font-light">{{ $data['computed_avg'] }}</td>
+                            </tr>
+                        @endforeach
+                        <tr class="font-bold">
+                            <td class="border border-[#DDD] py-2 px-4 font-light text-right" colspan="3">Total Rating:</td>
+                            <td class="border border-[#DDD] py-2 px-4 font-light">{{ $overall }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>  
+        
+        <div class="p-5 mx-10">
+            <div id="radar-chart"></div>
+        </div>
+        
+
     </div>
-    
+
     @foreach ($evaluationData['data'] as $role => $roleData)
         <div>
             {{-- <div class="xl:bg-red-200 lg:bg-blue-200 md:bg-yellow-200 sm:bg-green-200 bg-orange-200">Red is xl, Blue is lg, Yellow is md, Green is sm, Orange is default</div> --}}
@@ -138,90 +188,18 @@
                     </div>
 
                     {{-- Rating --}}
-                    <div class="flex flex-col items-center m-5 p-2 text-center flex">
-                        
-                        {{-- Rating Role --}}
-                        <span class="text-md font-semibold ">Overall {{ ucwords(str_replace('_', ' ', $role)) }} Rating</span>
+                    @php
+                        $label = ucwords(str_replace('_', ' ', $role));
+                        $rating = number_format($roleData['overall_avg'], 2);
+                        $totalN = array_sum(array_column($roleData['sections'], 'N'));
+                    @endphp
 
-                        <!-- Large Rating Number -->
-                        <div class="text-5xl font-bold font-TT text-[#2A2723]">
-                            {{ number_format($roleData['overall_avg'], 2) }}
-                        </div>
-
-                        @php
-                            $totalN = array_sum(array_column($roleData['sections'], 'N'));
-                            $rating = $roleData['overall_avg']; // Example: 4.3
-                            $fillPercentage = ($rating / 5) * 100; // Convert rating to percentage
-                        @endphp
-
-                        <!-- Star Rating (Single SVG with Fill Percentage) -->
-                        <div class="mt-2">
-                            <svg width="150" height="30" viewBox="0 0 100 20" class="block">
-                                <!-- Full Star Shape -->
-                                <defs>
-                                    <path id="starShape" d="M10 15l-5.09 2.67 1.38-5.9L2 7.24l6.18-.53L10 1.5l1.82 5.21 6.18.53-4.29 4.53 1.38 5.9z"></path>
-                                </defs>
-
-                                <!-- Empty Stars (Gray) -->
-                                <g fill="#DDD">
-                                    <use href="#starShape"/>
-                                    <use href="#starShape" x="20"/>
-                                    <use href="#starShape" x="40"/>
-                                    <use href="#starShape" x="60"/>
-                                    <use href="#starShape" x="80"/>
-                                </g>
-
-                                <!-- Filled Stars (Red) -->
-                                <g fill="#923534" clip-path="url(#clipPath)">
-                                    <rect width="{{ $fillPercentage }}%" height="20" fill="#923534"/>
-                                </g>
-
-                                <!-- Clipping Path for Partial Fill -->
-                                <clipPath id="clipPath">
-                                    <use href="#starShape"/>
-                                    <use href="#starShape" x="20"/>
-                                    <use href="#starShape" x="40"/>
-                                    <use href="#starShape" x="60"/>
-                                    <use href="#starShape" x="80"/>
-                                </clipPath>
-                            </svg>
-                        </div>
-
-                        {{-- Based on N --}}
-                        <span class="text-sm text-gray-600">Based on {{ $totalN }} reviews</span>
-
-                        {{-- Rating summary --}}
-                        @php
-                            $overallAvg = $roleData['overall_avg'] ?? 0;  // Get the overall average rating
-                            $ratingMessage = '';
-                            $textColorClass = '';
-
-                            // Apply text color and message based on overall average rating
-                            if ($overallAvg >= 4.5) {
-                                $textColorClass = 'text-green-100'; // Outstanding
-                                $ratingMessage = 'Outstanding. Exceeds expectations in all areas.';
-                            } elseif ($overallAvg >= 3.5) {
-                                $textColorClass = 'text-green-50'; // Exceeds Standard
-                                $ratingMessage = 'Exceeds Standard. Meets and often exceeds expectations.';
-                            } elseif ($overallAvg >= 2.5) {
-                                $textColorClass = 'text-yellow-100'; // Meets Standard
-                                $ratingMessage = 'Meets Standard. Meets expectations adequately.';
-                            } elseif ($overallAvg >= 1.5) {
-                                $textColorClass = 'text-red-50'; // Partially Meets Standard
-                                $ratingMessage = 'Partially Meets Standard. Falls short of expectations in some areas.';
-                            } else {
-                                $textColorClass = 'text-red-100'; // Does not Meet Standard
-                                $ratingMessage = 'Does not Meet Standard. Does not meet expectations.';
-                            }
-                        @endphp
-
-                        @if ($ratingMessage)
-                            <div class="m-2 text-sm text-gray-600 w-48">
-                                <span>{{ $ratingMessage }}</span>
-                            </div>
-                        @endif
-
-                    </div>
+                    <x-rating-card 
+                        :label="$label" 
+                        :rating="$rating" 
+                        :totalN="$totalN" 
+                    />
+            
                 </div>
 
                  {{-- Bar Chart --}}
