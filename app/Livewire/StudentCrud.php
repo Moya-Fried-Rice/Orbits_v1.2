@@ -41,7 +41,8 @@ class StudentCrud extends Component
     public function render()
     {
         $students = Student::query()
-            ->selectRaw('students.*, CONCAT(students.first_name, " ", students.last_name) AS full_name, programs.program_code')
+            ->selectRaw('students.*, CONCAT(users.first_name, " ", users.last_name) AS full_name, programs.program_code')
+            ->leftJoin('users', 'students.user_id', '=', 'users.user_id') // Join with users table
             ->leftJoin('programs', 'students.program_id', '=', 'programs.program_id')
             ->when($this->selectedProgram, function ($query) {
                 return $query->where('programs.program_id', $this->selectedProgram);
@@ -51,7 +52,7 @@ class StudentCrud extends Component
             })
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate(11);
-
+    
         return view('livewire.student-crud', compact('students'));
     }
 
@@ -206,10 +207,6 @@ class StudentCrud extends Component
         }
     }
 
-
-
-
-
     // Function that is called if the user confirms to store the student
     public function confirmStore()
     {
@@ -230,14 +227,11 @@ class StudentCrud extends Component
         $this->resetErrorBag(); // Reset any validation errors
     }
 
-    // Function to validate inputs and handle student creation
     public function validateQueryStore()
     {
-        // Initialize $student with the intended input values
-        $student = new Student([
+        $student = new User([
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
-            'program_id' => $this->program_id,
             'phone_number' => $this->phone_number,
             'profile_image' => $this->profile_image,
         ]);
@@ -252,7 +246,7 @@ class StudentCrud extends Component
             // Log success and return a success response
             return $this->logAdd('Student successfully added!', $student, 201);
         } catch (ValidationException $e) {
-            // Log validation error with the initialized $student
+            // Log validation error with the initialized input values
             $errors = $e->validator->errors()->all();
             $errorMessages = implode(' | ', $errors);
 
@@ -268,9 +262,11 @@ class StudentCrud extends Component
         }
     }
 
+
     // Function to create the student entry in the database
     private function createStudent()
     {
+        // Handle profile image upload
         if ($this->profile_image) {
             $imagePath = $this->profile_image->store('profile_images', 'public');
         } else {
@@ -280,27 +276,28 @@ class StudentCrud extends Component
         // Generate and store password in Livewire property
         $this->randomPassword = 'LPUeval_' . Str::random(8);
 
+        // Create the User record
         $user = User::create([
-            'name' => $this->first_name . ' ' . $this->last_name,
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
             'email' => $this->email,
             'password' => Hash::make($this->randomPassword),
-            'role_id' => 1,
+            'phone_number' => $this->phone_number,
+            'profile_image' => $imagePath, // Store profile image in users table
+            'role_id' => 1, // Assuming 1 is the role for students
         ]);
 
         $this->storedEmail = $user->email; // Store email in Livewire property
-        
-        return Student::create([
-            'user_id' => $user->user_id,
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'program_id' => $this->program_id,
-            'phone_number' => $this->phone_number,
-            'profile_image' => $imagePath,
+        session()->put('new_user_email', $user->email); // Store in session
+
+        // Create the Student record and link it to the User
+        Student::create([
+            'user_id' => $user->user_id, // Link to the created user
+            'program_id' => $this->program_id, // Store program ID in students table
         ]);
 
-        session()->put('new_user_email', $user->email); // Store in session
+        return $user;
     }
-
 
     // Function to log a successful student creation
     private function logAdd($message, $student, $statusCode)
@@ -314,7 +311,7 @@ class StudentCrud extends Component
             ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'success', // Mark the status as success
-                'record_name' => $student->student_name,  // Log the student's last name for reference
+                'record_name' => $student->user_name,  // Log the student's last name for reference
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 201 for created)
             ])
             ->event('Student Created') // Set the event name as "Student Created"
@@ -332,7 +329,7 @@ class StudentCrud extends Component
             ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'error', // Mark the status as error
-                'record_name' => $student->student_name,  // Log the student's last name for reference
+                'record_name' => $student,  // Log the student's last name for reference
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 422 for validation errors)
             ])
             ->event('Failed to Add Student') // Set the event name as "Failed to Add Student"
@@ -450,7 +447,7 @@ class StudentCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',  // Status: success
-                'record_name' => $student->student_name,  // Log the student's last name for reference
+                'record_name' => $student->user_name,  // Log the student's last name for reference
                 'status_code' => $statusCode, // HTTP status code (e.g., 200 for successful removal)
             ])
             ->event('Student Removed') // Event: Student Removed
@@ -469,7 +466,7 @@ class StudentCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',  // Status: error
-                'record_name' => $student->student_name,  // Log the student's last name for reference
+                'record_name' => $student->user_name,  // Log the student's last name for reference
                 'status_code' => $statusCode, // HTTP status code (e.g., 400, 422 for failure cases)
             ])
             ->event('Failed to Remove Student') // Event: Failed to Remove Student
@@ -555,7 +552,7 @@ class StudentCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',
-                'record_name' => $student->student_name,  // Log the student's last name for reference
+                'record_name' => $student->user_name,  // Log the student's last name for reference
                 'status_code' => $statusCode,
             ])
             ->event('Restore')
@@ -573,7 +570,7 @@ class StudentCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',
-                'record_name' => $student->student_name,  // Log the student's last name for reference
+                'record_name' => $student->user_name,  // Log the student's last name for reference
                 'status_code' => $statusCode,
             ])
             ->event('Restore')
