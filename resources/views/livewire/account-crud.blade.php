@@ -31,7 +31,7 @@
                 <x-table-header
                     sortField="{{ $sortField }}"
                     sortDirection="{{ $sortDirection }}"
-                    data="name"
+                    data="full_name"
                     label="Name"/>
 
                 <x-table-header
@@ -68,7 +68,7 @@
                 @else
                 @foreach ($accounts as $account)
                 <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
-                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $account->name }}</td>
+                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $account->user_name }}</td>
                     <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $account->email }}</td>
                     <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">
                         {{ ucwords(str_replace('_', ' ', $account->role->role_name)) }}
