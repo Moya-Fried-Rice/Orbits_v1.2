@@ -82,12 +82,12 @@
                 @foreach ($faculties as $faculty)
                 <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
                     <td class="py-2 whitespace-nowrap px-4">
-                        <img src="{{ asset('storage/' . $faculty->profile_image) }}" class="object-cover w-8 h-8 rounded-full" alt="Profile">                      
+                        <img src="{{ asset('storage/' . $faculty->user->profile_image) }}" class="object-cover w-8 h-8 rounded-full" alt="Profile">                      
                     </td>                
-                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $faculty->first_name }}</td>
-                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $faculty->last_name }}</td>
+                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $faculty->user->first_name }}</td>
+                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $faculty->user->last_name }}</td>
                     <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $faculty->department->department_code }}</td>
-                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $faculty->phone_number }}</td>
+                    <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $faculty->user->phone_number }}</td>
                     <td class="py-2 whitespace-nowrap px-4">{{ $faculty->created_at->format('Y-m-d H:i') }}</td>
                     <td class="py-2 whitespace-nowrap px-4">{{ $faculty->updated_at->format('Y-m-d H:i') }}</td>
                     <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">

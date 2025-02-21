@@ -32,11 +32,11 @@ class AccountCrud extends Component
     public function render()
     {
         $accounts = User::query()
+            ->selectRaw('users.*, roles.role_name, CONCAT(users.first_name, " ", users.last_name) AS full_name')
             ->leftJoin('roles', 'roles.role_id', '=', 'users.role_id')
-            ->select('users.*', 'roles.role_name',)
             ->when($this->search, function ($query) {
                 $query->where(function ($query) {
-                    $query->where('users.name', 'like', '%' . $this->search . '%')
+                    $query->whereRaw("CONCAT(users.first_name, ' ', users.last_name) LIKE ?", ['%' . $this->search . '%'])
                         ->orWhere('users.email', 'like', '%' . $this->search . '%');
                 });
             })

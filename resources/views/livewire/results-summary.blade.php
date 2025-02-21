@@ -3,7 +3,7 @@
     <div class="flex items-center justify-start gap-5 p-5">
         
         <div class="gap-2 flex flex-col flex-wrap items-center justify-start">
-            <img src="{{ asset('storage/' . $faculty->profile_image) }}" alt="Profile Image" class="
+            <img src="{{ asset('storage/' . $faculty->user->profile_image) }}" alt="Profile Image" class="
             ring-1 ring-[#DDD] border-8 border-[#F8F8F8]
             object-cover rounded-full w-40 h-40">
 
@@ -11,13 +11,13 @@
                 <div class="ml-0 md:ml-5 flex-col flex gap-5 w-full">
                     <!-- Name and Action Buttons -->
                     <div class="py-2 flex justify-between w-full items-center border-b border-[#DDD] gap-5 md:mt-0 mt-5">
-                        <span class="font-silka font-semibold text-[#2A2723] text-xl md:text-3xl">{{ $faculty->faculty_name }}</span>
+                        <span class="font-silka font-semibold text-[#2A2723] text-xl md:text-3xl">{{ $faculty->user->user_name }}</span>
                     </div>
 
                     <!-- Profile Details -->
                     <div class="text-gray-600">
                         <span class="flex items-center gap-2 justify-start"><img class="w-5" src="{{ asset('assets/icons/message.svg') }}" alt="Email">: <span>{{ $faculty->user->email }}</span></span>
-                        <span class="flex items-center gap-2 justify-start"><img class="w-5" src="{{ asset('assets/icons/call.svg') }}" alt="Number">: <span>{{ $faculty->phone_number }}</span></span>
+                        <span class="flex items-center gap-2 justify-start"><img class="w-5" src="{{ asset('assets/icons/call.svg') }}" alt="Number">: <span>{{ $faculty->user->phone_number }}</span></span>
                         <span class="flex items-center gap-2 justify-start"><img class="w-5" src="{{ asset('assets/icons/department.svg') }}" alt="Department">: <span>{{ $faculty->department->department_name }}</span></span>
                     </div>
                 </div>

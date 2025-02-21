@@ -120,11 +120,11 @@ class StudentProfileCrud extends Component
 
             // Populate input fields with student data
             $this->student_id = $student->student_id;
-            $this->first_name = $student->first_name;
-            $this->last_name = $student->last_name;
+            $this->first_name = $student->user->first_name;
+            $this->last_name = $student->user->last_name;
             $this->program_id = $student->program_id;
-            $this->phone_number = $student->phone_number;
-            $this->profile_image = $student->profile_image;
+            $this->phone_number = $student->user->phone_number;
+            $this->profile_image = $student->user->profile_image;
 
             // Show the edit form
             $this->showEditForm = true;
@@ -159,11 +159,11 @@ class StudentProfileCrud extends Component
     {
         $student = Student::find($this->student_id);
         return $student && (
-            $student->first_name !== $this->first_name ||
-            $student->last_name !== $this->last_name ||
+            $student->user->first_name !== $this->first_name ||
+            $student->user->last_name !== $this->last_name ||
             $student->program_id !== $this->program_id ||
-            $student->phone_number !== $this->phone_number || 
-            $student->profile_image !== $this->profile_image
+            $student->user->phone_number !== $this->phone_number || 
+            $student->user->profile_image !== $this->profile_image
         );
     }
 
@@ -207,31 +207,35 @@ class StudentProfileCrud extends Component
     {
         // Attempt to edit the student and retrieve the updated student object
         $student = $this->editStudent();
+        $user = $student->user;
 
         try {
             // Validate inputs using defined rules
             $this->validate($this->rules);
 
-            // Save the student changes to the database
+            // Save the user changes to the database
+            $user->save();
+
+            // Save the student changes to the database (program_id)
             $student->save();
 
             // Log the successful update along with changes and return a success response
-            return $this->logEdit('Student successfully updated!', $student, 200);
+            return $this->logEdit('Student successfully updated!', $user, 200);
         } catch (ValidationException $e) {
             // Handle validation errors (e.g., invalid inputs)
             $errors = $e->validator->errors()->all();
             $errorMessages = implode(' | ', $errors);
 
-            return $this->logEditError('Invalid inputs: ' . $errorMessages, $student, 422);
+            return $this->logEditError('Invalid inputs: ' . $errorMessages, $user, 422);
         } catch (QueryException $e) {
             // Handle database-related errors
             if ($e->errorInfo[1] == 1062) {
                 // Specific error for duplicate phone number or other unique fields
-                return $this->logEditError('Duplicate entry found!', $student, 400);
+                return $this->logEditError('Duplicate entry found!', $user, 400);
             }
 
             // General database error
-            return $this->logEditError('Database error: ' . $e->getMessage(), $student, 500);
+            return $this->logEditError('Database error: ' . $e->getMessage(), $user, 500);
         }
     }
 
@@ -242,22 +246,26 @@ class StudentProfileCrud extends Component
         $student = Student::find($this->student_id);
 
         // Store old values to log changes later
-        $this->oldValues = $student->getOriginal();
+        $this->oldValues = $student->user->getOriginal();
 
-        // Update the student properties with new values
-        $student->first_name = $this->first_name;
-        $student->last_name = $this->last_name;
-        $student->program_id = $this->program_id;
-        $student->phone_number = $this->phone_number;
-        
+        // Update the user properties with new values
+        $student->user->first_name = $this->first_name;
+        $student->user->last_name = $this->last_name;
+        $student->user->phone_number = $this->phone_number;
+
+        // Handle profile image update if a new file is uploaded
         if ($this->profile_image instanceof UploadedFile) {
             $imagePath = $this->validateAndStoreImage($this->profile_image);
-            $student->profile_image = $imagePath;
+            $student->user->profile_image = $imagePath;
         }
+
+        // Update the program_id in the student model (not in the user model)
+        $student->program_id = $this->program_id;
 
         // Return the updated student object
         return $student;
     }
+
 
     private function validateAndStoreImage(UploadedFile $file)
     {
@@ -286,7 +294,7 @@ class StudentProfileCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',
-                'record_name' => $student->student_name,  // Log the student's last name for reference
+                'record_name' => $student->user_name,  // Log the student's last name for reference
                 'status_code' => $statusCode,
                 'changes' => $changes, // Include changes in the log
             ])
@@ -323,7 +331,7 @@ class StudentProfileCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',
-                'record_name' => $student->student_name,  // Log the student's last name for reference
+                'record_name' => $student->user_name,  // Log the student's last name for reference
                 'status_code' => $statusCode,
             ])
             ->event('Failed Edit')
