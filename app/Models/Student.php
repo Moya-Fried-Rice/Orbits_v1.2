@@ -17,26 +17,12 @@ class Student extends Authenticatable
 
     protected $fillable = [
         'user_id',
-        'first_name',
-        'last_name',
         'program_id',
-        'phone_number',
-        'profile_image',
     ];
-
-    public function getStudentNameAttribute()
-    {
-        return $this->first_name . ' ' . $this->last_name;
-    }
 
     public function studentCourses()
     {
         return $this->hasMany(StudentCourse::class, 'student_id', 'student_id'); 
-    }
-
-    public function studentEvaluations()
-    {
-        return $this->hasMany(StudentEvaluation::class, 'student_id', 'student_id'); 
     }
 
     public function user()

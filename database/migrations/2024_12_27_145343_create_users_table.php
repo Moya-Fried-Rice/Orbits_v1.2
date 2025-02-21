@@ -17,7 +17,10 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id('user_id');
             $table->uuid('uuid')->unique()->default(DB::raw('(UUID())'))->nullable(false);
-            $table->string('name');
+            $table->string('first_name'); // First name of the student
+            $table->string('last_name'); // Last name of the student
+            $table->string('phone_number')->nullable(); // Optional phone number
+            $table->string('profile_image')->default('default_images/default_profile.png'); // Optional profile image path
             $table->string('email')->unique();
             $table->string('password');
             $table->unsignedBigInteger('role_id')

@@ -67,11 +67,20 @@
         <div x-data="{ open: false }">
             <div class="relative">
                 <button @click="open = !open" class="flex items-center justify-center mr-2 relative">
-                    <span class="mr-2"><div>{{ Auth::user()->name }}</div></span>
+                    <!-- Profile Image -->
+                    <img src="{{ asset('storage/' . Auth::user()->profile_image) }}" alt="Profile Image" class="ring-2 ring-offset-2 ring-[#F8F8F8] w-8 h-8 rounded-full mr-2">
+                    
+                    <!-- Username -->
+                    <span class="mr-2 hidden md:block">
+                        <div>{{ Auth::user()->user_name }}</div>
+                    </span>
+                    
+                    <!-- Dropdown Arrow -->
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                     </svg>
                 </button>
+                
                 <div    
                     x-show="open" @click.away="open = false" 
                     x-transition:enter="transition ease-out duration-200" 
