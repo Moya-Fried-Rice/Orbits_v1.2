@@ -16,7 +16,7 @@ class UserProfile extends Component
     public $name;
     public $email;
     public $password;
-    public $profile_picture;
+    public $profile_image;
     public $newProfilePicture;
     public $role;
     public $showSaveMessage = false;
@@ -24,10 +24,10 @@ class UserProfile extends Component
     public function mount()
     {
         $this->user = Auth::user();
-        $this->name = $this->user->name;
+        $this->name = $this->user->user_name;
         $this->email = $this->user->email;
         $this->role = $this->user->role;
-        $this->profile_picture = $this->user->profile_picture;
+        $this->profile_image = $this->user->profile_image;
     }
 
     public function updatedNewProfilePicture()
@@ -41,30 +41,27 @@ class UserProfile extends Component
 
     public function saveChanges()
     {
-        $this->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-        ]);
 
         // Save profile picture if a new one was uploaded
         if ($this->newProfilePicture) {
-            if ($this->user->profile_picture) {
-                Storage::disk('public')->delete($this->user->profile_picture);
+            if ($this->user->profile_image) {
+                Storage::disk('public')->delete($this->user->profile_image);
             }
-            $path = $this->newProfilePicture->store('profile_pictures', 'public');
-            $this->user->profile_picture = $path;
-            $this->profile_picture = $path;
+            $path = $this->newProfilePicture->store('profile_images', 'public');
+            $this->user->profile_image = $path;
+            $this->profile_image = $path;
         }
-
-        // Update user details
-        $this->user->name = $this->name;
-        $this->user->email = $this->email;
 
         $this->user->save();
         $this->showSaveMessage = false;
         session()->flash('message', 'Profile updated successfully.');
     }
-
+    
+    public function clearMessage()
+    {
+        session()->forget(['message', 'error', 'info', 'deleted']);
+    }
+    
     public function updatePassword()
     {
         $this->validate([
