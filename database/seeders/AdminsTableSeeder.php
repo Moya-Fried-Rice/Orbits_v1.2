@@ -6,7 +6,6 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Admin;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class AdminsTableSeeder extends Seeder
 {
@@ -14,21 +13,20 @@ class AdminsTableSeeder extends Seeder
     {
         // Step 1: Create a User record
         $user = User::create([
-            'name' => 'Apple Admin',
-            'password' => Hash::make('admin123'), // Securely hashed password
+            'first_name' => 'Apple',
+            'last_name' => 'Tree',
             'email' => 'appleadmin@gmail.com',
-            'created_at' => now(),  // Use `now()` instead of hardcoding the date
-            'updated_at' => now(),
+            'password' => Hash::make('admin123'), // Securely hashed password
+            'phone_number' => null, // Optional, can be updated later
             'role_id' => 4,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         // Step 2: Create an Admin record and link it to the User
         Admin::create([
-            'user_id' => $user->user_id, // Ensure correct user_id is used (auto-incremented)
-            'first_name' => 'Apple',
-            'last_name' => 'Tree',
-            'phone' => null, // Optional, can be updated later
-            'email_verified_at' => now(), // Set email_verified_at to current timestamp if required
+            'user_id' => $user->user_id, // Use `id` instead of `user_id`
         ]);
     }
 }
+

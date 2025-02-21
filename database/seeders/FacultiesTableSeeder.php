@@ -3,9 +3,11 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use App\Models\Faculty;
+use Illuminate\Support\Facades\Hash;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\DB;
-use App\Models\User;
 
 class FacultiesTableSeeder extends Seeder
 {
@@ -22,25 +24,26 @@ class FacultiesTableSeeder extends Seeder
 
         // Step 2: Insert 10 sample faculty records
         foreach (range(1, 10) as $index) {
-            // Create a User record with combined first and last name
+            // Generate first name and last name
             $firstName = $faker->firstName;
             $lastName = $faker->lastName;
 
+            // Create a User record
             $user = User::create([
-                'name' => $firstName . ' ' . $lastName, // Combine first and last name
-                'password' => bcrypt('faculty123'), // Default password
+                'first_name' => $firstName,
+                'last_name' => $lastName,
                 'email' => $faker->unique()->safeEmail,
-                'role_id' => 2,
+                'password' => Hash::make('faculty123'), // Securely hashed password
+                'phone_number' => $faker->phoneNumber,
+                'role_id' => 2, // Faculty role
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
 
             // Create a Faculty record linked to the User
             $facultyId = DB::table('faculties')->insertGetId([
-                'faculty_id' => $index, // Auto-increment primary key for faculties
-                'user_id' => $user->user_id, // Link to the created user's user_id
-                'first_name' => $firstName,
-                'last_name' => $lastName,
+                'user_id' => $user->user_id, // Link to the created user
                 'department_id' => rand(1, 7), // Assuming you have 7 departments
-                'phone_number' => $faker->phoneNumber,
             ]);
 
             // Step 3: Assign one course section to this faculty
@@ -54,3 +57,4 @@ class FacultiesTableSeeder extends Seeder
         }
     }
 }
+

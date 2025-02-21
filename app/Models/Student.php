@@ -34,11 +34,6 @@ class Student extends Authenticatable
         return $this->hasMany(StudentCourse::class, 'student_id', 'student_id'); 
     }
 
-    public function studentEvaluations()
-    {
-        return $this->hasMany(StudentEvaluation::class, 'student_id', 'student_id'); 
-    }
-
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'user_id');
