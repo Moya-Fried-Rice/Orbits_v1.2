@@ -121,11 +121,11 @@ class FacultyProfileCrud extends Component
 
             // Populate input fields with faculty data
             $this->faculty_id = $faculty->faculty_id;
-            $this->first_name = $faculty->first_name;
-            $this->last_name = $faculty->last_name;
+            $this->first_name = $faculty->user->first_name;
+            $this->last_name = $faculty->user->last_name;
             $this->department_id = $faculty->department_id;
-            $this->phone_number = $faculty->phone_number;
-            $this->profile_image = $faculty->profile_image;
+            $this->phone_number = $faculty->user->phone_number;
+            $this->profile_image = $faculty->user->profile_image;
 
             // Show the edit form
             $this->showEditForm = true;
@@ -160,11 +160,11 @@ class FacultyProfileCrud extends Component
     {
         $faculty = Faculty::find($this->faculty_id);
         return $faculty && (
-            $faculty->first_name !== $this->first_name ||
-            $faculty->last_name !== $this->last_name ||
+            $faculty->user->first_name !== $this->first_name ||
+            $faculty->user->last_name !== $this->last_name ||
             $faculty->department_id != $this->department_id ||
-            $faculty->phone_number !== $this->phone_number || 
-            $faculty->profile_image !== $this->profile_image
+            $faculty->user->phone_number !== $this->phone_number || 
+            $faculty->user->profile_image !== $this->profile_image
         );
     }
 
@@ -208,31 +208,35 @@ class FacultyProfileCrud extends Component
     {
         // Attempt to edit the faculty and retrieve the updated faculty object
         $faculty = $this->editFaculty();
+        $user = $faculty->user;
 
         try {
             // Validate inputs using defined rules
             $this->validate($this->rules);
 
+            // Save the user changes to the database
+            $user->save();
+
             // Save the faculty changes to the database
             $faculty->save();
 
             // Log the successful update along with changes and return a success response
-            return $this->logEdit('Faculty successfully updated!', $faculty, 200);
+            return $this->logEdit('Faculty successfully updated!', $user, 200);
         } catch (ValidationException $e) {
             // Handle validation errors (e.g., invalid inputs)
             $errors = $e->validator->errors()->all();
             $errorMessages = implode(' | ', $errors);
 
-            return $this->logEditError('Invalid inputs: ' . $errorMessages, $faculty, 422);
+            return $this->logEditError('Invalid inputs: ' . $errorMessages, $user, 422);
         } catch (QueryException $e) {
             // Handle database-related errors
             if ($e->errorInfo[1] == 1062) {
                 // Specific error for duplicate phone number or other unique fields
-                return $this->logEditError('Duplicate entry found!', $faculty, 400);
+                return $this->logEditError('Duplicate entry found!', $user, 400);
             }
 
             // General database error
-            return $this->logEditError('Database error: ' . $e->getMessage(), $faculty, 500);
+            return $this->logEditError('Database error: ' . $e->getMessage(), $user, 500);
         }
     }
 
@@ -243,17 +247,17 @@ class FacultyProfileCrud extends Component
         $faculty = Faculty::find($this->faculty_id);
 
         // Store old values to log changes later
-        $this->oldValues = $faculty->getOriginal();
+        $this->oldValues = $faculty->user->getOriginal();
 
         // Update the faculty properties with new values
-        $faculty->first_name = $this->first_name;
-        $faculty->last_name = $this->last_name;
+        $faculty->user->first_name = $this->first_name;
+        $faculty->user->last_name = $this->last_name;
         $faculty->department_id = $this->department_id;
-        $faculty->phone_number = $this->phone_number;
+        $faculty->user->phone_number = $this->phone_number;
         
         if ($this->profile_image instanceof UploadedFile) {
             $imagePath = $this->validateAndStoreImage($this->profile_image);
-            $faculty->profile_image = $imagePath;
+            $faculty->user->profile_image = $imagePath;
         }
 
         // Return the updated faculty object
@@ -287,7 +291,7 @@ class FacultyProfileCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'success',
-                'record_name' => $faculty->first_name . ' ' . $faculty->last_name,
+                'record_name' => $faculty->user_name,
                 'status_code' => $statusCode,
                 'changes' => $changes, // Include changes in the log
             ])
@@ -324,7 +328,7 @@ class FacultyProfileCrud extends Component
             ->causedBy(Auth::user())
             ->withProperties([
                 'status' => 'error',
-                'record_name' => $faculty->first_name . ' ' . $faculty->last_name,
+                'record_name' => $faculty->user_name,
                 'status_code' => $statusCode,
             ])
             ->event('Failed Edit')

@@ -34,7 +34,8 @@ class FacultyCrud extends Component
     public function render()
     {
         $faculties = Faculty::query()
-            ->selectRaw('faculties.*, CONCAT(faculties.first_name, " ", faculties.last_name) AS full_name, departments.department_name')
+            ->selectRaw('faculties.*, CONCAT(users.first_name, " ", users.last_name) AS full_name, departments.department_name')
+            ->leftJoin('users', 'faculties.user_id', '=', 'users.user_id')  // Join with users table
             ->leftJoin('departments', 'faculties.department_id', '=', 'departments.department_id') // Join with departments table
             ->when($this->selectedDepartment, function ($query) {
                 return $query->where('departments.department_id', $this->selectedDepartment); // Use selectedDepartment for filtering
@@ -44,7 +45,7 @@ class FacultyCrud extends Component
             })
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate(11); // Adjust pagination as needed
-
+    
         return view('livewire.faculty-crud', compact('faculties'));
     }
 
@@ -196,10 +197,9 @@ class FacultyCrud extends Component
     public function validateQueryStore() 
     {
         // Initialize $faculty with the intended input values
-        $faculty = new Faculty([
+        $faculty = new User([
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
-            'department_id' => $this->department_id,
             'phone_number' => $this->phone_number,
             'profile_image' => $this->profile_image,
         ]);
@@ -244,21 +244,22 @@ class FacultyCrud extends Component
 
         // Ensure a user is created or exists in the `users` table
         $user = User::create([
-            'name' => $this->first_name . ' ' . $this->last_name,
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'phone_number' => $this->phone_number,
+            'profile_image' => $imagePath,
             'email' => $this->email, // Assuming email is captured
             'password' => Hash::make('password'), // Use a secure password
             'role_id' => 2, // Assuming role 2 represents Faculty
         ]);
 
         // Create the faculty record and link it to the user's ID
-        return Faculty::create([
+        Faculty::create([
             'user_id' => $user->user_id,
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
             'department_id' => $this->department_id,
-            'phone_number' => $this->phone_number,
-            'profile_image' => $imagePath,
         ]);
+
+        return $user;
     }
 
     // Function to log a successful faculty creation
@@ -273,7 +274,7 @@ class FacultyCrud extends Component
             ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'success', // Mark the status as success
-                'record_name' => $faculty->first_name . ' ' . $faculty->last_name,  // Log the faculty's first name for reference
+                'record_name' => $faculty->user_name,
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 201 for created)
             ])
             ->event('Faculty Created') // Set the event name as "Faculty Created"
@@ -291,7 +292,7 @@ class FacultyCrud extends Component
             ->causedBy(Auth::user()) // Associate the logged action with the authenticated user
             ->withProperties([ // Add any additional properties to log
                 'status' => 'error', // Mark the status as error
-                'record_name' => $faculty,
+                'record_name' => $faculty->user_name,
                 'status_code' => $statusCode, // Log the HTTP status code (e.g., 422 for validation errors)
             ])
             ->event('Failed to Add Faculty') // Set the event name as "Failed to Add Faculty"
