@@ -17,11 +17,13 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
         'password',
         'role_id',
-        'profile_picture',
+        'profile_image',
+        'phone_number'
     ];
 
     protected $primaryKey = 'user_id';
@@ -44,6 +46,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getUserNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
 
     public function faculty()
     {
