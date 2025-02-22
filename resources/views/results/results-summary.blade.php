@@ -118,38 +118,98 @@
                 var chart = new ApexCharts(document.querySelector("#chart-" + role), chartOptions);
                 chart.render();
             });
-
-
-
-
-
-
-            var options = {
-                series: [{
-                name: 'Series 1',
-                data: [80, 50, 30],
-            }],
-                chart: {
-                height: 350,
-                type: 'radar',
-            },
-            title: {
-                text: 'Basic Radar Chart'
-            },
-            yaxis: {
-                stepSize: 20
-            },
-            xaxis: {
-                categories: ['January', 'February', 'March', '2']
-            }
-            };
-
-            var chart = new ApexCharts(document.querySelector("#radar-chart"), options);
-            chart.render();
         });
 
 
 
+
+        document.addEventListener("DOMContentLoaded", function () {
+            if (window.criteriaChartData) {
+                var options = {
+                    series: [{
+                        name: 'Evaluation Score',
+                        data: window.criteriaChartData.data, // Use dynamic data
+                    }],
+                    chart: {
+                        width: '100%',  // Set width to 100% for responsiveness
+                        height: '100%', // Set height to 100% for responsiveness
+                        type: 'radar',
+                        toolbar: {
+                            show: false // Disable the toolbar (burger menu)
+                        },
+                        padding: 0,
+                        margin: 0,
+                    },
+                    yaxis: {
+                        stepSize: 1, // Adjust based on rating scale
+                        labels: {
+                            style: {
+                                fontSize: '0.75rem',
+                                fontFamily: 'TT', // Apply custom font here as well
+                            }
+                        }
+                    },
+                    xaxis: {
+                        categories: window.criteriaChartData.shortLabels, // Use dynamic shortened labels
+                        labels: {
+                            style: {
+                                fontSize: '1.125rem',
+                                colors: ['#4B5563'],
+                                fontFamily: 'TT', // Apply custom font here as well
+                            }
+                        }
+                    },
+                    dataLabels: {
+                        enabled: true,
+                        background: {
+                            enabled: true,
+                            borderRadius: 2,
+                        },
+                        style: {
+                            fontSize: '0.75rem', // Apply font size to data labels
+                            fontFamily: 'TT', // Apply custom font here
+                        }
+                    },
+                    stroke: {
+                        colors: ['#923534'], // Set radar line color
+                        width: 2
+                    },
+                    fill: {
+                        colors: ['#923534'], // Set the radar background color
+                        opacity: 0.1 // Adjust opacity (0 = transparent, 1 = solid)
+                    },
+                    plotOptions: {
+                        radar: {
+                            polygons: {
+                                strokeColor: '#DDD',
+                                fill: {
+                                    colors: ['#f8f8f8', '#fff']
+                                }
+                            }
+                        }
+                    },
+                    tooltip: {
+                        y: {
+                            title: {
+                                formatter: function () {
+                                    return "Full Label"; // Customize tooltip title (optional)
+                                }
+                            }
+                        },
+                        x: {
+                            formatter: function (value) {
+                                // When hovering, show the full label corresponding to the short label
+                                var fullLabel = window.criteriaChartData.labels[window.criteriaChartData.shortLabels.indexOf(value)];
+                                return fullLabel; // Return the full label on hover
+                            }
+                        }
+                    }
+                };
+
+                var chart = new ApexCharts(document.querySelector("#radar-chart"), options);
+                chart.render();
+            }
+        });
 
 
 

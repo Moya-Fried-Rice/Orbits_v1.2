@@ -52,6 +52,9 @@ class ResultsSummary extends Component
         // Store role-wise data separately
         $roleData = [];
 
+        // Store comments
+        $commentsData = []; // Store all comments
+
         foreach ($faculty->facultyCourses as $facultyCourse) {
             $courseSection = $facultyCourse->courseSection;
             $sectionKey = $this->getSectionKey($courseSection);
@@ -65,6 +68,12 @@ class ResultsSummary extends Component
 
                     $role = $userEvaluation->user->role->role_name;
                     $questionRatings = $this->getQuestionRatings($userEvaluation);
+                    $comments = $userEvaluation->comment; // Assuming there's a 'comments' field
+
+                    // Store comments
+                    if ($comments) {
+                        $commentsData[] = $comments;
+                    }
 
                     // Ensure "sections" key exists before storing data
                     if (!isset($groupedData[$role]['sections'][$sectionKey])) {
@@ -136,6 +145,7 @@ class ResultsSummary extends Component
             'final_overall_avg' => $finalOverallAvg, // Store final overall average outside "data"
             'criteria_avg' => $criteriaAverages, // Store criteria averages outside "data"
             'role_data' => $roleData, // Store the role-wise data
+            'comments_data' => $commentsData,
         ];
 
         // dd($this->evaluationData);
