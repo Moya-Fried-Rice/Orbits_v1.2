@@ -192,7 +192,7 @@
                         y: {
                             title: {
                                 formatter: function () {
-                                    return "Full Label"; // Customize tooltip title (optional)
+                                    return "Criteria Rating:"; // Customize tooltip title (optional)
                                 }
                             }
                         },
