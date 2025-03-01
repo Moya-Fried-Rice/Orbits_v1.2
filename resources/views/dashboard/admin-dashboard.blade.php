@@ -119,7 +119,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
             <h2 class="text-lg font-bold text-gray-900 mb-2 sm:mb-0 flex items-center font-silka">
                 <div class="w-1 h-6 bg-[#923534] rounded-full mr-3"></div>
-                Monthly Evaluation Growth
+                Daily Evaluation Growth
             </h2>
             <div class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#923534]/10 text-[#923534] font-TT">
                 Growth Rate
@@ -260,6 +260,13 @@
 
     // Monthly Growth Line Chart
     var currentYear = new Date().getFullYear();
+    // Get hourly data for today
+    var hours = Array.from({length: 24}, (_, i) => {
+        let d = new Date();
+        d.setHours(i, 0, 0, 0);
+        return d;
+    });
+
     var optionsLine2 = {
         ...theme,
         chart: { 
@@ -284,26 +291,25 @@
         series: [{
             name: 'Evaluations',
             data: [
-                {{ \App\Models\UserEvaluation::whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 1)->count() }},
-                {{ \App\Models\UserEvaluation::whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 2)->count() }},
-                {{ \App\Models\UserEvaluation::whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 3)->count() }},
-                {{ \App\Models\UserEvaluation::whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 4)->count() }},
-                {{ \App\Models\UserEvaluation::whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 5)->count() }},
-                {{ \App\Models\UserEvaluation::whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 6)->count() }},
-                {{ \App\Models\UserEvaluation::whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 7)->count() }},
-                {{ \App\Models\UserEvaluation::whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 8)->count() }},
-                {{ \App\Models\UserEvaluation::whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 9)->count() }},
-                {{ \App\Models\UserEvaluation::whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 10)->count() }},
-                {{ \App\Models\UserEvaluation::whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 11)->count() }},
-                {{ \App\Models\UserEvaluation::whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 12)->count() }}
+                @for($i = 0; $i < 24; $i++)
+                    {{ \App\Models\UserEvaluation::whereDate('evaluated_at', now())
+                        ->whereRaw('HOUR(evaluated_at) = ?', [$i])
+                        ->count() }}{{ $i < 23 ? ',' : '' }}
+                @endfor
             ]
         }],
         xaxis: {
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            type: 'category',
+            categories: hours.map(hour => hour.getHours() + ':00'),
             labels: {
                 style: {
                     fontSize: '12px',
                     fontFamily: theme.fontFamily.body
+                },
+                formatter: function(val) {
+                    // Convert 24-hour format to 12-hour format
+                    let hour = parseInt(val);
+                    return (hour % 12 || 12) + (hour < 12 ? ' AM' : ' PM');
                 }
             }
         },
@@ -316,7 +322,7 @@
         },
         colors: [theme.primaryColor],
         title: {
-            text: currentYear + ' Monthly Growth',
+            text: 'Today\'s Hourly Evaluation Activity',
             align: 'left',
             style: {
                 fontSize: '14px',
@@ -327,7 +333,11 @@
         tooltip: {
             theme: 'light',
             x: {
-                format: 'MMM yyyy'
+                formatter: function(val) {
+                    // Convert 24-hour format to 12-hour format
+                    let hour = parseInt(val);
+                    return (hour % 12 || 12) + (hour < 12 ? ' AM' : ' PM');
+                }
             }
         }
     };
@@ -528,4 +538,3 @@
     handleResize();
 </script>
 @endsection
-
