@@ -5,133 +5,216 @@
 @endsection
 
 @section('content')
-<div class="min-h-screen bg-gray-50 animate-fade-in">
-    <div class="font-tt mb-6 flex justify-between items-center p-4 bg-white shadow-sm animate-slide-down">
-        <div class="text-2xl font-bold text-gray-800">
-            Program Chair Dashboard
+<!-- Dashboard Header -->
+<div class="flex flex-col gap-1 mb-8">
+    <h1 class="text-2xl md:text-3xl font-bold text-gray-900 font-silka">Program Chair Dashboard</h1>
+    <p class="text-gray-500 font-TT">Overview of department performance and faculty evaluations</p>
+</div>
+
+<!-- Statistics Cards Section -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-200">
+        <div class="p-5">
+            <div class="flex items-center">
+                <div class="flex-shrink-0 bg-[#923534]/10 p-3 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#923534]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                </div>
+                <div class="ml-5 w-0 flex-1">
+                    <dl>
+                        <dt class="text-sm font-medium text-gray-500 truncate font-TT">Department Faculty</dt>
+                        <dd class="flex items-baseline">
+                            @php
+                                $departmentId = auth()->user()->programChair->department_id;
+                                $facultyCount = \App\Models\Faculty::where('department_id', $departmentId)->count();
+                            @endphp
+                            <div class="text-2xl font-semibold text-gray-900 font-silka">{{ $facultyCount }}</div>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
         </div>
-        <div class="flex items-center space-x-4">
-            <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-900 transition-all duration-150">
-                Home
-            </a>
-        </div>
+        <div class="bg-[#923534] h-1"></div>
     </div>
 
-    <div class="p-4 lg:p-6">
-        <!-- Quick Stats -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6">
-            <div class="bg-white p-4 lg:p-6 rounded-xl shadow-sm border-l-4 border-[#923534] hover:shadow-md transition-all duration-150 opacity-0 animate-fade-in-up [animation-delay:100ms]">
-                <p class="text-[#923534] font-tt font-semibold mb-1">Department Faculty</p>
-                @php
-                    $departmentId = auth()->user()->programChair->department_id;
-                    $facultyCount = \App\Models\Faculty::where('department_id', $departmentId)->count();
-                @endphp
-                <h3 class="text-2xl lg:text-3xl font-tt font-bold text-gray-900">{{ $facultyCount }}</h3>
-            </div>
-            <div class="bg-white p-4 lg:p-6 rounded-xl shadow-sm border-l-4 border-[#923534]/80 hover:shadow-md transition-all duration-150 opacity-0 animate-fade-in-up [animation-delay:200ms]">
-                <p class="text-[#923534] font-tt font-semibold mb-1">Total Programs</p>
-                @php
-                    $programCount = \App\Models\Program::where('department_id', $departmentId)->count();
-                @endphp
-                <h3 class="text-2xl lg:text-3xl font-tt font-bold text-gray-900">{{ $programCount }}</h3>
-            </div>
-            <div class="bg-white p-4 lg:p-6 rounded-xl shadow-sm border-l-4 border-[#923534]/60 hover:shadow-md transition-all duration-150 opacity-0 animate-fade-in-up [animation-delay:300ms]">
-                <p class="text-[#923534] font-tt font-semibold mb-1">Active Evaluations</p>
-                @php
-                    $activeEvals = \App\Models\Evaluation::whereHas('courseSection.course', function($query) use ($departmentId) {
-                        $query->where('department_id', $departmentId);
-                    })->count();
-                @endphp
-                <h3 class="text-2xl lg:text-3xl font-tt font-bold text-gray-900">{{ $activeEvals }}</h3>
-            </div>
-            <div class="bg-white p-4 lg:p-6 rounded-xl shadow-sm border-l-4 border-[#923534]/40 hover:shadow-md transition-all duration-150 opacity-0 animate-fade-in-up [animation-delay:400ms]">
-                <p class="text-[#923534] font-tt font-semibold mb-1">Department Response Rate</p>
-                @php
-                    $deptUserEvals = \App\Models\UserEvaluation::whereHas('evaluation.courseSection.course', function($query) use ($departmentId) {
-                        $query->where('department_id', $departmentId);
-                    });
-                    $deptTotal = $deptUserEvals->count();
-                    $deptCompleted = $deptUserEvals->where('is_completed', true)->count();
-                    $deptRate = $deptTotal > 0 ? round(($deptCompleted / $deptTotal) * 100) : 0;
-                @endphp
-                <h3 class="text-2xl lg:text-3xl font-tt font-bold text-gray-900">{{ $deptRate }}%</h3>
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-200">
+        <div class="p-5">
+            <div class="flex items-center">
+                <div class="flex-shrink-0 bg-[#923534]/10 p-3 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#923534]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                </div>
+                <div class="ml-5 w-0 flex-1">
+                    <dl>
+                        <dt class="text-sm font-medium text-gray-500 truncate font-TT">Total Programs</dt>
+                        <dd class="flex items-baseline">
+                            @php
+                                $programCount = \App\Models\Program::where('department_id', $departmentId)->count();
+                            @endphp
+                            <div class="text-2xl font-semibold text-gray-900 font-silka">{{ $programCount }}</div>
+                        </dd>
+                    </dl>
+                </div>
             </div>
         </div>
+        <div class="bg-[#923534] h-1 opacity-75"></div>
+    </div>
 
-        <!-- Department Progress and Programs -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 mb-6">
-            <div class="bg-white p-4 lg:p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-150 opacity-0 animate-fade-in-up [animation-delay:500ms]">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-lg lg:text-xl font-tt font-bold text-[#923534]">Department Progress</h2>
-                    <div class="flex items-center space-x-2">
-                        <span class="w-3 h-3 rounded-full bg-[#923534]"></span>
-                        <span class="text-sm font-tt text-gray-600">Completion Rate</span>
-                    </div>
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-200">
+        <div class="p-5">
+            <div class="flex items-center">
+                <div class="flex-shrink-0 bg-[#923534]/10 p-3 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#923534]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
                 </div>
-                <div class="relative min-h-[350px] lg:min-h-[400px] w-full">
-                    <div class="absolute inset-0" id="progressChart"></div>
-                </div>
-            </div>
-            <div class="bg-white p-4 lg:p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-150 opacity-0 animate-fade-in-up [animation-delay:600ms]">
-                <h2 class="text-lg lg:text-xl font-tt font-bold text-[#923534] mb-4">Department Programs</h2>
-                <div class="space-y-4">
-                    @foreach(\App\Models\Program::where('department_id', $departmentId)->get() as $program)
-                        <div class="flex items-start space-x-3">
-                            <div class="flex-shrink-0">
-                                <div class="w-2 h-2 mt-2 rounded-full bg-[#923534]"></div>
-                            </div>
-                            <div>
-                                <p class="font-tt font-medium text-gray-900">{{ $program->program_name }}</p>
-                                <p class="text-sm text-gray-500">{{ $program->program_code }}</p>
-                            </div>
-                        </div>
-                    @endforeach
+                <div class="ml-5 w-0 flex-1">
+                    <dl>
+                        <dt class="text-sm font-medium text-gray-500 truncate font-TT">Active Evaluations</dt>
+                        <dd class="flex items-baseline">
+                            @php
+                                $activeEvals = \App\Models\Evaluation::whereHas('courseSection.course', function($query) use ($departmentId) {
+                                    $query->where('department_id', $departmentId);
+                                })->count();
+                            @endphp
+                            <div class="text-2xl font-semibold text-gray-900 font-silka">{{ $activeEvals }}</div>
+                        </dd>
+                    </dl>
                 </div>
             </div>
         </div>
+        <div class="bg-[#923534] h-1 opacity-50"></div>
+    </div>
 
-        <!-- Faculty Performance and Recent Activity -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-            <div class="bg-white p-4 lg:p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-150 opacity-0 animate-fade-in-up [animation-delay:700ms]">
-                <h2 class="text-lg lg:text-xl font-tt font-bold text-[#923534] mb-4">Faculty Response Rates</h2>
-                <div class="relative min-h-[350px] lg:min-h-[400px] w-full">
-                    <div class="absolute inset-0" id="facultyChart"></div>
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-200">
+        <div class="p-5">
+            <div class="flex items-center">
+                <div class="flex-shrink-0 bg-[#923534]/10 p-3 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#923534]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                    </svg>
                 </div>
-            </div>
-            <div class="bg-white p-4 lg:p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-150 opacity-0 animate-fade-in-up [animation-delay:800ms]">
-                <h2 class="text-lg lg:text-xl font-tt font-bold text-[#923534] mb-4">Recent Evaluation Activity</h2>
-                <div class="space-y-4">
-                    @php
-                        $recentEvals = \App\Models\UserEvaluation::whereHas('evaluation.courseSection.course', function($query) use ($departmentId) {
-                            $query->where('department_id', $departmentId);
-                        })
-                        ->where('is_completed', true)
-                        ->orderBy('evaluated_at', 'desc')
-                        ->take(5)
-                        ->get();
-                    @endphp
-                    @foreach($recentEvals as $eval)
-                        <div class="flex items-start space-x-3">
-                            <div class="flex-shrink-0">
-                                <div class="w-2 h-2 mt-2 rounded-full bg-green-500"></div>
-                            </div>
-                            <div>
-                                <p class="font-tt font-medium text-gray-900">
-                                    {{ $eval->evaluation->courseSection->course->course_code }} - 
-                                    {{ $eval->evaluation->courseSection->section->section_name }}
-                                </p>
-                                <p class="text-sm text-gray-500">
-                                    Evaluation completed {{ $eval->evaluated_at->diffForHumans() }}
-                                </p>
-                            </div>
-                        </div>
-                    @endforeach
+                <div class="ml-5 w-0 flex-1">
+                    <dl>
+                        <dt class="text-sm font-medium text-gray-500 truncate font-TT">Department Response Rate</dt>
+                        <dd class="flex items-baseline">
+                            @php
+                                $deptUserEvals = \App\Models\UserEvaluation::whereHas('evaluation.courseSection.course', function($query) use ($departmentId) {
+                                    $query->where('department_id', $departmentId);
+                                });
+                                $deptTotal = $deptUserEvals->count();
+                                $deptCompleted = $deptUserEvals->where('is_completed', true)->count();
+                                $deptRate = $deptTotal > 0 ? round(($deptCompleted / $deptTotal) * 100) : 0;
+                            @endphp
+                            <div class="text-2xl font-semibold text-gray-900 font-silka">{{ $deptRate }}%</div>
+                        </dd>
+                    </dl>
                 </div>
             </div>
         </div>
+        <div class="bg-[#923534] h-1 opacity-25"></div>
     </div>
 </div>
 
+<!-- Charts Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Department Progress Chart -->
+    <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
+            <h2 class="text-lg font-bold text-gray-900 mb-2 sm:mb-0 flex items-center font-silka">
+                <div class="w-1 h-6 bg-[#923534] rounded-full mr-3"></div>
+                Department Progress
+            </h2>
+            <div class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#923534]/10 text-[#923534] font-TT">
+                Overall Progress
+            </div>
+        </div>
+        <div id="progressChart" class="w-full h-80"></div>
+    </div>
+
+    <!-- Department Programs -->
+    <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
+            <h2 class="text-lg font-bold text-gray-900 mb-2 sm:mb-0 flex items-center font-silka">
+                <div class="w-1 h-6 bg-[#923534] rounded-full mr-3"></div>
+                Department Programs
+            </h2>
+            <div class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#923534]/10 text-[#923534] font-TT">
+                Active Programs
+            </div>
+        </div>
+        <div class="space-y-4">
+            @foreach(\App\Models\Program::where('department_id', $departmentId)->get() as $program)
+                <div class="flex items-start space-x-3">
+                    <div class="flex-shrink-0">
+                        <div class="w-2 h-2 mt-2 rounded-full bg-[#923534]"></div>
+                    </div>
+                    <div>
+                        <p class="font-tt font-medium text-gray-900">{{ $program->program_name }}</p>
+                        <p class="text-sm text-gray-500">{{ $program->program_code }}</p>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+
+    <!-- Faculty Response Rates -->
+    <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
+            <h2 class="text-lg font-bold text-gray-900 mb-2 sm:mb-0 flex items-center font-silka">
+                <div class="w-1 h-6 bg-[#923534] rounded-full mr-3"></div>
+                Faculty Response Rates
+            </h2>
+            <div class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#923534]/10 text-[#923534] font-TT">
+                By Faculty
+            </div>
+        </div>
+        <div id="facultyChart" class="w-full h-80"></div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
+            <h2 class="text-lg font-bold text-gray-900 mb-2 sm:mb-0 flex items-center font-silka">
+                <div class="w-1 h-6 bg-[#923534] rounded-full mr-3"></div>
+                Recent Activity
+            </h2>
+            <div class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#923534]/10 text-[#923534] font-TT">
+                Last 5 Evaluations
+            </div>
+        </div>
+        <div class="space-y-4">
+            @php
+                $recentEvals = \App\Models\UserEvaluation::whereHas('evaluation.courseSection.course', function($query) use ($departmentId) {
+                    $query->where('department_id', $departmentId);
+                })
+                ->where('is_completed', true)
+                ->orderBy('evaluated_at', 'desc')
+                ->take(5)
+                ->get();
+            @endphp
+            @foreach($recentEvals as $eval)
+                <div class="flex items-start space-x-3">
+                    <div class="flex-shrink-0">
+                        <div class="w-2 h-2 mt-2 rounded-full bg-green-500"></div>
+                    </div>
+                    <div>
+                        <p class="font-tt font-medium text-gray-900">
+                            {{ $eval->evaluation->courseSection->course->course_code }} - 
+                            {{ $eval->evaluation->courseSection->section->section_name }}
+                        </p>
+                        <p class="text-sm text-gray-500">
+                            Evaluation completed {{ $eval->evaluated_at->diffForHumans() }}
+                        </p>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
@@ -140,11 +223,14 @@
 <script>
     // Common chart theme
     const theme = {
-        fontFamily: 'TT, sans-serif',
+        fontFamily: {
+            title: 'Silka, sans-serif',
+            body: 'TT, sans-serif'
+        },
         foreColor: '#4B5563',
         primaryColor: '#923534',
         chart: {
-            background: 'transparent',
+            background: '#FFFFFF',
             toolbar: {
                 show: false
             },
@@ -172,40 +258,39 @@
         series: [{{ $deptRate }}],
         chart: {
             type: 'radialBar',
+            height: 320,
             ...theme.chart
         },
         plotOptions: {
             radialBar: {
-                startAngle: -135,
-                endAngle: 225,
                 hollow: {
                     margin: 15,
                     size: '70%'
                 },
                 track: {
                     background: '#F3F4F6',
-                    strokeWidth: '100%',
-                    margin: 5
+                    strokeWidth: '97%',
+                    margin: 5,
+                    dropShadow: {
+                        enabled: false
+                    }
                 },
                 dataLabels: {
-                    show: true,
                     name: {
                         offsetY: -10,
-                        show: true,
                         color: theme.primaryColor,
-                        fontSize: '16px',
-                        fontFamily: theme.fontFamily,
+                        fontSize: '14px',
+                        fontFamily: theme.fontFamily.body,
                         fontWeight: 600
                     },
                     value: {
+                        offsetY: 5,
+                        fontSize: '24px',
+                        fontFamily: theme.fontFamily.title,
+                        fontWeight: 700,
                         formatter: function(val) {
                             return val.toFixed(1) + '%';
-                        },
-                        color: '#111827',
-                        fontSize: '36px',
-                        fontFamily: theme.fontFamily,
-                        fontWeight: 600,
-                        show: true
+                        }
                     }
                 }
             }
@@ -262,11 +347,12 @@
         }],
         chart: {
             type: 'bar',
+            height: 320,
             ...theme.chart
         },
         plotOptions: {
             bar: {
-                borderRadius: 4,
+                borderRadius: 6,
                 horizontal: true,
                 distributed: true,
                 dataLabels: {
@@ -279,32 +365,43 @@
             formatter: function(val) {
                 return val + '%';
             },
-            offsetX: 30,
             style: {
                 fontSize: '12px',
-                colors: [theme.foreColor]
+                fontFamily: theme.fontFamily.body,
+                fontWeight: 'bold',
+                colors: ['#fff']
+            },
+            background: {
+                enabled: true,
+                foreColor: '#fff',
+                padding: 4,
+                borderRadius: 2,
+                borderWidth: 0,
+                opacity: 0.9,
+                dropShadow: {
+                    enabled: false
+                }
             }
         },
         xaxis: {
             categories: {{ $facultyLabels }},
             labels: {
                 style: {
-                    colors: theme.foreColor,
                     fontSize: '12px',
-                    fontFamily: theme.fontFamily
+                    fontFamily: theme.fontFamily.body
                 }
             }
         },
-        yaxis: {
-            labels: {
-                style: {
-                    colors: theme.foreColor,
-                    fontSize: '12px',
-                    fontFamily: theme.fontFamily
-                }
+        colors: [theme.primaryColor],
+        title: {
+            text: 'Faculty Response Distribution',
+            align: 'left',
+            style: {
+                fontSize: '14px',
+                fontWeight: '500',
+                fontFamily: theme.fontFamily.title
             }
-        },
-        colors: [theme.primaryColor]
+        }
     };
 
     // Initialize charts
