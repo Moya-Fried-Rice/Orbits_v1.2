@@ -209,7 +209,7 @@
                         <p class="text-sm text-gray-500">
                             Evaluation completed 
                             @if($eval->evaluated_at)
-                                {{ \Carbon\Carbon::parse($eval->evaluated_at)->diffForHumans() }}
+                                {{ date('M d, Y h:i A', strtotime($eval->evaluated_at)) }}
                             @endif
                         </p>
                     </div>
