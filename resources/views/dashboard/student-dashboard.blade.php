@@ -152,7 +152,9 @@
                     <div>
                         <p class="font-tt font-medium text-gray-900">
                             {{ $evaluation->evaluation->courseSection->course->course_code }} - 
-                            {{ $evaluation->evaluation->courseSection->section->section_name }}
+                            {{ $evaluation->evaluation->courseSection->section->program->program_code }}
+                            {{ $evaluation->evaluation->courseSection->section->year_level }}
+                            {{ $evaluation->evaluation->courseSection->section->section_number }}
                         </p>
                         <p class="text-sm text-gray-500">
                             {{ $evaluation->is_completed ? 'Completed' : 'Pending' }}
@@ -195,7 +197,7 @@
                             {{ $course->courseSection->course->course_name }}
                         </p>
                         <p class="text-sm text-gray-500">
-                            Section: {{ $course->courseSection->section->section_name }}
+                            Section: {{$course->courseSection->section->section_code}}
                         </p>
                     </div>
                 </div>
@@ -226,7 +228,9 @@
                     <div>
                         <p class="font-tt font-medium text-gray-900">
                             {{ $pending->evaluation->courseSection->course->course_code }} - 
-                            {{ $pending->evaluation->courseSection->section->section_name }}
+                            {{ $pending->evaluation->courseSection->section->program->program_code }}
+                            {{ $pending->evaluation->courseSection->section->year_level }}
+                            {{ $pending->evaluation->courseSection->section->section_number }}
                         </p>
                         <p class="text-sm text-gray-500">Faculty Evaluation Pending</p>
                     </div>
