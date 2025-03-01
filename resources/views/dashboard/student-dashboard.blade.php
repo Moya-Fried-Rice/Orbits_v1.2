@@ -157,7 +157,7 @@
                         <p class="text-sm text-gray-500">
                             {{ $evaluation->is_completed ? 'Completed' : 'Pending' }}
                             @if($evaluation->evaluated_at)
-                                | {{ $evaluation->evaluated_at->diffForHumans() }}
+                                | {{ date('M d, Y h:i A', strtotime($evaluation->evaluated_at)) }}
                             @endif
                         </p>
                     </div>
