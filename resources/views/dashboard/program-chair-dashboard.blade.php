@@ -196,7 +196,7 @@
                 ->take(5)
                 ->get();
             @endphp
-            @foreach($recentEvals as $eval)
+            @forelse($recentEvals as $eval)
                 <div class="flex items-start space-x-3">
                     <div class="flex-shrink-0">
                         <div class="w-2 h-2 mt-2 rounded-full bg-green-500"></div>
@@ -207,11 +207,18 @@
                             {{ $eval->evaluation->courseSection->section->section_name }}
                         </p>
                         <p class="text-sm text-gray-500">
-                            Evaluation completed {{ $eval->evaluated_at->diffForHumans() }}
+                            Evaluation completed 
+                            @if($eval->evaluated_at)
+                                {{ \Carbon\Carbon::parse($eval->evaluated_at)->diffForHumans() }}
+                            @endif
                         </p>
                     </div>
                 </div>
-            @endforeach
+            @empty
+                <div class="text-center text-gray-500 py-4 font-tt">
+                    No recent evaluation activities
+                </div>
+            @endforelse
         </div>
     </div>
 </div>
@@ -392,16 +399,7 @@
                 }
             }
         },
-        colors: [theme.primaryColor],
-        title: {
-            text: 'Faculty Response Distribution',
-            align: 'left',
-            style: {
-                fontSize: '14px',
-                fontWeight: '500',
-                fontFamily: theme.fontFamily.title
-            }
-        }
+        colors: [theme.primaryColor]
     };
 
     // Initialize charts
