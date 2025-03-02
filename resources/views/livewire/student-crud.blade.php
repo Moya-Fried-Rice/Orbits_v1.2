@@ -18,8 +18,15 @@
     
         </div>
     
-        <!-- Add Student Button -->
-        <x-add-button add="Student" />
+        <div class="flex gap-3">
+            <!-- Add Student Button -->
+            <x-add-button add="Student" />
+            
+            <!-- Import CSV Button -->
+            <div wire:ignore>
+                @livewire('import-users', ['userType' => 'student'])
+            </div>            
+        </div>
     
     </div>
     
@@ -116,72 +123,65 @@
 
     </div>
 
-{{-- Modal Delete --}}
-<x-delete-modal label="student"/>
+    {{-- Modal Delete --}}
+    <x-delete-modal label="student"/>
 
-<!-- Modal Add -->
-<x-add-modal label="student">
+    <!-- Modal Add -->
+    <x-add-modal label="student">
+        <!-- First Name -->
+        <div class="flex w-full gap-5">
+            <x-add-modal-data name="first_name" label="First Name:">
+                <input 
+                    class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 hover:border-[#923534] transition-all duration-200" 
+                    type="text" 
+                    id="first_name" 
+                    wire:model="first_name">
+            </x-add-modal-data>
 
-    <!-- First Name -->
-    <div class="flex w-full gap-5">
-        <x-add-modal-data name="first_name" label="First Name:">
+            <!-- Last Name -->
+            <x-add-modal-data name="last_name" label="Last Name:">
+                <input 
+                    class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 hover:border-[#923534] transition-all duration-200" 
+                    type="text" 
+                    id="last_name" 
+                    wire:model="last_name">
+            </x-add-modal-data>
+        </div>
+        
+        <!-- Program -->
+        <x-add-modal-data name="program_id" label="Program:">
+            <x-select-program/>
+        </x-add-modal-data>
+
+        <!-- Profile Image -->
+        <x-add-modal-data name="profile_image" label="Profile Image:">
+            <input 
+                class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 hover:border-[#923534] transition-all duration-200" 
+                type="file" 
+                id="profile_image" 
+                accept="image/jpeg, image/png, image/jpg, image/gif, image/webp"
+                wire:model="profile_image">
+        </x-add-modal-data>
+
+        <br>
+
+        <!-- Email -->
+        <x-add-modal-data name="email" label="Email:">
             <input 
                 class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 hover:border-[#923534] transition-all duration-200" 
                 type="text" 
-                id="first_name" 
-                wire:model="first_name">
+                id="email" 
+                wire:model="email">
         </x-add-modal-data>
 
-        <!-- Last Name -->
-        <x-add-modal-data name="last_name" label="Last Name:">
+        <!-- Phone Number -->
+        <x-add-modal-data name="phone_number" label="Phone Number:">
             <input 
                 class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 hover:border-[#923534] transition-all duration-200" 
                 type="text" 
-                id="last_name" 
-                wire:model="last_name">
+                id="phone_number" 
+                wire:model="phone_number">
         </x-add-modal-data>
-    </div>
-    
-    <!-- Program -->
-    <x-add-modal-data name="program_id" label="Program:">
-
-        <x-select-program/>
-
-    </x-add-modal-data>
-
-    <!-- Profile Image -->
-    <x-add-modal-data name="profile_image" label="Profile Image:">
-        <input 
-            class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 hover:border-[#923534] transition-all duration-200" 
-            type="file" 
-            id="profile_image" 
-            accept="image/jpeg, image/png, image/jpg, image/gif, image/webp"
-            wire:model="profile_image">
-    </x-add-modal-data>
-
-    <br>
-
-    <!-- Email -->
-    <x-add-modal-data name="email" label="Email:">
-        <input 
-            class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 hover:border-[#923534] transition-all duration-200" 
-            type="text" 
-            id="email" 
-            wire:model="email">
-    </x-add-modal-data>
-
-    <!-- Phone Number -->
-    <x-add-modal-data name="phone_number" label="Phone Number:">
-        <input 
-            class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 hover:border-[#923534] transition-all duration-200" 
-            type="text" 
-            id="phone_number" 
-            wire:model="phone_number">
-    </x-add-modal-data>
-
-</x-add-modal>
-
+    </x-add-modal>
 
 </div>
-
-

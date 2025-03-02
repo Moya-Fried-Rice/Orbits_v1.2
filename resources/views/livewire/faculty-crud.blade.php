@@ -18,8 +18,15 @@
     
         </div>
     
-        <!-- Add Faculty Button -->
-        <x-add-button add="Faculty" />
+        <div class="flex gap-3">
+            <!-- Add Faculty Button -->
+            <x-add-button add="Faculty" />
+            
+            <!-- Import CSV Button -->
+            <div wire:ignore>
+                @livewire('import-users', ['userType' => 'faculty'])
+            </div>
+        </div>
     
     </div>
     
