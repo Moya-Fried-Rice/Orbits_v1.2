@@ -124,17 +124,41 @@
 
                 {{-- Password Change Section --}}
                 <div class="space-y-4">
-
-                    <h3 class="text-lg md:text-xl font-medium font-TT font-semibold">Change Password</h3>
-                    <p>
-                        To change your password, please fill in the fields below. Your password must contain at least 8 characters, it must also include at least one upper case letter, one lower case letter, one number, and one special character.
-                    </p>
+                    <h3 class="text-lg md:text-xl font-medium font-TT font-semibold">Password must contain</h3>
+                    <!-- Password Validation Checklist -->
+                    <div class="space-y-1 mt-2 text-sm">
+                        <p>
+                            <span class="{{ $passwordRequirements['length'] ? 'text-green-500' : 'text-red-500' }}">
+                                {{ $passwordRequirements['length'] ? '✓' : '✕' }} At least 8 characters.
+                            </span>
+                        </p>
+                        <p>
+                            <span class="{{ $passwordRequirements['uppercase'] ? 'text-green-500' : 'text-red-500' }}">
+                                {{ $passwordRequirements['uppercase'] ? '✓' : '✕' }} At least one upper case letter.
+                            </span>
+                        </p>
+                        <p>
+                            <span class="{{ $passwordRequirements['lowercase'] ? 'text-green-500' : 'text-red-500' }}">
+                                {{ $passwordRequirements['lowercase'] ? '✓' : '✕' }} At least one lower case letter.
+                            </span>
+                        </p>
+                        <p>
+                            <span class="{{ $passwordRequirements['number'] ? 'text-green-500' : 'text-red-500' }}">
+                                {{ $passwordRequirements['number'] ? '✓' : '✕' }} At least one number.
+                            </span>
+                        </p>
+                        <p>
+                            <span class="{{ $passwordRequirements['special'] ? 'text-green-500' : 'text-red-500' }}">
+                                {{ $passwordRequirements['special'] ? '✓' : '✕' }} At least one special character.
+                            </span>
+                        </p>
+                    </div>
+                    
                     <div class="flex flex-col gap-3 justify">
                         <!-- Current Password -->
                         <div class="space-y-2">
                             <label for="password" class="block text-base md:text-lg font-medium text-gray-700 font-TT">Current Password</label>
                             <div class="flex gap-2 md:gap-4 items-center relative">
-                                <!-- Lock Icon inside the input -->
                                 <i class="fas fa-lock absolute left-3 text-gray-500 top-1/2 transform -translate-y-1/2 opacity-50"></i>
                                 <input
                                     type="password"
@@ -144,29 +168,29 @@
                                     class="px-4 pl-10 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                                 />
                             </div>
+                            @error('password') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                         </div>
-                
+
                         <!-- New Password -->
                         <div class="space-y-2">
                             <label for="new-password" class="block text-base md:text-lg font-medium text-gray-700 font-TT">New Password</label>
                             <div class="flex gap-2 md:gap-4 items-center relative">
-                                <!-- Lock Icon inside the input -->
                                 <i class="fas fa-lock absolute left-3 text-gray-500 top-1/2 transform -translate-y-1/2 opacity-50"></i>
                                 <input
                                     type="password"
                                     id="new-password"
-                                    wire:model="newPassword"
+                                    wire:model.live="newPassword"
                                     placeholder="New Password"
                                     class="px-4 pl-10 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                                 />
                             </div>
+                            @error('newPassword') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                         </div>
-                
+
                         <!-- Confirm Password -->
                         <div class="space-y-2">
                             <label for="confirm-password" class="block text-base md:text-lg font-medium text-gray-700 font-TT">Confirm Password</label>
                             <div class="flex gap-2 md:gap-4 items-center relative">
-                                <!-- Lock Icon inside the input -->
                                 <i class="fas fa-lock absolute left-3 text-gray-500 top-1/2 transform -translate-y-1/2 opacity-50"></i>
                                 <input
                                     type="password"
@@ -176,7 +200,9 @@
                                     class="px-4 pl-10 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                                 />
                             </div>
+                            @error('confirmPassword') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                         </div>
+
 
                         <div >
                             <button 
