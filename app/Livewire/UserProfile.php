@@ -7,6 +7,11 @@ use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rules\Password;
+
+use Illuminate\Support\Facades\Validator;
+use Livewire\Attributes\Validate;
 
 class UserProfile extends Component
 {
@@ -15,7 +20,18 @@ class UserProfile extends Component
     public $user;
     public $name;
     public $email;
+
     public $password;
+    public $newPassword='';
+    public $confirmPassword;
+    public $passwordRequirements = [
+        'length' => false,
+        'uppercase' => false,
+        'lowercase' => false,
+        'number' => false,
+        'special' => false,
+    ];
+
     public $profile_image;
     public $newProfilePicture;
     public $role;
@@ -62,23 +78,61 @@ class UserProfile extends Component
         session()->forget(['message', 'error', 'info', 'deleted']);
     }
     
-    public function updatePassword()
-    {
-        $this->validate([
-            'password' => 'required|min:8',
-        ]);
 
-        $this->user->password = Hash::make($this->password);
-        $this->user->save();
+//Password update with concdtiton
+public function updatePassword()
+{
+    //
+    $this->validate([
+        'password' => 'required',
+        'newPassword' => [
+            'required',
+            'min:8',
+            'regex:/[A-Z]/',
+            'regex:/[a-z]/',
+            'regex:/[0-9]/',      
+            'regex:/[@$!%*?&#]/', 
+        ],
+        'confirmPassword' => 'required|same:newPassword', 
+    ]);
 
-        // Clear input field
-        $this->password = '';
-
-        session()->flash('password_message', 'Password changed successfully.');
+    if (!Hash::check($this->password, Auth::user()->password)) {
+        throw ValidationException::withMessages(['password' => 'Current password is incorrect.']);
     }
+
+    Auth::user()->update([
+        'password' => Hash::make($this->newPassword),
+    ]);
+
+    $this->password = '';
+    $this->newPassword = '';
+    $this->confirmPassword = '';
+
+    $this->showPasswordModal = false;
+
+
+    session()->flash('password_message', 'Password changed successfully.');
+}
+
+
+    //password change requirment
+    public function updatedNewPassword($value)
+    {
+        $this->passwordRequirements = [
+            'length' => is_string($value) && strlen($value) >= 8,
+            'uppercase' => is_string($value) && preg_match('/[A-Z]/', $value),
+            'lowercase' => is_string($value) && preg_match('/[a-z]/', $value),
+            'number' => is_string($value) && preg_match('/[0-9]/', $value),
+            'special' => is_string($value) && preg_match('/[\W]/', $value),
+        ];
+    }
+    
+
+
 
     public function render()
     {
         return view('livewire.user-profile');
+        
     }
 }
