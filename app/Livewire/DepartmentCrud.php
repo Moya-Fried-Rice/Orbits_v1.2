@@ -13,10 +13,12 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use Livewire\WithPagination;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use Livewire\WithFileUploads;
 
 class DepartmentCrud extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads;
 
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
     // Properties
@@ -752,5 +754,107 @@ class DepartmentCrud extends Component
             ->event('System Error') // Event name for clarity
             ->log($message); // Log the custom error message
     }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+
+
+
+
+
+
+
+
+
+        // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // Import csv
+    public $showImportForm = false;
+    public $showImportConfirmation = false;
+    public $file;
+
+    public function import()
+    {
+        $this->resetErrorBag();
+        $this->clearMessage();
+        $this->showImportForm = true;
+    }
+
+    public function importConfirmation()
+    {
+        if (!$this->file) {
+            session()->flash('info', 'Please upload a file before proceeding.');
+            $this->showImportForm = false;
+            return;
+        }
+
+        $this->validate([
+            'file' => 'required|file|mimes:csv,xlsx,xls|max:2048'
+        ]);
+    
+        $this->showImportForm = false;
+        $this->showImportConfirmation = true;
+    }
+    
+    public function confirmImport()
+    {
+        session()->flash('info', 'Attempted to import: ' . $this->file->getClientOriginalName());
+        
+        try {
+            // Load the spreadsheet
+            $spreadsheet = IOFactory::load($this->file->path());
+            $worksheet = $spreadsheet->getActiveSheet();
+            $rows = $worksheet->toArray();
+
+            // Check if the file has at least one row of data
+            if (count($rows) <= 1) {
+                return session()->flash('error', 'The file is empty or does not contain valid department data.');
+            }
+
+            $importedCount = 0;
+            $failedCount = 0;
+            $errors = [];
+
+            // Skip header (assuming the first row contains column titles)
+            foreach (array_slice($rows, 1) as $rowIndex => $row) {
+                // Ensure required columns exist before assigning values
+                if (count($row) < 3) continue; // Adjust based on required fields
+
+                // Map CSV/Excel columns to Livewire properties
+                $this->department_code = trim($row[0]); // Department Code
+                $this->department_name = trim($row[1]); // Department Name
+                $this->department_description = trim($row[2]); // Description
+
+                // Attempt to insert department using existing function
+                try {
+                    $this->validateQueryStore();
+                    $importedCount++;
+                } catch (\Exception $e) {
+                    $failedCount++;
+                    $errors[] = "Row " . ($rowIndex + 2) . ": " . $e->getMessage(); // Row index +2 to match file line
+                }
+            }
+
+        } catch (\Exception $e) {
+            session()->flash('error', 'Error processing file: ' . $e->getMessage());
+        }
+
+        $this->closeImport();
+    }
+
+
+    public function cancelImport()
+    {
+        $this->showImportConfirmation = false;
+        $this->showImportForm = true;
+        $this->resetErrorBag();
+    }
+
+    public function closeImport()
+    {
+        $this->showImportForm = false;
+        $this->showImportConfirmation = false;
+        $this->resetInputFields();
+        $this->resetErrorBag();
+    }
+
     //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 }

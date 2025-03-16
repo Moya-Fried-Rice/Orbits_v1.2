@@ -89,7 +89,7 @@
             <div class="flex flex-col items-center px-6 py-4 text-center">
                 <img src="{{ asset('assets/icons/info.svg') }}" class="w-20 h-20 mb-4" alt="Confirm">
                 <p class="text-gray-700 text-sm sm:text-base">Are you sure you want to import these {{ $label }}?</p>
-                <p class="text-xs text-gray-500 mt-2 sm:text-sm">This action will bulk import student data into the system.</p>
+                <p class="text-xs text-gray-500 mt-2 sm:text-sm">This action will bulk import {{ $label }} data into the system.</p>
             </div>
     
             {{-- Footer --}}

@@ -17,9 +17,9 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use Illuminate\Support\Facades\Hash;
-use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Livewire\WithFileUploads;
 
 use Illuminate\Support\Str;
 use App\Mail\Welcome;
