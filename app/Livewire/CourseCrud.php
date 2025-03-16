@@ -15,10 +15,12 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use Livewire\WithFileUploads;
 
 class CourseCrud extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads;
 
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
     // Properties
@@ -72,6 +74,8 @@ class CourseCrud extends Component
         'course_code' => 'required|string|max:50',
         'course_description' => 'nullable|string|max:500',
         'department_id' => 'required|exists:departments,department_id',
+        'lec' => 'required|integer|min:0',
+        'lab' => 'required|integer|min:0',
     ];
 
     // Search courses
@@ -795,5 +799,117 @@ class CourseCrud extends Component
             ->event('System Error') // Event name for clarity
             ->log($message); // Log the custom error message
     }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // Import csv
+    public $showImportForm = false;
+    public $showImportConfirmation = false;
+    public $file;
+
+    public function import()
+    {
+        $this->resetErrorBag();
+        $this->clearMessage();
+        $this->showImportForm = true;
+    }
+
+    public function importConfirmation()
+    {
+        if (!$this->file) {
+            session()->flash('info', 'Please upload a file before proceeding.');
+            $this->showImportForm = false;
+            return;
+        }
+
+        $this->validate([
+            'file' => 'required|file|mimes:csv,xlsx,xls|max:2048'
+        ]);
+    
+        $this->showImportForm = false;
+        $this->showImportConfirmation = true;
+    }
+    
+    public function confirmImport()
+    {
+        session()->flash('info', 'Attempted to import: ' . $this->file->getClientOriginalName());
+        
+        try {
+            // Load the spreadsheet
+            $spreadsheet = IOFactory::load($this->file->path());
+            $worksheet = $spreadsheet->getActiveSheet();
+            $rows = $worksheet->toArray();
+    
+            // Check if the file has at least one row of data
+            if (count($rows) <= 1) {
+                return session()->flash('error', 'The file is empty or does not contain valid course data.');
+            }
+    
+            $importedCount = 0;
+            $failedCount = 0;
+            $errors = [];
+    
+            // Skip header (assuming the first row contains column titles)
+            foreach (array_slice($rows, 1) as $rowIndex => $row) {
+                // Ensure required columns exist before assigning values
+                if (count($row) < 6) continue; // Adjust based on required fields
+    
+                // Map CSV/Excel columns to Livewire properties
+                $this->course_code = trim($row[0]); // Course Code
+                $this->course_name = trim($row[1]); // Course Name
+                $this->course_description = trim($row[2]); // Description
+                $this->department_id = intval($row[3]); // Department ID
+                $this->lec = intval($row[4]); // Lecture Hours
+                $this->lab = intval($row[5]); // Lab Hours
+    
+                // Attempt to insert course using existing function
+                try {
+                    $this->validateQueryStore();
+                    $importedCount++;
+                } catch (\Exception $e) {
+                    $failedCount++;
+                    $errors[] = "Row " . ($rowIndex + 2) . ": " . $e->getMessage(); // Row index +2 to match file line
+                }
+            }
+    
+        } catch (\Exception $e) {
+            session()->flash('error', 'Error processing file: ' . $e->getMessage());
+        }
+    
+        $this->closeImport();
+    }    
+
+    public function cancelImport()
+    {
+        $this->showImportConfirmation = false;
+        $this->showImportForm = true;
+        $this->resetErrorBag();
+    }
+
+    public function closeImport()
+    {
+        $this->showImportForm = false;
+        $this->showImportConfirmation = false;
+        $this->resetInputFields();
+        $this->resetErrorBag();
+    }
+
     //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 }

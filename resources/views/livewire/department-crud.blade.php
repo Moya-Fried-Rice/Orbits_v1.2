@@ -15,8 +15,14 @@
     
         </div>
     
-        <!-- Add Department Button -->
-        <x-add-button add="Department" />
+        <div class="flex gap-3">
+            <!-- Add Department Button -->
+            <x-add-button add="Department" />
+            
+            <!-- Import CSV Button -->
+            <x-import-button import="Department" />
+            
+        </div>
     
     </div>
     
@@ -163,4 +169,6 @@
         </x-add-modal-data>
 
     </x-add-modal>
+
+    <x-import-modal label="department" fields="Department Code, Department Name, Description" />
 </div>

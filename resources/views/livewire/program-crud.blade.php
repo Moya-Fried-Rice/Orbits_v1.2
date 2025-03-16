@@ -18,9 +18,16 @@
     
         </div>
     
-        <!-- Add Program Button -->
-        <x-add-button add="Program" />
+        <div class="flex gap-3">
+
+            <!-- Add Program Button -->
+            <x-add-button add="Program" />
+
+            {{-- Import Program --}}
+            <x-import-button import="Program" />
     
+        </div>
+
     </div>
     
     <div class="p-5">
@@ -163,5 +170,7 @@
     </x-add-modal-data>
 
 </x-add-modal>
+
+<x-import-modal label="program" fields="Program Code, Program Name, Abbreviation, Description, Department ID" />
 
 </div>

@@ -14,10 +14,12 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use Livewire\WithPagination;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use Livewire\WithFileUploads;
 
 class ProgramCrud extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads;
 
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
     // Properties
@@ -565,5 +567,105 @@ class ProgramCrud extends Component
             ->event('System Error') // Event name for clarity
             ->log($message); // Log the custom error message
     }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // Import csv
+    public $showImportForm = false;
+    public $showImportConfirmation = false;
+    public $file;
+
+    public function import()
+    {
+        $this->resetErrorBag();
+        $this->clearMessage();
+        $this->showImportForm = true;
+    }
+
+    public function importConfirmation()
+    {
+        if (!$this->file) {
+            session()->flash('info', 'Please upload a file before proceeding.');
+            $this->showImportForm = false;
+            return;
+        }
+
+        $this->validate([
+            'file' => 'required|file|mimes:csv,xlsx,xls|max:2048'
+        ]);
+    
+        $this->showImportForm = false;
+        $this->showImportConfirmation = true;
+    }
+    
+    public function confirmImport()
+    {
+        session()->flash('info', 'Attempted to import: ' . $this->file->getClientOriginalName());
+
+        try {
+            // Load the spreadsheet
+            $spreadsheet = IOFactory::load($this->file->path());
+            $worksheet = $spreadsheet->getActiveSheet();
+            $rows = $worksheet->toArray();
+
+            // Check if the file has at least one row of data
+            if (count($rows) <= 1) {
+                return;
+            }
+
+            // Skip header (assuming the first row contains column titles)
+            foreach (array_slice($rows, 1) as $rowIndex => $row) {
+                // Ensure required columns exist before assigning values
+                if (count($row) < 5) continue;
+
+                // Map CSV/Excel columns to Livewire properties
+                $this->program_code = trim($row[0]);
+                $this->program_name = trim($row[1]);
+                $this->abbreviation = trim($row[2]);
+                $this->program_description = trim($row[3]);
+                $this->department_id = intval($row[4]);
+
+                // Attempt to insert program using existing function
+                try {
+                    $this->validateQueryStore();
+                } catch (\Exception $e) {
+                    // Errors are already handled inside validateQueryStore()
+                }
+            }
+        } catch (\Exception $e) {
+            session()->flash('error', 'Error processing file: ' . $e->getMessage());
+        }
+
+        $this->closeImport();
+    }
+
+
+    public function cancelImport()
+    {
+        $this->showImportConfirmation = false;
+        $this->showImportForm = true;
+        $this->resetErrorBag();
+    }
+
+    public function closeImport()
+    {
+        $this->showImportForm = false;
+        $this->showImportConfirmation = false;
+        $this->resetInputFields();
+        $this->resetErrorBag();
+    }
+
     //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 }

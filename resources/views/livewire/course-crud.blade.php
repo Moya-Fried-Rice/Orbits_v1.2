@@ -18,8 +18,15 @@
     
         </div>
     
-        <!-- Add Course Button -->
-        <x-add-button add="Course" />
+        <div class="flex gap-3">
+
+            <!-- Add Course Button -->
+            <x-add-button add="Course" />
+
+            {{-- Import Course --}}
+            <x-import-button import="Course" />
+    
+        </div>
     
     </div>
     
@@ -276,5 +283,8 @@
     </x-add-modal-data>
 
 </x-add-modal>
+
+<x-import-modal label="course" fields="Course Code, Course Name, Description, Department ID, Lec, Lab" />
+
 
 </div>
