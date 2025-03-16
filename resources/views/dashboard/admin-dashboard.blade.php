@@ -352,6 +352,7 @@
                     ->join('course_sections', 'evaluations.course_section_id', '=', 'course_sections.course_section_id')
                     ->join('courses', 'course_sections.course_id', '=', 'courses.course_id')
                     ->where('courses.department_id', $department->department_id)
+                    // ->where('user_evaluations.is_completed', 1) // uncomment to show only completed
                     ->count() }}
             },
         @endforeach
