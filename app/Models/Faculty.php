@@ -26,7 +26,7 @@ class Faculty extends Authenticatable
 
     public function getFacultyNameAttribute()
     {
-        return $this->first_name . ' ' . $this->last_name;
+        return $this->user->first_name . ' ' . $this->user->last_name;
     }
 
     public function facultyCourses()

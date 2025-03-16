@@ -3,7 +3,7 @@
     <x-system-notification />
 
     <div class="p-5 pb-0 flex flex-wrap items-center md:justify-between justify-center relative">
-        
+   
         <div class="flex items-center flex-col md:flex-row w-full md:w-auto">
 
             <div class="ml-0 md:ml-5 flex-col flex w-full">
