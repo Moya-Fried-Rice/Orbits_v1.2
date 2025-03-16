@@ -23,9 +23,8 @@
             <x-add-button add="Student" />
             
             <!-- Import CSV Button -->
-            <div wire:ignore>
-                @livewire('import-users', ['userType' => 'student'])
-            </div>            
+            <x-import-button import="Student" />
+            
         </div>
     
     </div>
@@ -183,5 +182,7 @@
                 wire:model="phone_number">
         </x-add-modal-data>
     </x-add-modal>
+
+    <x-import-modal label="student" fields="First Name, Last Name, Email, Phone Number, Program ID" />
 
 </div>

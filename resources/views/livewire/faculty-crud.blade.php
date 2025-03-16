@@ -21,11 +21,10 @@
         <div class="flex gap-3">
             <!-- Add Faculty Button -->
             <x-add-button add="Faculty" />
-            
+
             <!-- Import CSV Button -->
-            <div wire:ignore>
-                @livewire('import-users', ['userType' => 'faculty'])
-            </div>
+            <x-import-button import="Faculty" />
+    
         </div>
     
     </div>
@@ -186,5 +185,7 @@
     </x-add-modal-data>
 
 </x-add-modal>
+
+<x-import-modal label="faculty" fields="First Name, Last Name, Email, Phone Number, Department ID" />
 
 </div>
