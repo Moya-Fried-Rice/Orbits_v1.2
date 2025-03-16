@@ -1,9 +1,9 @@
 @php
     $sessionTypes = [
+        'info' => ['bg' => 'bg-blue-100', 'border' => 'border-[#4A90E2]', 'text' => 'text-[#4A90E2]', 'icon' => 'info.svg'],
         'success' => ['bg' => 'bg-green-100', 'border' => 'border-[#87C26A]', 'text' => 'text-[#87C26A]', 'icon' => 'success.svg'],
         'deleted' => ['bg' => 'bg-green-100', 'border' => 'border-[#87C26A]', 'text' => 'text-[#87C26A]', 'icon' => 'success.svg', 'extra' => '<button type="button" class="underline font-semibold" wire:click="undoDelete">Undo</button>'],
         'error' => ['bg' => 'bg-red-100', 'border' => 'border-[#923534]', 'text' => 'text-[#923534]', 'icon' => 'error.svg'],
-        'info' => ['bg' => 'bg-blue-100', 'border' => 'border-[#4A90E2]', 'text' => 'text-[#4A90E2]', 'icon' => 'info.svg']
     ];
 @endphp
 
