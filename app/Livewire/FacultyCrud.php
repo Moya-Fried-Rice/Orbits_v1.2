@@ -54,7 +54,7 @@ class FacultyCrud extends Component
     protected $rules = [
         'first_name' => 'required|string|max:50',
         'last_name' => 'required|string|max:50',
-        'email' => 'required|email',
+        'email' => 'required|email|max:254',
         'department_id' => 'required|integer|exists:departments,department_id',
         'phone_number' => 'nullable|string|max:15|regex:/^\\+?[0-9]*$/',
         'profile_image' => 'nullable|image|max:2048', // Maximum size of 2MB
@@ -640,9 +640,12 @@ class FacultyCrud extends Component
                 $this->last_name = trim($row[1]);  
                 $this->email = trim($row[2]);      
                 $this->phone_number = trim($row[3]); 
-                $this->department_id = intval($row[4]); 
 
+                $department_code = trim($row[4]);
                 // Attempt to insert student using existing function
+                $department = \App\Models\Department::where('department_code', $department_code)->first();
+                $this->department_id = $department ? $department->department_id : null;
+
                 try {
                     $this->validateQueryStore();
                 } catch (\Exception $e) {
