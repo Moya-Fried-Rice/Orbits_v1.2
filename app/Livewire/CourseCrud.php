@@ -74,8 +74,8 @@ class CourseCrud extends Component
         'course_code' => 'required|string|max:50',
         'course_description' => 'nullable|string|max:500',
         'department_id' => 'required|exists:departments,department_id',
-        'lec' => 'required|integer|min:0',
-        'lab' => 'required|integer|min:0',
+        'lec' => 'required|integer|min:0|max:10',
+        'lab' => 'required|integer|min:0|max:10',
     ];
 
     // Search courses
@@ -875,7 +875,13 @@ class CourseCrud extends Component
                 $this->course_code = trim($row[0]); // Course Code
                 $this->course_name = trim($row[1]); // Course Name
                 $this->course_description = trim($row[2]); // Description
-                $this->department_id = intval($row[3]); // Department ID
+
+                $department_code = trim($row[3]);
+                // Attempt to insert student using existing function
+                $department = \App\Models\Department::where('department_code', $department_code)->first();
+                $this->department_id = $department ? $department->department_id : null;
+                // Attempt to insert program using existing function
+
                 $this->lec = intval($row[4]); // Lecture Hours
                 $this->lab = intval($row[5]); // Lab Hours
     

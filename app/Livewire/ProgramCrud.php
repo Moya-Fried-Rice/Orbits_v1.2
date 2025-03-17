@@ -635,8 +635,11 @@ class ProgramCrud extends Component
                 $this->program_name = trim($row[1]);
                 $this->abbreviation = trim($row[2]);
                 $this->program_description = trim($row[3]);
-                $this->department_id = intval($row[4]);
-
+                
+                $department_code = trim($row[4]);
+                // Attempt to insert student using existing function
+                $department = \App\Models\Department::where('department_code', $department_code)->first();
+                $this->department_id = $department ? $department->department_id : null;
                 // Attempt to insert program using existing function
                 try {
                     $this->validateQueryStore();
