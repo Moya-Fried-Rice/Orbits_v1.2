@@ -183,6 +183,6 @@
         </x-add-modal-data>
     </x-add-modal>
 
-    <x-import-modal label="student" fields="First Name, Last Name, Email, Phone Number, Program ID" />
+    <x-import-modal label="student" fields="First Name, Last Name, Email, Phone Number, Program Code" />
 
 </div>

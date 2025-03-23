@@ -186,6 +186,6 @@
 
 </x-add-modal>
 
-<x-import-modal label="faculty" fields="First Name, Last Name, Email, Phone Number, Department ID" />
+<x-import-modal label="faculty" fields="First Name, Last Name, Email, Phone Number, Department Code" />
 
 </div>

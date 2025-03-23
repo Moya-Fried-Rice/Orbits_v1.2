@@ -284,7 +284,7 @@
 
 </x-add-modal>
 
-<x-import-modal label="course" fields="Course Code, Course Name, Description, Department ID, Lec, Lab" />
+<x-import-modal label="course" fields="Course Code, Course Name, Description, Department Code, Lec, Lab" />
 
 
 </div>
