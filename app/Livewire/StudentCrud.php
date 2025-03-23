@@ -680,7 +680,16 @@ class StudentCrud extends Component
                 $this->last_name = trim($row[1]);  
                 $this->email = trim($row[2]);      
                 $this->phone_number = trim($row[3]); 
-                $this->program_id = intval($row[4]); 
+
+                $program_code = trim($row[4]);
+                // Fetch program_id using program_code
+                $program = \App\Models\Program::where('program_code', $program_code)->first();
+                $this->program_id = $program ? $program->program_id : null;
+
+                if (!$this->program_id) {
+                    session()->flash('error', "Invalid program code: $program_code at row " . ($rowIndex + 2));
+                    continue;
+                }
 
                 // Attempt to insert student using existing function
                 try {

@@ -462,22 +462,26 @@
         series: [{
             name: 'Completed Evaluations',
             data: [
-                {{ \App\Models\UserEvaluation::where('is_completed', true)->whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 1)->count() }},
-                {{ \App\Models\UserEvaluation::where('is_completed', true)->whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 2)->count() }},
-                {{ \App\Models\UserEvaluation::where('is_completed', true)->whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 3)->count() }},
-                {{ \App\Models\UserEvaluation::where('is_completed', true)->whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 4)->count() }},
-                {{ \App\Models\UserEvaluation::where('is_completed', true)->whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 5)->count() }},
-                {{ \App\Models\UserEvaluation::where('is_completed', true)->whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 6)->count() }},
-                {{ \App\Models\UserEvaluation::where('is_completed', true)->whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 7)->count() }},
-                {{ \App\Models\UserEvaluation::where('is_completed', true)->whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 8)->count() }},
-                {{ \App\Models\UserEvaluation::where('is_completed', true)->whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 9)->count() }},
-                {{ \App\Models\UserEvaluation::where('is_completed', true)->whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 10)->count() }},
-                {{ \App\Models\UserEvaluation::where('is_completed', true)->whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 11)->count() }},
-                {{ \App\Models\UserEvaluation::where('is_completed', true)->whereYear('evaluated_at', now()->year)->whereMonth('evaluated_at', 12)->count() }}
+                @php
+                    $daysInMonth = \Carbon\Carbon::now()->daysInMonth;
+                    $currentMonth = \Carbon\Carbon::now()->month;
+                    $currentYear = \Carbon\Carbon::now()->year;
+                @endphp
+                @for($day = 1; $day <= $daysInMonth; $day++)
+                    {{ \App\Models\UserEvaluation::where('is_completed', true)
+                        ->whereYear('evaluated_at', $currentYear)
+                        ->whereMonth('evaluated_at', $currentMonth)
+                        ->whereDay('evaluated_at', $day)
+                        ->count() }}{{ $day < $daysInMonth ? ',' : '' }}
+                @endfor
             ]
         }],
         xaxis: {
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            categories: [
+                @for($day = 1; $day <= $daysInMonth; $day++)
+                    '{{ $day }}'{{ $day < $daysInMonth ? ',' : '' }}
+                @endfor
+            ],
             labels: {
                 style: {
                     fontSize: '12px',
@@ -508,7 +512,7 @@
         },
         colors: [theme.primaryColor],
         title: {
-            text: currentYear + ' Monthly Completed Evaluations',
+            text: '{{ \Carbon\Carbon::now()->format("F Y") }} Daily Completed Evaluations',
             align: 'left',
             style: {
                 fontSize: '14px',
@@ -519,7 +523,7 @@
         tooltip: {
             theme: 'light',
             x: {
-                format: 'MMM yyyy'
+                format: 'dd MMM'
             }
         }
     };

@@ -171,6 +171,6 @@
 
 </x-add-modal>
 
-<x-import-modal label="program" fields="Program Code, Program Name, Abbreviation, Description, Department ID" />
+<x-import-modal label="program" fields="Program Code, Program Name, Abbreviation, Description, Department Code" />
 
 </div>
