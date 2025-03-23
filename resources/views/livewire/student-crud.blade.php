@@ -133,6 +133,7 @@
                 <input 
                     class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 hover:border-[#923534] transition-all duration-200" 
                     type="text" 
+                    maxlength="255"
                     id="first_name" 
                     wire:model="first_name">
             </x-add-modal-data>
@@ -142,6 +143,7 @@
                 <input 
                     class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 hover:border-[#923534] transition-all duration-200" 
                     type="text" 
+                    maxlength="255"
                     id="last_name" 
                     wire:model="last_name">
             </x-add-modal-data>
@@ -170,6 +172,7 @@
                 class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 hover:border-[#923534] transition-all duration-200" 
                 type="text" 
                 id="email" 
+                maxlength="255"
                 wire:model="email">
         </x-add-modal-data>
 
@@ -178,6 +181,7 @@
             <input 
                 class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 hover:border-[#923534] transition-all duration-200" 
                 type="text" 
+                maxlength="255"
                 id="phone_number" 
                 wire:model="phone_number">
         </x-add-modal-data>

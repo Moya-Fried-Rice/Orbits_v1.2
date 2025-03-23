@@ -3,6 +3,7 @@
     <input 
         wire:model.live="searchFaculty"
         type="text"
+        maxlength="255"
         class="px-5 py-2 pr-20 border border-[#DDD] rounded appearance-none w-full bg-[#F8F8F8] transition-all duration-200 group-hover:border-[#923534]"
         placeholder="Filter Faculty..."
         onfocus="this.parentElement.querySelector('.dropdown').style.display = 'block';"

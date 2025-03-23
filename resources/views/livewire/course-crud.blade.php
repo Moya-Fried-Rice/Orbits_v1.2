@@ -146,6 +146,7 @@
         <input 
             class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
             type="text" 
+            maxlength="255"
             id="course_name" 
             wire:model="course_name">
     </x-add-modal-data>
@@ -155,6 +156,7 @@
         <input 
             class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
             type="text" 
+            maxlength="255"
             id="course_code" 
             wire:model="course_code">
     </x-add-modal-data>
@@ -168,6 +170,7 @@
                 id="lec" 
                 min="1"
                 max="15"
+                maxlength="255"
                 wire:model.live="lec">
         </x-add-modal-data>
 
@@ -179,6 +182,7 @@
                 id="lab" 
                 min="1"
                 max="15"
+                maxlength="255"
                 wire:model.live="lab">
         </x-add-modal-data>
 
@@ -195,6 +199,7 @@
             class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
             id="course_description" 
             rows="4"
+            maxlength="2000"
             wire:model="course_description"></textarea>
     </x-add-modal-data>
 
@@ -223,6 +228,7 @@
         <input 
             class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
             type="text" 
+            maxlength="255"
             id="course_name" 
             wire:model="course_name">
     </x-add-modal-data>
@@ -232,6 +238,7 @@
         <input 
             class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
             type="text" 
+            maxlength="255"
             id="course_code" 
             wire:model="course_code">
     </x-add-modal-data>
@@ -272,6 +279,7 @@
             class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
             id="course_description" 
             rows="4"
+            maxlength="2000"
             wire:model="course_description"></textarea>
     </x-add-modal-data>
 

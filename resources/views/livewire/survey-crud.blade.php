@@ -60,6 +60,7 @@
             <input 
                 class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 type="text" 
+                maxlength="255"
                 id="survey_name" 
                 wire:model="survey_name">
         </x-add-modal-data>

@@ -131,6 +131,7 @@
         <input 
             class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
             type="text" 
+            maxlength="255"
             id="program_name" 
             wire:model="program_name">
     </x-add-modal-data>
@@ -141,6 +142,7 @@
             <input 
                 class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 type="text" 
+                maxlength="10"
                 id="program_code" 
                 wire:model="program_code">
         </x-add-modal-data>
@@ -150,6 +152,7 @@
             <input 
                 class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 type="text" 
+                maxlength="5"
                 id="abbreviation" 
                 wire:model="abbreviation">
         </x-add-modal-data>
@@ -160,6 +163,7 @@
         <textarea 
             class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
             id="program_description" 
+            maxlength="2000"
             rows="4"
             wire:model="program_description"></textarea>
     </x-add-modal-data>

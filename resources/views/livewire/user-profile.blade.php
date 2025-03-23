@@ -162,6 +162,7 @@
                                 <i class="fas fa-lock absolute left-3 text-gray-500 top-1/2 transform -translate-y-1/2 opacity-50"></i>
                                 <input
                                     type="password"
+                                    maxlength="128"
                                     id="password"
                                     wire:model="password"
                                     placeholder="Current Password"
@@ -178,6 +179,7 @@
                                 <i class="fas fa-lock absolute left-3 text-gray-500 top-1/2 transform -translate-y-1/2 opacity-50"></i>
                                 <input
                                     type="password"
+                                    maxlength="128"
                                     id="new-password"
                                     wire:model.live="newPassword"
                                     placeholder="New Password"
@@ -194,6 +196,7 @@
                                 <i class="fas fa-lock absolute left-3 text-gray-500 top-1/2 transform -translate-y-1/2 opacity-50"></i>
                                 <input
                                     type="password"
+                                    maxlength="128"
                                     id="confirm-password"
                                     wire:model="confirmPassword"
                                     placeholder="Confirm Password"
