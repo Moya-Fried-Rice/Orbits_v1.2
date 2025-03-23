@@ -227,6 +227,7 @@
             <input 
                 class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 type="text" 
+                maxlength="255"
                 id="survey_name" 
                 wire:model="survey_name">
         </x-add-modal-data>
@@ -245,6 +246,7 @@
             <input 
                 class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 type="text" 
+                maxlength="255"
                 id="description" 
                 wire:model="description">
         </x-add-modal-data>
@@ -257,6 +259,7 @@
                 class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 id="question_text" 
                 rows="3"
+                maxlength="2000"
                 wire:model="question_text"></textarea>
         </x-add-modal-data>
     @endif
@@ -272,6 +275,7 @@
             <input 
                 class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 type="text" 
+                maxlength="255"
                 id="description" 
                 wire:model="description">
         </x-add-modal-data>
@@ -284,6 +288,7 @@
                 class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 id="question_text" 
                 rows="3"
+                maxlength="2000"
                 wire:model="question_text"></textarea>
         </x-add-modal-data>
     @endif

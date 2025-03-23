@@ -2,6 +2,7 @@
     <input 
         class="px-5 py-2 pr-20 border border-[#DDD] rounded appearance-none w-full transition-all duration-200 group-hover:border-[#923534]" 
         wire:model.live="search" 
+        maxlength="255"
         placeholder="Search..." 
     />
     <div class="absolute right-5 top-1/2 transform -translate-y-1/2 hover:text-blue-500 transition-colors duration-200">

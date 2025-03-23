@@ -104,6 +104,7 @@
                 class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 type="email" 
                 id="email" 
+                maxlength="255"
                 wire:model="email">
         </x-add-modal-data>
 
@@ -127,6 +128,7 @@
                 class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 type="password" 
                 id="password" 
+                maxlength="255"
                 placeholder="New Password..."
                 wire:model="password">
         </x-add-modal-data>
