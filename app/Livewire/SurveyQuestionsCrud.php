@@ -203,7 +203,7 @@ class SurveyQuestionsCrud extends Component
         switch ($type) {
             case 'survey':
                 $survey = Survey::find($this->survey_id);
-                $surveyRoles = $survey->surveyRole->pluck('role_id')->toArray();
+                $surveyRoles = $survey->surveyRoles->pluck('role_id')->toArray();
                 $roleIds = array_map('intval', $this->role_id);
                 sort($surveyRoles);
                 sort($roleIds);
@@ -331,16 +331,16 @@ class SurveyQuestionsCrud extends Component
                 }
     
                 // Store old values to log changes
-                $this->oldValues = array_merge($survey->getOriginal(), ['role_id' => $survey->surveyRole->pluck('role_id')->toArray()]);
+                $this->oldValues = array_merge($survey->getOriginal(), ['role_id' => $survey->surveyRoles->pluck('role_id')->toArray()]);
     
                 // Update roles (SurveyRole table)
                 // 1. Remove any existing roles that are no longer selected
-                $survey->surveyRole()->whereNotIn('role_id', $this->role_id)->delete();
+                $survey->surveyRoles()->whereNotIn('role_id', $this->role_id)->delete();
     
                 // 2. Add any new roles that were selected but are not in the SurveyRole table
                 foreach ($this->role_id as $roleId) {
-                    if (!$survey->surveyRole->contains('role_id', $roleId)) {
-                        $survey->surveyRole()->create([
+                    if (!$survey->surveyRoles->contains('role_id', $roleId)) {
+                        $survey->surveyRoles()->create([
                             'role_id' => $roleId
                         ]);
                     }
