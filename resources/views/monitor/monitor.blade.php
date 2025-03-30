@@ -28,7 +28,7 @@
 </div>
 
 <!-- Statistics Cards Section -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-14 mx-1 sm:mx-2 md:mx-4">
     <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-300">
         <div class="p-6">
             <div class="flex items-center">
@@ -120,7 +120,7 @@
 </div>
 
 <!-- Department Progress -->
-<div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 mb-10">
+<div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 mb-14 mx-1 sm:mx-2 md:mx-4">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8">
         <h2 class="text-lg font-bold text-gray-800 mb-2 sm:mb-0 flex items-center font-silka">
             <div class="w-1 h-6 bg-[#923534] rounded-full mr-3"></div>
@@ -160,7 +160,7 @@
 </div>
 
 <!-- Monitoring Grid -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mx-1 sm:mx-2 md:mx-4">
     <!-- Recent Evaluations -->
     <div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8">
@@ -174,7 +174,7 @@
         </div>
         
         <!-- Evaluation Line Chart with fixed height to match faculty table -->
-        <div id="recentEvaluationsChart" class="w-full h-[300px] mb-6 flex justify-center items-center"></div>
+        <div id="recentEvaluationsChart" class="w-full h-[320px] mb-6 flex justify-center items-center"></div>
         
         <!-- Recent evaluations list with fixed height and scrolling -->
         <div class="h-[212px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
@@ -234,7 +234,7 @@
         </div>
         
         <!-- Faculty Table with fixed height and scrolling -->
-        <div class="overflow-x-auto h-[400px] overflow-y-auto w-full rounded-lg shadow-sm scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+        <div class="overflow-x-auto h-[450px] overflow-y-auto w-full rounded-lg shadow-sm scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
             <table class="min-w-full divide-y divide-gray-200" id="facultyTable">
                 <thead class="bg-gray-50 sticky top-0 z-10">
                     <tr>
@@ -327,6 +327,196 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- Program and Section Evaluation Progress Container - Side by Side -->
+<div class="mb-16 mt-16 px-2">
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <!-- Program Courses Progress -->
+        <div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 h-full">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8">
+                <h2 class="text-lg font-bold text-gray-800 mb-2 sm:mb-0 flex items-center font-silka">
+                    <div class="w-1 h-6 bg-[#923534] rounded-full mr-3"></div>
+                    Program Evaluation Progress
+                </h2>
+                <div class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-[#923534]/10 text-[#923534] font-TT">
+                    Completion Rate
+                </div>
+            </div>
+            
+            <!-- Program Search Bar -->
+            <div class="mb-6">
+                <div class="relative flex items-center">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
+                    </div>
+                    <input 
+                        type="text" 
+                        id="programSearch" 
+                        class="bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-lg block w-full pl-10 p-3 focus:ring-[#923534] focus:border-[#923534] transition-colors duration-200" 
+                        placeholder="Search program by name or code..."
+                        onkeyup="searchProgram()"
+                    >
+                </div>
+            </div>
+            
+            <!-- Program List (Scrollable) -->
+            <div class="space-y-4 max-h-[520px] overflow-y-auto pr-3 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100" id="programList">
+                @php
+                    // Pre-fetch programs to minimize database queries
+                    $allPrograms = \App\Models\Program::all();
+                @endphp
+                
+                @foreach($allPrograms as $program)
+                    @php
+                        try {
+                            // Use whereHas to optimize query and prevent errors
+                            $totalProgramEvals = \App\Models\UserEvaluation::whereHas('evaluation.courseSection.course.programCourses', function($query) use ($program) {
+                                $query->where('program_id', $program->program_id);
+                            })->count();
+                            
+                            $completedProgramEvals = \App\Models\UserEvaluation::whereHas('evaluation.courseSection.course.programCourses', function($query) use ($program) {
+                                $query->where('program_id', $program->program_id);
+                            })->where('is_completed', true)->count();
+                            
+                            $completionRate = $totalProgramEvals > 0 ? ($completedProgramEvals / $totalProgramEvals) * 100 : 0;
+                        } catch (\Exception $e) {
+                            $totalProgramEvals = 0;
+                            $completedProgramEvals = 0;
+                            $completionRate = 0;
+                        }
+                    @endphp
+                    <div class="program-item py-3 px-4 rounded-lg hover:bg-gray-50 transition-all duration-150 border border-gray-100" data-program-name="{{ $program->program_name }}" data-program-code="{{ $program->program_code }}">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-medium text-gray-800 truncate pr-2">{{ $program->program_name }}</span>
+                            <div class="flex items-center gap-2 flex-shrink-0">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                    {{ $program->program_code }}
+                                </span>
+                                <span class="text-sm font-medium text-gray-700">{{ number_format($completionRate, 1) }}%</span>
+                            </div>
+                        </div>
+                        <div class="w-full bg-gray-100 rounded-full h-2">
+                            <div class="bg-[#923534] h-2 rounded-full transition-all duration-500" style="width: {{ $completionRate }}%"></div>
+                        </div>
+                        <div class="mt-1 text-xs text-gray-500 text-right">
+                            {{ $completedProgramEvals }}/{{ $totalProgramEvals }} evaluations completed
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        <!-- Section Progress -->
+        <div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 h-full">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8">
+                <h2 class="text-lg font-bold text-gray-800 mb-2 sm:mb-0 flex items-center font-silka">
+                    <div class="w-1 h-6 bg-[#923534] rounded-full mr-3"></div>
+                    Section Evaluation Progress
+                </h2>
+                <div class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-[#923534]/10 text-[#923534] font-TT">
+                    All Sections
+                </div>
+            </div>
+            
+            <!-- Search Bar for Sections -->
+            <div class="mb-6">
+                <div class="relative flex items-center">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
+                    </div>
+                    <input 
+                        type="text" 
+                        id="sectionSearch" 
+                        class="bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-lg block w-full pl-10 p-3 focus:ring-[#923534] focus:border-[#923534] transition-colors duration-200" 
+                        placeholder="Search section or program..."
+                        onkeyup="searchSection()"
+                    >
+                </div>
+            </div>
+            
+            <!-- Section Table with fixed height and scrolling -->
+            <div class="overflow-x-auto max-h-[520px] overflow-y-auto w-full rounded-lg shadow-sm scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                <table class="min-w-full divide-y divide-gray-200" id="sectionTable">
+                    <thead class="bg-gray-50 sticky top-0 z-10">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Section Code
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Program
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Status
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Completion
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @php
+                            // Pre-fetch sections and eager load relationships to prevent N+1 issues
+                            $sections = \App\Models\Section::with(['program'])->get();
+                        @endphp
+                        
+                        @foreach($sections as $section)
+                            @php
+                                try {
+                                    // Use getSectionCodeAttribute for consistency
+                                    $sectionCode = $section->section_code;
+                                    
+                                    // Use more efficient query
+                                    $totalSectionEvals = \App\Models\UserEvaluation::whereHas('evaluation.courseSection', function($query) use ($section) {
+                                        $query->where('section_id', $section->section_id);
+                                    })->count();
+                                    
+                                    $completedSectionEvals = \App\Models\UserEvaluation::whereHas('evaluation.courseSection', function($query) use ($section) {
+                                        $query->where('section_id', $section->section_id);
+                                    })->where('is_completed', true)->count();
+                                    
+                                    $completionPercentage = $totalSectionEvals > 0 ? ($completedSectionEvals / $totalSectionEvals) * 100 : 0;
+                                    $status = $totalSectionEvals > 0 ? 
+                                        ($completedSectionEvals >= $totalSectionEvals ? 'Completed' : 'In Progress') : 
+                                        'Not Started';
+                                } catch (\Exception $e) {
+                                    $sectionCode = "Section-" . $section->section_id;
+                                    $totalSectionEvals = 0;
+                                    $completedSectionEvals = 0;
+                                    $completionPercentage = 0;
+                                    $status = 'Not Started';
+                                }
+                            @endphp
+                            <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-800">
+                                        {{ $sectionCode }}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#923534]/10 text-[#923534]">
+                                        {{ $section->program->abbreviation ?? 'N/A' }}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $status === 'Completed' ? 'bg-green-100 text-green-800' : ($status === 'In Progress' ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-800') }}">
+                                        {{ $status }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <div class="w-full bg-gray-200 rounded-full h-2.5 mb-1.5">
+                                        <div class="bg-[#923534] h-2.5 rounded-full transition-all duration-500" style="width: {{ $completionPercentage }}%"></div>
+                                    </div>
+                                    <span class="text-xs">{{ number_format($completionPercentage, 1) }}% ({{ $completedSectionEvals }}/{{ $totalSectionEvals }})</span>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -524,6 +714,48 @@
             }
         }
     }
+
+    // Section search function
+    function searchSection() {
+        const input = document.getElementById('sectionSearch');
+        const filter = input.value.toUpperCase();
+        const table = document.getElementById('sectionTable');
+        const rows = table.getElementsByTagName('tr');
+        
+        for (let i = 1; i < rows.length; i++) { // Start from 1 to skip header row
+            const sectionCell = rows[i].getElementsByTagName('td')[0];
+            const programCell = rows[i].getElementsByTagName('td')[1];
+            
+            if (sectionCell && programCell) {
+                const sectionValue = sectionCell.textContent || sectionCell.innerText;
+                const programValue = programCell.textContent || programCell.innerText;
+                
+                if (sectionValue.toUpperCase().indexOf(filter) > -1 || programValue.toUpperCase().indexOf(filter) > -1) {
+                    rows[i].style.display = '';
+                } else {
+                    rows[i].style.display = 'none';
+                }
+            }
+        }
+    }
+    
+    // Program search function
+    function searchProgram() {
+        const input = document.getElementById('programSearch');
+        const filter = input.value.toUpperCase();
+        const programList = document.getElementById('programList');
+        const programItems = programList.getElementsByClassName('program-item');
+        
+        for (let i = 0; i < programItems.length; i++) {
+            const programName = programItems[i].getAttribute('data-program-name');
+            const programCode = programItems[i].getAttribute('data-program-code');
+            
+            if (programName.toUpperCase().indexOf(filter) > -1 || programCode.toUpperCase().indexOf(filter) > -1) {
+                programItems[i].style.display = '';
+            } else {
+                programItems[i].style.display = 'none';
+            }
+        }
+    }
 </script>
 @endsection
-
