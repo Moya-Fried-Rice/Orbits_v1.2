@@ -10,7 +10,11 @@ class UserEvaluation extends Model
     protected $primaryKey = 'user_evaluation_id';
 
     public $timestamps = false;
-
+    
+    protected $casts = [
+        'evaluated_at' => 'datetime',
+    ];
+    
     protected $fillable = [
         'evaluation_id',
         'user_id',

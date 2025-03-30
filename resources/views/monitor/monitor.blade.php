@@ -179,7 +179,7 @@
         <!-- Recent evaluations list with fixed height and scrolling -->
         <div class="h-[212px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
             <div class="space-y-4">
-                @foreach(\App\Models\UserEvaluation::with(['user', 'evaluation.courseSection.course', 'evaluation.faculty'])
+                @foreach(\App\Models\UserEvaluation::with(['user', 'evaluation.courseSection.course', 'evaluation.courseSection.facultyCourses.faculty'])
                     ->where('is_completed', true)
                     ->whereDate('evaluated_at', '>=', now()->subDay())
                     ->latest('evaluated_at')
@@ -191,10 +191,10 @@
                                 <i class="fa-solid fa-user-graduate text-gray-500"></i>
                             </div>
                             <div>
-                                <p class="text-sm font-medium text-gray-800">{{ $eval->user->name ?? 'Student' }}</p>
+                                <p class="text-sm font-medium text-gray-800">{{ $eval->user->user_name ?? 'Student' }}</p>
                                 <p class="text-xs text-gray-500">
                                     {{ $eval->evaluation->courseSection->course->course_code ?? '' }} - 
-                                    {{ $eval->evaluation->faculty->name ?? '' }}
+                                    {{ $eval->evaluation->courseSection->facultyCourses->first()?->faculty->faculty_name ?? '' }}
                                 </p>
                             </div>
                         </div>
@@ -269,7 +269,9 @@
                                 $facultyCourses = \App\Models\FacultyCourse::where('faculty_id', $faculty->faculty_id)->pluck('course_section_id');
                                 
                                 // Count total evaluations for this faculty's courses
-                                $totalFacultyEvals = \App\Models\Evaluation::whereIn('course_section_id', $facultyCourses)->count();
+                                $totalFacultyEvals = \App\Models\UserEvaluation::join('evaluations', 'user_evaluations.evaluation_id', '=', 'evaluations.evaluation_id')
+                                    ->whereIn('evaluations.course_section_id', $facultyCourses)
+                                    ->count();
                                 
                                 // Count completed evaluations for this faculty's courses
                                 $completedFacultyEvals = \App\Models\UserEvaluation::join('evaluations', 'user_evaluations.evaluation_id', '=', 'evaluations.evaluation_id')

@@ -188,9 +188,7 @@
         </div>
         <div class="space-y-4">
             @php
-                $recentEvals = \App\Models\UserEvaluation::whereHas('evaluation.courseSection.course', function($query) use ($departmentId) {
-                    $query->where('department_id', $departmentId);
-                })
+                $recentEvals = \App\Models\UserEvaluation::where('user_id', auth()->id())
                 ->where('is_completed', true)
                 ->orderBy('evaluated_at', 'desc')
                 ->take(5)
