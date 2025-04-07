@@ -104,7 +104,7 @@ Route::get('/evaluation', function () {
     // Route to evaluate
     Route::get('/evaluate/{uuid}', function (string $uuid) {
         return view('evaluation.evaluate', ['uuid' => $uuid]);
-    })->middleware(['auth', 'check_role:1,2,3', 'verify_uuid:' . UserEvaluation::class])->name('evaluate');
+    })->middleware(['auth', 'check_role:1,2,3', 'evaluate_completed', 'verify_uuid:' . UserEvaluation::class])->name('evaluate');
 
 // Route to results page
 Route::get('/results', function () {
