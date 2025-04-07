@@ -120,7 +120,7 @@
                             {{ $course->courseSection->course->course_name }}
                         </p>
                         <p class="text-sm text-gray-500">
-                            Section: {{ $course->courseSection->section->section_name }}
+                            Section: {{ $course->courseSection->section->section_code }}
                         </p>
                     </div>
                 </div>
@@ -141,12 +141,7 @@
         </div>
         <div class="space-y-4">
             @php
-                $recentEvals = \App\Models\UserEvaluation::whereHas('evaluation', function($query) {
-                    $query->whereIn('course_section_id', 
-                        \App\Models\FacultyCourse::where('faculty_id', auth()->user()->faculty->faculty_id)
-                            ->pluck('course_section_id')
-                    );
-                })
+                $recentEvals = \App\Models\UserEvaluation::where('user_id', auth()->id())
                 ->where('is_completed', true)
                 ->orderBy('evaluated_at', 'desc')
                 ->take(5)
@@ -160,7 +155,7 @@
                     <div>
                         <p class="font-tt font-medium text-gray-900">
                             {{ $eval->evaluation->courseSection->course->course_code }} - 
-                            {{ $eval->evaluation->courseSection->section->section_name }}
+                            {{ $eval->evaluation->courseSection->section->section_code }}
                         </p>
                         <p class="text-sm text-gray-500">
                             Evaluation completed 
