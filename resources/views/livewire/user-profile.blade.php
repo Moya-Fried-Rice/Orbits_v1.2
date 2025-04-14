@@ -125,7 +125,7 @@
                 <div class="space-y-4 w-full">
                     <h3 class="text-lg md:text-xl font-medium font-TT font-semibold">Change Password</h3>
                     <p>
-                        To change your password, please fill in the fields below. Your password must contain at least 8 characters, it must also include at least one upper case letter, one lower case letter, one number, and one special character.
+                        to change your password, please fill in the fields below. Your password must contain at least 8 characters, it must also include at least one upper case letter, one lower case letter, one number, and one special character.
                     </p>
                     
                     
