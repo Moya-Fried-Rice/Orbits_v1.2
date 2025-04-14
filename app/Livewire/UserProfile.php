@@ -36,6 +36,9 @@ class UserProfile extends Component
     public $newProfilePicture;
     public $role;
     public $showSaveMessage = false;
+    public $showPasswordSection = false;
+    public $showPasswordRequirements = false;
+    public $showValidationChecklist = false;
 
     public function mount()
     {
@@ -118,6 +121,9 @@ public function updatePassword()
     //password change requirment
     public function updatedNewPassword($value)
     {
+        // Show validation checklist when there's input in the password field
+        $this->showValidationChecklist = !empty($value);
+        
         $this->passwordRequirements = [
             'length' => is_string($value) && strlen($value) >= 8,
             'uppercase' => is_string($value) && preg_match('/[A-Z]/', $value),
@@ -127,8 +133,10 @@ public function updatePassword()
         ];
     }
     
-
-
+    public function togglePasswordSection()
+    {
+        $this->showPasswordSection = !$this->showPasswordSection;
+    }
 
     public function render()
     {
