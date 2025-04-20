@@ -47,13 +47,13 @@ class FacultiesTableSeeder extends Seeder
             ]);
 
             // Step 3: Assign one course section to this faculty
-            if (!empty($courseSectionIds)) {
-                $courseSectionId = array_pop($courseSectionIds); // Take one course section ID
-                DB::table('faculty_courses')->insert([
-                    'faculty_id' => $facultyId, // Link to the created faculty
-                    'course_section_id' => $courseSectionId, // Link to the course section
-                ]);
-            }
+            // if (!empty($courseSectionIds)) {
+            //     $courseSectionId = array_pop($courseSectionIds); // Take one course section ID
+            //     DB::table('faculty_courses')->insert([
+            //         'faculty_id' => $facultyId, // Link to the created faculty
+            //         'course_section_id' => $courseSectionId, // Link to the course section
+            //     ]);
+            // }
         }
     }
 }

@@ -38,13 +38,13 @@ class StudentsTableSeeder extends Seeder
         ]);
 
         // Assign 8 random course sections to this student
-        $specificAssignedCourses = $faker->randomElements($courseSectionIds, 8);
-        foreach ($specificAssignedCourses as $courseSectionId) {
-            DB::table('student_courses')->insert([
-                'student_id' => $specificStudentId,
-                'course_section_id' => $courseSectionId,
-            ]);
-        }
+        // $specificAssignedCourses = $faker->randomElements($courseSectionIds, 8);
+        // foreach ($specificAssignedCourses as $courseSectionId) {
+        //     DB::table('student_courses')->insert([
+        //         'student_id' => $specificStudentId,
+        //         'course_section_id' => $courseSectionId,
+        //     ]);
+        // }
 
         // Insert fake data into the 'students' table
         foreach (range(2, 200) as $index) {  // Adjust the range based on how many students you want to generate
@@ -69,13 +69,13 @@ class StudentsTableSeeder extends Seeder
             ]);
 
             // Step 4: Assign 8 random course sections to the student
-            $assignedCourseSections = $faker->randomElements($courseSectionIds, 8);
-            foreach ($assignedCourseSections as $courseSectionId) {
-                DB::table('student_courses')->insert([
-                    'student_id' => $studentId,
-                    'course_section_id' => $courseSectionId,
-                ]);
-            }
+            // $assignedCourseSections = $faker->randomElements($courseSectionIds, 8);
+            // foreach ($assignedCourseSections as $courseSectionId) {
+            //     DB::table('student_courses')->insert([
+            //         'student_id' => $studentId,
+            //         'course_section_id' => $courseSectionId,
+            //     ]);
+            // }
         }
     }
 }
