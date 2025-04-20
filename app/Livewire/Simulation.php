@@ -20,6 +20,12 @@ use Exception;
 
 class Simulation extends Component
 {
+    public $faculty_total = 1;
+    public $faculty_section_count = 1;
+
+    public $student_total = 1;
+    public $student_section_count = 1;
+
     public $faculty_id;
     public $count = 1;
 
@@ -37,81 +43,78 @@ class Simulation extends Component
         $this->student_id = null;
     }
 
-    // Create random course sections for faculty with new faculty_id
     public function createRandomCourseSections()
     {
-        $this->isLoading = true; // Set loading state to true
+        $this->isLoading = true;
 
         try {
-            // Assign a random faculty_id each time the button is clicked
-            $this->faculty_id = Faculty::inRandomOrder()->first()->faculty_id ?? null;
+            if ($this->faculty_total < 1 || $this->faculty_section_count < 1) return;
 
-            if (!$this->faculty_id || $this->count < 1) return;
-        
-            $assignedSectionIds = FacultyCourse::where('faculty_id', $this->faculty_id)
-                ->pluck('course_section_id')
-                ->toArray();
-        
-            $courseSections = CourseSection::whereNotIn('course_section_id', $assignedSectionIds)
-                ->inRandomOrder()
-                ->take($this->count)
-                ->get();
-        
-            foreach ($courseSections as $section) {
-                FacultyCourse::create([
-                    'course_section_id' => $section->course_section_id,
-                    'faculty_id' => $this->faculty_id,
-                ]);
+            $faculties = Faculty::inRandomOrder()->take($this->faculty_total)->get();
+            $assigned = 0;
+
+            foreach ($faculties as $faculty) {
+                $assignedSectionIds = FacultyCourse::where('faculty_id', $faculty->faculty_id)
+                    ->pluck('course_section_id')
+                    ->toArray();
+
+                $availableSections = CourseSection::whereNotIn('course_section_id', $assignedSectionIds)
+                    ->inRandomOrder()
+                    ->take($this->faculty_section_count)
+                    ->get();
+
+                foreach ($availableSections as $section) {
+                    FacultyCourse::create([
+                        'course_section_id' => $section->course_section_id,
+                        'faculty_id' => $faculty->faculty_id,
+                    ]);
+                    $assigned++;
+                }
             }
-        
-            session()->flash('message', "{$courseSections->count()} unique course section(s) assigned to the faculty.");
-        } catch (QueryException $e) {
-            Log::error("Database query error while assigning course sections to faculty: " . $e->getMessage());
-            session()->flash('error', "A database error occurred while assigning course sections to the faculty.");
+
+            session()->flash('message', "{$assigned} course section(s) assigned across {$faculties->count()} faculty member(s).");
         } catch (Exception $e) {
-            Log::error("Unexpected error while assigning course sections to faculty: " . $e->getMessage());
-            session()->flash('error', "An unexpected error occurred while assigning course sections to the faculty.");
+            Log::error("Error in faculty simulation: " . $e->getMessage());
+            session()->flash('error', "An error occurred while simulating faculty course sections.");
         }
 
-        $this->isLoading = false; // Set loading state to false after completion
+        $this->isLoading = false;
     }
 
-    // Create random course sections for student with new student_id
     public function createRandomCourseSectionsForStudent()
     {
-        $this->isLoading = true; // Set loading state to true
+        $this->isLoading = true;
 
         try {
-            // Assign a random student_id each time the button is clicked
-            $this->student_id = Student::inRandomOrder()->first()->student_id ?? null;
-        
-            if (!$this->student_id || $this->student_count < 1) return;
-            
-            // Select only evaluations with survey_id = 1
-            $courseSectionIds = Evaluation::where('survey_id', 1)  // Add the where clause
-                ->select('course_section_id')
-                ->distinct()
-                ->inRandomOrder()
-                ->limit($this->student_count)
-                ->pluck('course_section_id');
-            
-            foreach ($courseSectionIds as $courseSectionId) {
-                StudentCourse::firstOrCreate([
-                    'course_section_id' => $courseSectionId,
-                    'student_id' => $this->student_id,
-                ]);
+            if ($this->student_total < 1 || $this->student_section_count < 1) return;
+
+            $students = Student::inRandomOrder()->take($this->student_total)->get();
+            $assigned = 0;
+
+            foreach ($students as $student) {
+                $courseSectionIds = Evaluation::where('survey_id', 1)
+                    ->select('course_section_id')
+                    ->distinct()
+                    ->inRandomOrder()
+                    ->limit($this->student_section_count)
+                    ->pluck('course_section_id');
+
+                foreach ($courseSectionIds as $courseSectionId) {
+                    StudentCourse::firstOrCreate([
+                        'course_section_id' => $courseSectionId,
+                        'student_id' => $student->student_id,
+                    ]);
+                    $assigned++;
+                }
             }
-        
-            session()->flash('message', "{$courseSectionIds->count()} course section(s) from evaluations with survey_id = 1 assigned to the student.");
-        } catch (QueryException $e) {
-            Log::error("Database query error while assigning course sections to student: " . $e->getMessage());
-            session()->flash('error', "A database error occurred while assigning course sections to the student.");
+
+            session()->flash('message', "{$assigned} course section(s) assigned across {$students->count()} student(s).");
         } catch (Exception $e) {
-            Log::error("Unexpected error while assigning course sections to student: " . $e->getMessage());
-            session()->flash('error', "An unexpected error occurred while assigning course sections to the student.");
+            Log::error("Error in student simulation: " . $e->getMessage());
+            session()->flash('error', "An error occurred while simulating student course sections.");
         }
 
-        $this->isLoading = false; // Set loading state to false after completion
+        $this->isLoading = false;
     }
 
     private function getRandomComment(): string
