@@ -3,10 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {{-- <link rel="stylesheet" href="https://orbitsv12-production.up.railway.app/assets/fonts/fontawesome-free-6.7.2-web/css/all.min.css"> --}}
-    {{-- <link rel="stylesheet" href="{{ asset('assets/fonts/fontawesome-free-6.7.2-web/css/all.min.css') }}"> --}}
-    {{-- @vite('resources/css/app.css')
-    @vite('resources/js/app.js') --}}
+    <link rel="stylesheet" href="{{ secure_asset('assets/fonts/fontawesome-free-6.7.2-web/css/all.min.css') }}">
+    @vite([
+        secure_asset('resources/css/app.css'),
+        secure_asset('resources/js/app.js')
+    ])
     @livewireStyles
 
     @yield('title')
