@@ -14,36 +14,36 @@ class DatabaseSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
-    {
-        // Add all your seeders here
-        $this->call([
-            RolesTableSeeder::class,
-            AdminsTableSeeder::class,
-            DepartmentsTableSeeder::class,
-            CoursesTableSeeder::class,
-            ProgramsTableSeeder::class,
-            SectionsTableSeeder::class,
-            CourseSectionsTableSeeder::class,
-            FacultiesTableSeeder::class,
-            ProgramChairsTableSeeder::class,
-            ProgramCoursesTableSeeder::class,
-            SurveysTableSeeder::class,
-            SurveyRoleTableSeeder::class,
-            QuestionCriteriaTableSeeder::class,
-            QuestionsTableSeeder::class,
-            StudentsTableSeeder::class,
-        ]);
-    }
-
     // public function run()
     // {
-
-    //     // Get the contents of your SQL file
-    //     $path = database_path('orbits_v1_2.sql');
-    //     $sql = File::get($path);
-        
-    //     // Execute the SQL commands
-    //     DB::unprepared($sql);
+    //     // Add all your seeders here
+    //     $this->call([
+    //         RolesTableSeeder::class,
+    //         AdminsTableSeeder::class,
+    //         DepartmentsTableSeeder::class,
+    //         CoursesTableSeeder::class,
+    //         ProgramsTableSeeder::class,
+    //         SectionsTableSeeder::class,
+    //         CourseSectionsTableSeeder::class,
+    //         FacultiesTableSeeder::class,
+    //         ProgramChairsTableSeeder::class,
+    //         ProgramCoursesTableSeeder::class,
+    //         SurveysTableSeeder::class,
+    //         SurveyRoleTableSeeder::class,
+    //         QuestionCriteriaTableSeeder::class,
+    //         QuestionsTableSeeder::class,
+    //         StudentsTableSeeder::class,
+    //     ]);
     // }
+
+    public function run()
+    {
+
+        // Get the contents of your SQL file
+        $path = database_path('orbits_v1_2.sql');
+        $sql = File::get($path);
+        
+        // Execute the SQL commands
+        DB::unprepared($sql);
+    }
 }
