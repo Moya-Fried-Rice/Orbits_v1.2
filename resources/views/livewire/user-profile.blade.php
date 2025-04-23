@@ -1,4 +1,3 @@
-
 <div class="bg-white">
 
     {{-- Save Message --}}
@@ -56,10 +55,10 @@
     @endif
 
     {{-- mx-auto to center --}}
-    <div class="max-w-7xl space-y-6 md:space-y-8 xl:w-3/5 p-3 md:p-8">
+    <div class="max-w-7xl mx-auto space-y-6 md:space-y-8 w-full p-3 md:p-8">
         
         {{-- Profile Content --}}
-        <div class="gap-6 md:gap-12 grid md:grid-cols-[300px_1fr] ">
+        <div class="gap-6 md:gap-12 grid md:grid-cols-[minmax(250px,300px)_1fr]">
             {{-- Left Column - Profile Picture --}}
             <div class="space-y-4 md:space-y-6 flex flex-col items-center text-center p-5">
                 <div class="relative w-40 h-40 md:w-60 md:h-60 md:mx-0 group flex items-center justify-center ">
@@ -106,55 +105,31 @@
             
 
             {{-- Right Column - Non-Editable Fields --}}
-            <div class="space-y-6 md:space-y-8">
-                <div class="grid gap-4 md:gap-6 sm:grid-cols-2">
-                    <div class="space-y-2">
+            <div class="space-y-6 md:space-y-8 w-full">
+                <div class="grid gap-4 md:gap-6 sm:grid-cols-2 w-full">
+                    <div class="space-y-2 w-full">
                         <label class="block text-base md:text-lg font-medium text-gray-700 font-TT">Name</label>
-                        <div class="w-full px-3 md:px-4 py-2 md:py-3 rounded-md bg-[#F8F8F8] text-base md:text-lg font-TT">
+                        <div class="w-full px-3 md:px-4 py-2 md:py-3 rounded-md bg-[#F8F8F8] text-base md:text-lg font-TT overflow-hidden text-ellipsis">
                             {{ $name }}
                         </div>
                     </div>
-                    <div class="space-y-2">
+                    <div class="space-y-2 w-full">
                         <label class="block text-base md:text-lg font-medium text-gray-700 font-TT">Email</label>
-                        <div class="w-full px-3 md:px-4 py-2 md:py-3 rounded-md bg-[#F8F8F8] text-base md:text-lg font-TT">
+                        <div class="w-full px-3 md:px-4 py-2 md:py-3 rounded-md bg-[#F8F8F8] text-base md:text-lg font-TT overflow-hidden text-ellipsis">
                             {{ $email }}
                         </div>
                     </div>
                 </div>
 
                 {{-- Password Change Section --}}
-                <div class="space-y-4">
-                    <h3 class="text-lg md:text-xl font-medium font-TT font-semibold">Password must contain</h3>
-                    <!-- Password Validation Checklist -->
-                    <div class="space-y-1 mt-2 text-sm">
-                        <p>
-                            <span class="{{ $passwordRequirements['length'] ? 'text-green-500' : 'text-red-500' }}">
-                                {{ $passwordRequirements['length'] ? '✓' : '✕' }} At least 8 characters.
-                            </span>
-                        </p>
-                        <p>
-                            <span class="{{ $passwordRequirements['uppercase'] ? 'text-green-500' : 'text-red-500' }}">
-                                {{ $passwordRequirements['uppercase'] ? '✓' : '✕' }} At least one upper case letter.
-                            </span>
-                        </p>
-                        <p>
-                            <span class="{{ $passwordRequirements['lowercase'] ? 'text-green-500' : 'text-red-500' }}">
-                                {{ $passwordRequirements['lowercase'] ? '✓' : '✕' }} At least one lower case letter.
-                            </span>
-                        </p>
-                        <p>
-                            <span class="{{ $passwordRequirements['number'] ? 'text-green-500' : 'text-red-500' }}">
-                                {{ $passwordRequirements['number'] ? '✓' : '✕' }} At least one number.
-                            </span>
-                        </p>
-                        <p>
-                            <span class="{{ $passwordRequirements['special'] ? 'text-green-500' : 'text-red-500' }}">
-                                {{ $passwordRequirements['special'] ? '✓' : '✕' }} At least one special character.
-                            </span>
-                        </p>
-                    </div>
+                <div class="space-y-4 w-full">
+                    <h3 class="text-lg md:text-xl font-medium font-TT font-semibold">Change Password</h3>
+                    <p>
+                        to change your password, please fill in the fields below. Your password must contain at least 8 characters, it must also include at least one upper case letter, one lower case letter, one number, and one special character.
+                    </p>
                     
-                    <div class="flex flex-col gap-3 justify">
+                    
+                    <div class="flex flex-col gap-3 justify w-full max-w-xl">
                         <!-- Current Password -->
                         <div class="space-y-2">
                             <label for="password" class="block text-base md:text-lg font-medium text-gray-700 font-TT">Current Password</label>
@@ -205,9 +180,37 @@
                             </div>
                             @error('confirmPassword') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                         </div>
-
-
-                        <div >
+                {{-- Password Validation Checklist (conditionally displayed) --}}
+                @if($showValidationChecklist)
+                <div class="space-y-1 mt-2 text-sm">
+                    <p>
+                        <span class="{{ $passwordRequirements['length'] ? 'text-green-500' : 'text-red-500' }}">
+                            {{ $passwordRequirements['length'] ? '✓' : '✕' }} At least 8 characters.
+                        </span>
+                    </p>
+                    <p>
+                        <span class="{{ $passwordRequirements['uppercase'] ? 'text-green-500' : 'text-red-500' }}">
+                            {{ $passwordRequirements['uppercase'] ? '✓' : '✕' }} At least one upper case letter.
+                        </span>
+                    </p>
+                    <p>
+                        <span class="{{ $passwordRequirements['lowercase'] ? 'text-green-500' : 'text-red-500' }}">
+                            {{ $passwordRequirements['lowercase'] ? '✓' : '✕' }} At least one lower case letter.
+                        </span>
+                    </p>
+                    <p>
+                        <span class="{{ $passwordRequirements['number'] ? 'text-green-500' : 'text-red-500' }}">
+                            {{ $passwordRequirements['number'] ? '✓' : '✕' }} At least one number.
+                        </span>
+                    </p>
+                    <p>
+                        <span class="{{ $passwordRequirements['special'] ? 'text-green-500' : 'text-red-500' }}">
+                            {{ $passwordRequirements['special'] ? '✓' : '✕' }} At least one special character.
+                        </span>
+                    </p>
+                </div>
+                @endif
+                        <div>
                             <button 
                                 wire:click="updatePassword"
                                 type="button"
