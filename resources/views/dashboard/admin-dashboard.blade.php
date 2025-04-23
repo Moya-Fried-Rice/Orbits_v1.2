@@ -386,16 +386,7 @@
                 colors: ['#fff']
             },
             background: {
-                enabled: true,
-                foreColor: '#fff',
-                padding: 4,
-                borderRadius: 2,
-                borderWidth: 0,
-                borderColor: '#fff',
-                opacity: 0.9,
-                dropShadow: {
-                    enabled: false
-                }
+                enabled: false
             }
         },
         series: [{
