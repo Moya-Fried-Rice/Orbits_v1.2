@@ -6,6 +6,8 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
 
+DB::table('migrations')->truncate();
+
 class DatabaseSeeder extends Seeder
 {
     
@@ -38,7 +40,6 @@ class DatabaseSeeder extends Seeder
 
     public function run()
     {
-
         // Get the contents of your SQL file
         $path = database_path('orbits_v1_2.sql');
         $sql = File::get($path);
