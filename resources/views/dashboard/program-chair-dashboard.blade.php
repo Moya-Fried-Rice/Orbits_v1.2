@@ -11,6 +11,10 @@
     <p class="text-gray-500 font-TT">Overview of department performance and faculty evaluations</p>
 </div>
 
+@php
+    $department = auth()->user()->programChair->department->department_code ?? 'Unknown Department';
+@endphp
+
 <!-- Statistics Cards Section -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
     <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-200">
@@ -126,7 +130,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
             <h2 class="text-lg font-bold text-gray-900 mb-2 sm:mb-0 flex items-center font-silka">
                 <div class="w-1 h-6 bg-[#923534] rounded-full mr-3"></div>
-                Department Progress
+                {{ $department }} - Evaluation Progress
             </h2>
             <div class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#923534]/10 text-[#923534] font-TT">
                 Overall Progress

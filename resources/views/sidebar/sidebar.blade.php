@@ -88,10 +88,10 @@
                                      :href="route('results')" 
                                      :icon="asset('assets/icons/result.svg')" 
                                      label="Results" />
-                    <x-dropdown-link :active="request()->routeIs('ranking')" 
+                    {{-- <x-dropdown-link :active="request()->routeIs('ranking')" 
                                      :href="route('ranking')" 
                                      :icon="asset('assets/icons/ranking.svg')" 
-                                     label="Faculty Ranking" />
+                                     label="Faculty Ranking" /> --}}
                     <x-dropdown-link :active="request()->routeIs('monitor')" 
                                      :href="route('monitor')" 
                                      :icon="asset('assets/icons/monitor.svg')" 
