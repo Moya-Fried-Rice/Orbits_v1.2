@@ -168,7 +168,7 @@
                 class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 type="number" 
                 id="lec" 
-                min="1"
+                min="0"
                 max="15"
                 maxlength="255"
                 wire:model.live="lec">
@@ -180,7 +180,7 @@
                 class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 type="number" 
                 id="lab" 
-                min="1"
+                min="0"
                 max="15"
                 maxlength="255"
                 wire:model.live="lab">
@@ -250,7 +250,7 @@
                 class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 type="number" 
                 id="lec" 
-                min="1"
+                min="0"
                 max="15"
                 wire:model.live="lec">
         </x-add-modal-data>
@@ -261,7 +261,7 @@
                 class="px-4 bg-[#F8F8F8] w-full p-2 border rounded border-[#DDD] focus:ring focus:ring-blue-300 border hover:border-[#923534] transition-all duration-200" 
                 type="number" 
                 id="lab" 
-                min="1"
+                min="0"
                 max="15"
                 wire:model.live="lab">
         </x-add-modal-data>
