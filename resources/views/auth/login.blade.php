@@ -55,7 +55,6 @@ style="background-size: cover; background-position: center; background-attachmen
                         class="h-4 w-4 text-[#923534]">
                         <label for="remember" class="ml-2 block text-sm">Remember me</label>
                     </div>
-                    <a href="#" class="text-sm text-[#923534] hover:underline">Forgot password?</a>
                 </div>
                 <button type="submit" 
                 class="w-full text-sm cursor-pointer transition duration-100 bg-[#923534] text-white px-4 py-2 rounded hover:bg-[#7B2323] focus:outline-none focus:ring-2 focus:ring-red-300">
