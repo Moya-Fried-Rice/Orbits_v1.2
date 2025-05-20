@@ -4,23 +4,123 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Faculty;
-use App\Models\Role;
+// use App\Models\Role; // Role model might not be directly needed here unless for other logic
+use Illuminate\Support\Facades\Http; // For HTTP requests
+use Illuminate\Support\Facades\Log;  // For logging
 
 class ResultsSummary extends Component
 {   
     public $uuid;
     public $evaluationData;
+    public $faculty; // To store loaded faculty data
+
+    // Properties for sentiment analysis results
+    public $positiveCommentCount = 0;
+    public $negativeCommentCount = 0;
+    public $positiveCommentsForView = [];
+    public $negativeCommentsForView = [];
+
 
     public function mount($uuid)
     {
         $this->uuid = $uuid;
-        $this->loadEvaluationData();
+        $this->faculty = $this->getFacultyByUuid($this->uuid); // Load faculty once
+        $this->loadEvaluationData(); // This will also trigger sentiment analysis
     }
     
+    public function processSentimentAnalysis()
+    {
+        if (empty($this->evaluationData['comments_data'])) {
+            $this->resetSentimentData(); // Reset if no comments
+            return;
+        }
+
+        $apiUrl = config('services.sentiment_api.url'); // Use config helper
+
+        if (!$apiUrl) {
+            Log::error('Sentiment API URL is not configured. Please set SENTIMENT_API_URL in .env and config/services.php.');
+            $this->resetSentimentData();
+            return;
+        }
+
+        $allComments = $this->evaluationData['comments_data'];
+        $tempPositiveComments = [];
+        $tempNegativeComments = [];
+
+        foreach ($allComments as $comment) {
+            if (empty(trim($comment))) {
+                continue; 
+            }
+
+            try {
+                $response = Http::timeout(15)->post($apiUrl, [ // Increased timeout slightly
+                    'text' => $comment,
+                ]);
+
+                if ($response->successful()) {
+                    $sentimentResult = $response->json();
+                    if (isset($sentimentResult['sentiment'])) {
+                        $sentiment = strtolower($sentimentResult['sentiment']);
+                        if ($sentiment === 'positive') {
+                            $tempPositiveComments[] = $comment;
+                        } elseif ($sentiment === 'negative') {
+                            $tempNegativeComments[] = $comment;
+                        } else { 
+                            // Neutral or other unclassified sentiments are currently ignored for counts
+                            Log::info('Neutral or unclassified sentiment for comment: ' . substr($comment, 0, 50) . '...');
+                        }
+                    } else {
+                        Log::warning('Sentiment API response did not contain a sentiment key.', ['comment_start' => substr($comment, 0, 50), 'response' => $response->body()]);
+                    }
+                } else {
+                    Log::error('Sentiment API request failed.', [
+                        'comment_start' => substr($comment, 0, 50),
+                        'status' => $response->status(),
+                        'body' => $response->body(),
+                    ]);
+                }
+            } catch (\Illuminate\Http\Client\ConnectionException $e) {
+                Log::critical('Could not connect to Sentiment API: ' . $apiUrl . ' - ' . $e->getMessage());
+                // Optionally, you could set a flag to show an error in the UI
+                // For now, we'll stop processing further comments for this request if API is down
+                $this->resetSentimentData(); // Reset to avoid showing partial/stale data
+                // You might want to add a user-facing error message here if desired
+                return; // Stop processing if API is down
+            }  catch (\Exception $e) {
+                Log::error('An unexpected error occurred during sentiment analysis.', ['comment_start' => substr($comment, 0, 50), 'error' => $e->getMessage()]);
+            }
+        }
+
+        $this->positiveCommentsForView = $tempPositiveComments;
+        $this->negativeCommentsForView = $tempNegativeComments;
+        $this->positiveCommentCount = count($tempPositiveComments);
+        $this->negativeCommentCount = count($tempNegativeComments);
+    }
+
+    private function resetSentimentData()
+    {
+        $this->positiveCommentCount = 0;
+        $this->negativeCommentCount = 0;
+        $this->positiveCommentsForView = [];
+        $this->negativeCommentsForView = [];
+    }
+
     public function render()
     {
-        $faculty = $this->getFacultyByUuid($this->uuid);
-        return view('livewire.results-summary', ['evaluationData' => $this->evaluationData], compact('faculty'));
+        // $faculty is already loaded in mount
+        // $evaluationData is already loaded in mount (and includes comments)
+        // Sentiment analysis results are now public properties of this component.
+        
+        return view('livewire.results-summary', [
+            'faculty' => $this->faculty, // Pass the loaded faculty
+            'evaluationData' => $this->evaluationData,
+            // The sentiment properties are automatically available in the Blade view
+            // 'positiveCommentCount' => $this->positiveCommentCount,
+            // 'negativeCommentCount' => $this->negativeCommentCount,
+            // 'positiveCommentsForView' => $this->positiveCommentsForView,
+            // 'negativeCommentsForView' => $this->negativeCommentsForView,
+            'overall' => $this->evaluationData['final_overall_avg'] ?? 0,
+        ]);
     }
 
     protected function getFacultyByUuid($uuid)
@@ -34,8 +134,16 @@ class ResultsSummary extends Component
 
     public function loadEvaluationData()
     {
-        $faculty = $this->getFacultyWithEvaluations();
+        $faculty = $this->getFacultyWithEvaluations(); // This uses $this->uuid
         if (!$faculty) {
+            $this->evaluationData = [ /* sensible defaults or empty state */
+                'data' => [],
+                'final_overall_avg' => '0.00',
+                'criteria_avg' => [],
+                'role_data' => [],
+                'comments_data' => [],
+            ];
+            $this->resetSentimentData();
             return;
         }
 
@@ -147,6 +255,9 @@ class ResultsSummary extends Component
             'role_data' => $roleData, // Store the role-wise data
             'comments_data' => $commentsData,
         ];
+        
+        // After loading all evaluation data including comments, process sentiments
+        $this->processSentimentAnalysis();
 
         // dd($this->evaluationData);
     }
