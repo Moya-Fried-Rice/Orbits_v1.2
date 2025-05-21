@@ -101,6 +101,232 @@
             </div>            
         </div>
         
+        {{-- Sentiment Analysis --}}
+        <div class="w-full bg-white rounded-xl shadow-md p-4 md:p-6 hover:shadow-lg transition-all duration-300" x-data="{ tab: 'positive' }">
+            <h2 class="text-lg font-bold text-gray-900 mb-3 md:mb-4 flex items-center font-silka">
+                <div class="w-1 h-6 bg-[#923534] rounded-full mr-2 md:mr-3"></div>
+                Sentiment Analysis
+            </h2>
+        
+            <div class="mb-4 font-TT">
+                {{-- Simple directly-rendered donut chart using Tailwind and HTML --}}
+                @php
+                    $totalComments = $positiveCommentCount + $negativeCommentCount;
+                    $positivePercentage = $totalComments > 0 ? ($positiveCommentCount / $totalComments) * 100 : 0;
+                    $negativePercentage = $totalComments > 0 ? ($negativeCommentCount / $totalComments) * 100 : 0;
+
+                    $radius = 16;
+                    $strokeWidth = 4.5; // Increased stroke width for a thicker donut
+                    $circumference = 2 * pi() * $radius;
+
+                    $positiveArc = ($positivePercentage / 100) * $circumference;
+                    $negativeArc = ($negativePercentage / 100) * $circumference;
+                @endphp
+
+                <div class="flex flex-col items-center justify-center space-y-3">
+                    {{-- SVG Donut Chart --}}
+                    <div class="relative w-40 h-40">
+                        <svg viewBox="0 0 36 36" class="w-full h-full">
+                            {{-- Background circle (track color from admin dashboard) --}}
+                            <circle cx="18" cy="18" r="{{ $radius }}" fill="none" stroke="#F3F4F6" stroke-width="{{ $strokeWidth }}"></circle>
+                            
+                            @if($totalComments > 0)
+                                {{-- Positive segment (green) --}}
+                                @if($positivePercentage > 0)
+                                    <circle cx="18" cy="18" r="{{ $radius }}" fill="none" stroke="#10B981" stroke-width="{{ $strokeWidth }}"
+                                            stroke-dasharray="{{ $positiveArc }} {{ $circumference }}"
+                                            stroke-dashoffset="0"
+                                            transform="rotate(-90 18 18)"></circle>
+                                @endif
+                            
+                                {{-- Negative segment (red) --}}
+                                @if($negativePercentage > 0)
+                                    <circle cx="18" cy="18" r="{{ $radius }}" fill="none" stroke="#923534" stroke-width="{{ $strokeWidth }}"
+                                            stroke-dasharray="{{ $negativeArc }} {{ $circumference }}"
+                                            stroke-dashoffset="{{ -$positiveArc }}" {{-- Offset by positive arc length --}}
+                                            transform="rotate(-90 18 18)"></circle>
+                                @endif
+                                
+                                {{-- Handle 100% cases to ensure full circle stroke without artifacts from dasharray --}}
+                                @if($positivePercentage >= 99.9 && $negativePercentage < 0.1)
+                                    <circle cx="18" cy="18" r="{{ $radius }}" fill="none" stroke="#10B981" stroke-width="{{ $strokeWidth }}"></circle>
+                                @elseif($negativePercentage >= 99.9 && $positivePercentage < 0.1)
+                                    <circle cx="18" cy="18" r="{{ $radius }}" fill="none" stroke="#923534" stroke-width="{{ $strokeWidth }}"></circle>
+                                @endif
+                            @endif
+                            
+                            {{-- Center text (Label above, Value below - similar to admin dashboard) --}}
+                            <text x="18" y="16.5" text-anchor="middle" fill="#6B7280" font-size="3.5">Total</text>
+                            <text x="18" y="22.5" text-anchor="middle" fill="#374151" font-size="7" font-weight="bold">{{ $totalComments }}</text>
+                        </svg>
+                    </div>
+                    
+                    {{-- Legend --}}
+                    <div class="flex space-x-8">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                            <span class="text-sm">Positive: {{ $positiveCommentCount }} ({{ round($positivePercentage) }}%)</span>
+                        </div>
+                        <div class="w-8"> </div> 
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-[#923534] rounded-full mr-2"></div>
+                            <span class="text-sm">Negative: {{ $negativeCommentCount }} ({{ round($negativePercentage) }}%)</span>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Fallback container for JS-based chart (hidden by default) --}}
+                <div id="sentiment-donut-chart" class="hidden mt-4"></div>
+            </div>
+        
+            <div class="mb-4 border-b border-gray-200">
+                <nav class="flex space-x-1 md:space-x-2" aria-label="Tabs">
+                    <button @click="tab = 'positive'"
+                            :class="{ 'border-b-2 border-[#923534] text-[#923534]': tab === 'positive', 'text-gray-500 hover:text-gray-700 hover:border-gray-300': tab !== 'positive' }"
+                            class="px-2 py-2 md:px-3 font-medium text-sm rounded-t-md focus:outline-none font-silka whitespace-nowrap">
+                        Positive Comments
+                    </button>
+                    <button @click="tab = 'negative'"
+                            :class="{ 'border-b-2 border-[#923534] text-[#923534]': tab === 'negative', 'text-gray-500 hover:text-gray-700 hover:border-gray-300': tab !== 'negative' }"
+                            class="px-2 py-2 md:px-3 font-medium text-sm rounded-t-md focus:outline-none font-silka whitespace-nowrap">
+                        Negative Comments
+                    </button>
+                </nav>
+            </div>
+        
+            <div class="rounded-lg p-2 md:p-5 h-[320px] md:h-[520px] overflow-y-auto bg-gray-50/30">
+                <div x-show="tab === 'positive'">
+                    @if (!empty($positiveCommentsForView))
+                        @foreach($positiveCommentsForView as $index => $comment)
+                            <div class="break-words p-3 md:p-4 mb-2 md:mb-3 rounded-lg font-TT {{ $index % 2 === 0 ? 'bg-gray-50 md:bg-white shadow-sm' : 'bg-white md:bg-gray-50' }}">
+                                <p>{{ $comment }}</p>
+                                @if(!empty($positiveCommentAnalysis[$index] ?? ''))
+                                    <p class="mt-2 text-sm text-green-600 italic border-t border-gray-200 pt-2">{{ $positiveCommentAnalysis[$index] }}</p>
+                                @endif
+                            </div>
+                        @endforeach
+                    @else
+                        <p class="text-gray-500 font-TT text-center py-4">No positive comments to display.</p>
+                    @endif
+                </div>
+                <div x-show="tab === 'negative'">
+                    @if (!empty($negativeCommentsForView))
+                        @foreach($negativeCommentsForView as $index => $comment)
+                            <div class="break-words p-3 md:p-4 mb-2 md:mb-3 rounded-lg font-TT {{ $index % 2 === 0 ? 'bg-gray-50 md:bg-white shadow-sm' : 'bg-white md:bg-gray-50' }}">
+                                <p>{{ $comment }}</p>
+                                @if(!empty($negativeCommentAnalysis[$index] ?? ''))
+                                    <p class="mt-2 text-sm text-red-600 italic border-t border-gray-200 pt-2">{{ $negativeCommentAnalysis[$index] }}</p>
+                                @endif
+                            </div>
+                        @endforeach
+                    @else
+                        <p class="text-gray-500 font-TT text-center py-4">No negative comments to display.</p>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        @push('chartData')
+            <script>
+                // Ensure the global chart data object exists
+                window.sentimentChartData = window.sentimentChartData || {};
+                // Assign data for the sentiment counts chart
+                window.sentimentChartData.counts = {
+                    positive: {{ $positiveCommentCount ?? 0 }},
+                    negative: {{ $negativeCommentCount ?? 0 }}
+                };
+            </script>
+        @endpush
+
+        @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Initialize the sentiment donut chart
+                if (typeof ApexCharts !== 'undefined') {
+                    const sentimentData = window.sentimentChartData.counts;
+                    
+                    // Check if we have data to display
+                    if (sentimentData && (sentimentData.positive > 0 || sentimentData.negative > 0)) {
+                        const options = {
+                            series: [sentimentData.positive, sentimentData.negative],
+                            chart: {
+                                type: 'donut',
+                                height: '100%',
+                            },
+                            labels: ['Positive', 'Negative'],
+                            colors: ['#10B981', '#EF4444'], // green and red
+                            legend: {
+                                position: 'bottom',
+                                fontFamily: 'Inter, sans-serif',
+                                itemMargin: {
+                                    horizontal: 12,
+                                    vertical: 5
+                                },
+                            },
+                            plotOptions: {
+                                pie: {
+                                    donut: {
+                                        size: '60%',
+                                        labels: {
+                                            show: true,
+                                            name: {
+                                                show: true,
+                                                fontSize: '14px',
+                                                fontFamily: 'Inter, sans-serif',
+                                                fontWeight: 500,
+                                            },
+                                            value: {
+                                                show: true,
+                                                fontSize: '16px',
+                                                fontFamily: 'Inter, sans-serif',
+                                                fontWeight: 600,
+                                                formatter: function(val) {
+                                                    return val;
+                                                }
+                                            },
+                                            total: {
+                                                show: true,
+                                                fontSize: '14px',
+                                                fontFamily: 'Inter, sans-serif',
+                                                label: 'Total',
+                                                formatter: function(w) {
+                                                    return w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            dataLabels: {
+                                enabled: false
+                            },
+                            responsive: [{
+                                breakpoint: 480,
+                                options: {
+                                    chart: {
+                                        height: 200
+                                    },
+                                    legend: {
+                                        position: 'bottom'
+                                    }
+                                }
+                            }]
+                        };
+
+                        const chart = new ApexCharts(document.querySelector("#sentiment-donut-chart"), options);
+                        chart.render();
+                    } else {
+                        // Display a message if there's no data
+                        document.querySelector("#sentiment-donut-chart").innerHTML = '<p class="text-center text-gray-500 pt-12">No sentiment data available.</p>';
+                    }
+                } else {
+                    console.warn('ApexCharts library is not loaded. The sentiment chart cannot be displayed.');
+                    document.querySelector("#sentiment-donut-chart").innerHTML = '<p class="text-center text-gray-500 pt-12">Chart cannot be displayed. ApexCharts library is missing.</p>';
+                }
+            });
+        </script>
+        @endpush
+
         {{-- Convert Data for Chart --}}
         @php
             $criteriaLabels = [];
