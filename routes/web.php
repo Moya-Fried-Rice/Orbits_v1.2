@@ -157,4 +157,11 @@ Route::prefix('api')->group(function () {
         ->name('api.faculty.evaluation-details');
 });
 
+// Route to sentiment analysis test page
+Route::get('/test-sentiment', function () {
+    return view('test-sentiment');
+});
+
+// Route to sentiment analysis debugging
+Route::get('/debug-sentiment/{uuid}', [App\Http\Controllers\SentimentDebugController::class, 'debug']);
 require __DIR__.'/auth.php';
