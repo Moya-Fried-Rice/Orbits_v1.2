@@ -250,6 +250,9 @@
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Completion
                         </th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Action
+                        </th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -322,6 +325,18 @@
                                     <div class="bg-[#923534] h-2.5 rounded-full transition-all duration-500" style="width: {{ $completionPercentage }}%"></div>
                                 </div>
                                 <span class="text-xs">{{ number_format($completionPercentage, 1) }}% ({{ $completedFacultyEvals }}/{{ $totalFacultyEvals }})</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right">
+                                <button 
+                                    type="button" 
+                                    class="text-xs font-medium text-[#923534] hover:text-[#7a2c2b] transition-colors duration-150 flex items-center"
+                                    onclick="showFacultyDetails({{ $faculty->faculty_id }}, '{{ $faculty->user ? addslashes($faculty->user->first_name.' '.$faculty->user->last_name) : 'Unknown' }}')"
+                                >
+                                    <span>Details</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
                             </td>
                         </tr>
                     @endforeach
@@ -520,6 +535,92 @@
         </div>
     </div>
 </div>
+
+<!-- Faculty Details Modal -->
+<div id="facultyDetailsModal" class="fixed inset-0 z-50 overflow-auto bg-gray-900 bg-opacity-50 flex items-center justify-center hidden">
+    <div class="relative bg-white rounded-lg max-w-4xl w-full mx-4 shadow-xl animate__animated animate__fadeInUp">
+        <div class="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center">
+                <div class="bg-[#923534]/10 p-2 rounded-lg mr-4">
+                    <i class="fa-solid fa-user-tie text-[#923534]"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800 font-silka" id="modalFacultyName">Faculty Name</h3>
+                    <p class="text-sm text-gray-500" id="modalDepartmentName">Department</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeModal()" class="text-gray-400 hover:text-gray-500 focus:outline-none">
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        
+        <div class="px-6 py-4">
+            <!-- Overall completion -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <h4 class="font-medium text-gray-700">Overall Completion</h4>
+                    <span class="text-sm font-bold text-[#923534]" id="modalOverallCompletion">0%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div id="modalOverallCompletionBar" class="bg-[#923534] h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <!-- Section details table -->
+            <div class="border rounded-lg overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Section</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Completion</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200" id="modalCourseSectionsBody">
+                        <!-- Content will be loaded dynamically -->
+                        <tr>
+                            <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">
+                                <div class="flex justify-center items-center">
+                                    <svg class="animate-spin h-5 w-5 text-[#923534] mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Loading sections...
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Summary stats -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-6">
+                <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                    <div class="text-xs uppercase text-gray-500 mb-1">Total Sections</div>
+                    <div class="text-xl font-bold text-gray-800" id="modalTotalSections">0</div>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                    <div class="text-xs uppercase text-gray-500 mb-1">Completed</div>
+                    <div class="text-xl font-bold text-green-600" id="modalCompletedSections">0</div>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                    <div class="text-xs uppercase text-gray-500 mb-1">In Progress</div>
+                    <div class="text-xl font-bold text-amber-600" id="modalInProgressSections">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="border-t border-gray-200 px-6 py-4 bg-gray-50 flex justify-end">
+            <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-medium rounded-lg transition-all duration-150">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('scripts')
@@ -755,6 +856,121 @@
             } else {
                 programItems[i].style.display = 'none';
             }
+        }
+    }
+    
+    // Modal functions
+    function showFacultyDetails(facultyId, facultyName) {
+        const modal = document.getElementById('facultyDetailsModal');
+        modal.classList.remove('hidden');
+        document.getElementById('modalFacultyName').textContent = facultyName;
+        
+        // Get data for this faculty
+        fetchFacultyDetails(facultyId);
+    }
+    
+    function closeModal() {
+        const modal = document.getElementById('facultyDetailsModal');
+        modal.classList.add('hidden');
+    }
+    
+    function fetchFacultyDetails(facultyId) {
+        // Show loading state
+        document.getElementById('modalCourseSectionsBody').innerHTML = `
+            <tr>
+                <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">
+                    <div class="flex justify-center items-center">
+                        <svg class="animate-spin h-5 w-5 text-[#923534] mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Loading sections...
+                    </div>
+                </td>
+            </tr>
+        `;
+        
+        // Make AJAX request to get faculty details
+        fetch(`/api/faculty/${facultyId}/evaluation-details`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                populateFacultyDetails(data);
+            })
+            .catch(error => {
+                document.getElementById('modalCourseSectionsBody').innerHTML = `
+                    <tr>
+                        <td colspan="4" class="px-6 py-4 text-center text-sm text-red-500">
+                            Error loading data. Please try again.
+                        </td>
+                    </tr>
+                `;
+                console.error('Error fetching faculty details:', error);
+            });
+    }
+    
+    function populateFacultyDetails(data) {
+        // Set department name
+        document.getElementById('modalDepartmentName').textContent = data.department || 'Department';
+        
+        // Set overall completion
+        const overallCompletion = data.overall_completion || 0;
+        document.getElementById('modalOverallCompletion').textContent = `${overallCompletion.toFixed(1)}%`;
+        document.getElementById('modalOverallCompletionBar').style.width = `${overallCompletion}%`;
+        
+        // Set summary stats
+        document.getElementById('modalTotalSections').textContent = data.total_sections || 0;
+        document.getElementById('modalCompletedSections').textContent = data.completed_sections || 0;
+        document.getElementById('modalInProgressSections').textContent = data.in_progress_sections || 0;
+        
+        // Populate sections table
+        if (data.sections && data.sections.length > 0) {
+            const tbody = document.getElementById('modalCourseSectionsBody');
+            tbody.innerHTML = '';
+            
+            data.sections.forEach(section => {
+                const statusClass = section.status === 'Completed' ? 
+                    'bg-green-100 text-green-800' : 
+                    (section.status === 'In Progress' ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-800');
+                
+                const row = `
+                    <tr class="hover:bg-gray-50 transition-colors duration-150">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-800">${section.course_code}</div>
+                            <div class="text-xs text-gray-500">${section.course_name}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#923534]/10 text-[#923534]">
+                                ${section.section_code}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                                ${section.status}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div class="w-full bg-gray-200 rounded-full h-2 mb-1">
+                                <div class="bg-[#923534] h-2 rounded-full" style="width: ${section.completion_rate}%"></div>
+                            </div>
+                            <span class="text-xs">${section.completion_rate.toFixed(1)}% (${section.completed_evaluations}/${section.total_evaluations})</span>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        } else {
+            document.getElementById('modalCourseSectionsBody').innerHTML = `
+                <tr>
+                    <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">
+                        No sections found for this faculty.
+                    </td>
+                </tr>
+            `;
         }
     }
 </script>

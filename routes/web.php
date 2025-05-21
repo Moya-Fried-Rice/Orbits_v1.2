@@ -149,6 +149,14 @@ Route::get('/profile', function () {
     return view('profile.profile');
 })->middleware(['auth', 'check_role:1,2,3,4'])->name('profile');
 
+// API routes
+Route::prefix('api')->group(function () {
+    // Faculty API routes
+    Route::get('/faculty/{id}/evaluation-details', [App\Http\Controllers\Api\FacultyController::class, 'getEvaluationDetails'])
+        ->middleware(['auth', 'check_role:4'])
+        ->name('api.faculty.evaluation-details');
+});
+
 // Route to sentiment analysis test page
 Route::get('/test-sentiment', function () {
     return view('test-sentiment');
@@ -156,5 +164,4 @@ Route::get('/test-sentiment', function () {
 
 // Route to sentiment analysis debugging
 Route::get('/debug-sentiment/{uuid}', [App\Http\Controllers\SentimentDebugController::class, 'debug']);
-
 require __DIR__.'/auth.php';
