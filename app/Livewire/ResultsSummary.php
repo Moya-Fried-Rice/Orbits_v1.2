@@ -19,6 +19,8 @@ class ResultsSummary extends Component
     public $negativeCommentCount = 0;
     public $positiveCommentsForView = [];
     public $negativeCommentsForView = [];
+    public $positiveCommentAnalysis = []; // To store analysis for each positive comment
+    public $negativeCommentAnalysis = []; // To store analysis for each negative comment
 
 
     public function mount($uuid)
@@ -46,6 +48,8 @@ class ResultsSummary extends Component
         $allComments = $this->evaluationData['comments_data'];
         $tempPositiveComments = [];
         $tempNegativeComments = [];
+        $tempPositiveAnalysis = []; // New array to store positive comment analysis
+        $tempNegativeAnalysis = []; // New array to store negative comment analysis
 
         foreach ($allComments as $comment) {
             if (empty(trim($comment))) {
@@ -61,10 +65,15 @@ class ResultsSummary extends Component
                     $sentimentResult = $response->json();
                     if (isset($sentimentResult['sentiment'])) {
                         $sentiment = strtolower($sentimentResult['sentiment']);
+                        // Get the analysis comment if available
+                        $analysis = isset($sentimentResult['comment']) ? $sentimentResult['comment'] : '';
+                        
                         if ($sentiment === 'positive') {
                             $tempPositiveComments[] = $comment;
+                            $tempPositiveAnalysis[] = $analysis;
                         } elseif ($sentiment === 'negative') {
                             $tempNegativeComments[] = $comment;
+                            $tempNegativeAnalysis[] = $analysis;
                         } else { 
                             // Neutral or other unclassified sentiments are currently ignored for counts
                             Log::info('Neutral or unclassified sentiment for comment: ' . substr($comment, 0, 50) . '...');
@@ -93,6 +102,8 @@ class ResultsSummary extends Component
 
         $this->positiveCommentsForView = $tempPositiveComments;
         $this->negativeCommentsForView = $tempNegativeComments;
+        $this->positiveCommentAnalysis = $tempPositiveAnalysis; // Store positive comment analysis
+        $this->negativeCommentAnalysis = $tempNegativeAnalysis; // Store negative comment analysis
         $this->positiveCommentCount = count($tempPositiveComments);
         $this->negativeCommentCount = count($tempNegativeComments);
     }
@@ -103,6 +114,8 @@ class ResultsSummary extends Component
         $this->negativeCommentCount = 0;
         $this->positiveCommentsForView = [];
         $this->negativeCommentsForView = [];
+        $this->positiveCommentAnalysis = []; // Clear positive comment analysis
+        $this->negativeCommentAnalysis = []; // Clear negative comment analysis
     }
 
     public function render()

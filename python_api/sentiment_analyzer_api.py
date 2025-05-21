@@ -2,29 +2,43 @@ from flask import Flask, request, jsonify
 import re
 import joblib 
 import os
+import logging
+import sys
+
+# Configure logging to display all messages to console
+logging.basicConfig(level=logging.DEBUG, 
+                   format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                   handlers=[logging.StreamHandler(sys.stdout)])
 
 app = Flask(__name__)
 
 # --- Load your actual model and vectorizer ---
 base_dir = os.path.dirname(os.path.abspath(__file__))
-model_path = os.path.join(base_dir, 'sentiment_model.pkl') #Change 'sentiment_model.pkl' if your filename is different
-vectorizer_path = os.path.join(base_dir, 'tfidf_vectorizer.pkl') #'vectorizer.pkl' if your filename is different
+model_path = os.path.join(base_dir, 'sentiment_model.pkl') 
+vectorizer_path = os.path.join(base_dir, 'tfidf_vectorizer.pkl') 
+
+print(f"Looking for model at: {model_path}")
+print(f"Looking for vectorizer at: {vectorizer_path}")
+print(f"Do files exist? Model: {os.path.exists(model_path)}, Vectorizer: {os.path.exists(vectorizer_path)}")
 
 try:
+    print("Attempting to load model...")
     model = joblib.load(model_path)
+    print("Model loaded successfully.")
+    print("Attempting to load vectorizer...")
     vectorizer = joblib.load(vectorizer_path)
+    print("Vectorizer loaded successfully.")
     app.logger.info("Sentiment model and vectorizer loaded successfully.")
-    app.logger.info(f"Model path: {model_path}")
-    app.logger.info(f"Vectorizer path: {vectorizer_path}")
-except FileNotFoundError:
+except FileNotFoundError as e:
+    print(f"FileNotFoundError: {str(e)}")
     app.logger.error(f"Error: One or both .pkl files not found. Searched at:")
     app.logger.error(f"Model: {model_path}")
     app.logger.error(f"Vectorizer: {vectorizer_path}")
-    app.logger.error("Please ensure the .pkl files are in the correct location and filenames are correct in the script.")
     model = None
     vectorizer = None
 except Exception as e:
-    app.logger.error(f"Error loading model/vectorizer: {e}")
+    print(f"Error loading model/vectorizer: {str(e)}")
+    app.logger.error(f"Error loading model/vectorizer: {str(e)}")
     model = None
     vectorizer = None
 # --- End Model Loading ---
@@ -80,33 +94,70 @@ def analyze():
         text_to_analyze = data['text']
         
         sentiment = "neutral" # Default sentiment
+        comment = ""  # Initialize comment field
 
         if model and vectorizer:
             try:
                 # Vectorize the input text
                 text_vectorized = vectorizer.transform([text_to_analyze])
+                # First check if the text contains obvious positive words
+                text_lower = text_to_analyze.lower()
+                obvious_positive = any(word in text_lower for word in ["good", "great", "excellent", "helpful", "knowledgeable"])
+                obvious_negative = any(word in text_lower for word in ["bad", "terrible", "poor", "unhelpful", "boring"])
+                
                 # Predict using the model
-                prediction = model.predict(text_vectorized)[0] # Assuming model.predict returns an array with one item
-
-                if prediction == 1: # Example: if your model outputs 1 for positive
+                prediction = model.predict(text_vectorized)[0]
+                app.logger.info(f"Raw model prediction: {prediction}")
+                
+                # Override prediction for short, simple phrases that should be clearly positive/negative
+                if obvious_positive and not obvious_negative and len(text_to_analyze.split()) < 10:
+                    prediction = 2  # Force positive for short, obviously positive comments
+                elif obvious_negative and not obvious_positive and len(text_to_analyze.split()) < 10:
+                    prediction = 0  # Force negative for short, obviously negative comments
+                
+                # Handle three-class model: usually 0=negative, 1=neutral, 2=positive
+                # Adjust these mappings based on your actual model's output
+                if prediction == 2:
                     sentiment = "positive"
-                elif prediction == 0: # Example: if your model outputs 0 for negative
+                    comment = "The feedback is positive and shows satisfaction with the teaching experience."
+                elif prediction == 0:
                     sentiment = "negative"
-                else: # Fallback or if your model has a different scheme
-                    sentiment = "neutral" 
+                    comment = "The feedback indicates areas of concern or dissatisfaction that may need addressing."
+                elif prediction == 1:
+                    sentiment = "neutral"
+                    comment = "The feedback is factual or balanced without strong positive or negative sentiment."
+                else:
                     app.logger.info(f"Model prediction was '{prediction}', mapped to '{sentiment}'. Adjust mapping if needed.")
+                    comment = "The sentiment couldn't be clearly determined."
 
             except Exception as e:
                 app.logger.error(f"Error during model prediction: {str(e)}")
                 app.logger.info("Falling back to placeholder sentiment due to prediction error.")
                 sentiment = predict_sentiment_placeholder(text_to_analyze) # Fallback to placeholder on error
+                if sentiment == "positive":
+                    comment = "Based on keyword analysis, the feedback appears positive."
+                elif sentiment == "negative":
+                    comment = "Based on keyword analysis, the feedback appears to contain concerns."
+                else:
+                    comment = "The feedback appears to be neutral or balanced."
         else:
             app.logger.warning("Model/vectorizer not loaded or error during loading. Using placeholder sentiment.")
             sentiment = predict_sentiment_placeholder(text_to_analyze)
+            if sentiment == "positive":
+                comment = "Based on keyword analysis, the feedback appears positive."
+            elif sentiment == "negative":
+                comment = "Based on keyword analysis, the feedback appears to contain concerns."
+            else:
+                comment = "The feedback appears to be neutral or balanced."
         
-        app.logger.info(f"Analyzed text: '{text_to_analyze[:50]}...' -> Sentiment: {sentiment}")
+        app.logger.info(f"Analyzed text: '{text_to_analyze[:50]}...' -> Sentiment: {sentiment}, Comment: {comment}")
 
-        return jsonify({"sentiment": sentiment})
+        # Return the original text along with sentiment and comment
+        return jsonify({
+            "text": text_to_analyze,
+            "sentiment": sentiment, 
+            "comment": comment
+        })
 
     except Exception as e:
         app.logger.error(f"Error in /analyze_sentiment endpoint: {str(e)}")
@@ -116,4 +167,5 @@ if __name__ == '__main__':
     # Make sure to run on a host and port accessible by your Laravel app.
     # '0.0.0.0' makes it accessible on your local network.
     # For XAMPP, Laravel usually runs on localhost (127.0.0.1).
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    # Changed port from 5002 to 5003 to avoid conflicts
+    app.run(host='127.0.0.1', port=5003, debug=True)

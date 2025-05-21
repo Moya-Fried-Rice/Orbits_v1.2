@@ -149,4 +149,12 @@ Route::get('/profile', function () {
     return view('profile.profile');
 })->middleware(['auth', 'check_role:1,2,3,4'])->name('profile');
 
+// Route to sentiment analysis test page
+Route::get('/test-sentiment', function () {
+    return view('test-sentiment');
+});
+
+// Route to sentiment analysis debugging
+Route::get('/debug-sentiment/{uuid}', [App\Http\Controllers\SentimentDebugController::class, 'debug']);
+
 require __DIR__.'/auth.php';
