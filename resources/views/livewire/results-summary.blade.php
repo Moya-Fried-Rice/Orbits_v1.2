@@ -198,7 +198,12 @@
                 <div x-show="tab === 'positive'">
                     @if (!empty($positiveCommentsForView))
                         @foreach($positiveCommentsForView as $index => $comment)
-                            <p class="break-words p-3 md:p-4 mb-2 md:mb-3 rounded-lg font-TT {{ $index % 2 === 0 ? 'bg-gray-50 md:bg-white shadow-sm' : 'bg-white md:bg-gray-50' }}">{{ $comment }}</p>
+                            <div class="break-words p-3 md:p-4 mb-2 md:mb-3 rounded-lg font-TT {{ $index % 2 === 0 ? 'bg-gray-50 md:bg-white shadow-sm' : 'bg-white md:bg-gray-50' }}">
+                                <p>{{ $comment }}</p>
+                                @if(!empty($positiveCommentAnalysis[$index] ?? ''))
+                                    <p class="mt-2 text-sm text-green-600 italic border-t border-gray-200 pt-2">{{ $positiveCommentAnalysis[$index] }}</p>
+                                @endif
+                            </div>
                         @endforeach
                     @else
                         <p class="text-gray-500 font-TT text-center py-4">No positive comments to display.</p>
@@ -207,7 +212,12 @@
                 <div x-show="tab === 'negative'">
                     @if (!empty($negativeCommentsForView))
                         @foreach($negativeCommentsForView as $index => $comment)
-                            <p class="break-words p-3 md:p-4 mb-2 md:mb-3 rounded-lg font-TT {{ $index % 2 === 0 ? 'bg-gray-50 md:bg-white shadow-sm' : 'bg-white md:bg-gray-50' }}">{{ $comment }}</p>
+                            <div class="break-words p-3 md:p-4 mb-2 md:mb-3 rounded-lg font-TT {{ $index % 2 === 0 ? 'bg-gray-50 md:bg-white shadow-sm' : 'bg-white md:bg-gray-50' }}">
+                                <p>{{ $comment }}</p>
+                                @if(!empty($negativeCommentAnalysis[$index] ?? ''))
+                                    <p class="mt-2 text-sm text-red-600 italic border-t border-gray-200 pt-2">{{ $negativeCommentAnalysis[$index] }}</p>
+                                @endif
+                            </div>
                         @endforeach
                     @else
                         <p class="text-gray-500 font-TT text-center py-4">No negative comments to display.</p>
