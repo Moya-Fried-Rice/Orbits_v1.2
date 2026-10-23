@@ -182,7 +182,7 @@ those directories.
 ### 1. Clone the repository
 
 ```bash
-git clone [<repository-url>](https://github.com/Moya-Fried-Rice/Orbits_v1.2.git)
+git clone https://github.com/Moya-Fried-Rice/Orbits_v1.2.git
 cd Orbits_v1.2
 ```
 
