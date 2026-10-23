@@ -25,8 +25,8 @@ class StudentsTableSeeder extends Seeder
         $specificUser = User::create([
             'first_name' => 'Cj',  
             'last_name' => 'Rojo',
-            'email' => '2023-2-03361@lpunetwork.edu.ph',
-            'password' => bcrypt('cjvhert2004'),
+            'email' => 'student.demo@orbits.local',
+            'password' => bcrypt('StudentDemo!2026'),
             'role_id' => 1,
             'phone_number' => '09123456789', // Example phone number
         ]);

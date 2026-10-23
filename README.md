@@ -135,7 +135,7 @@ The development seeders create the following fixed accounts:
 | Role | Email | Password |
 | --- | --- | --- |
 | Administrator | `appleadmin@gmail.com` | `admin123` |
-| Student | `student@gmail.com` | `student123` |
+| Student | `student.demo@orbits.local` | `StudentDemo!2026` |
 
 Generated faculty, program chair, and additional student accounts use Faker
 email addresses. Their seeded passwords are `faculty123`, `chair123`, and
