@@ -59,7 +59,7 @@ Install the following tools:
 ### 1. Clone the project
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Moya-Fried-Rice/Orbits_v1.2.git
 cd Orbits_v1.2
 ```
 
