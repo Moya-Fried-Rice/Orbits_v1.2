@@ -1,216 +1,85 @@
 # Orbits
 
-Orbits is a role-based faculty evaluation and academic information management
-system. It gives students a structured way to evaluate their instructors,
-while faculty members, program chairs, and administrators receive access to
-the academic data and evaluation results relevant to their responsibilities.
+Orbits is a web-based faculty evaluation and academic management system.
+Students can evaluate faculty members, while faculty, program chairs, and
+administrators can view the information and results relevant to their roles.
 
-The application combines a Laravel web application with Livewire-driven
-interfaces, a MySQL database, and an optional Flask sentiment-analysis
-service for classifying written feedback.
+The project is built with Laravel, Livewire, MySQL, and a small Flask service
+for sentiment analysis of written feedback.
 
-> **Documentation status:** Screenshot locations below are templates. Replace
-> each placeholder with the corresponding screenshot when the final images are
-> available.
+## Features
 
-## Contents
+- Role-based access for students, faculty, program chairs, and administrators
+- Separate dashboards for each user role
+- Faculty evaluation forms with ratings and comments
+- Survey and question management
+- Management of:
+  - Departments
+  - Courses
+  - Programs
+  - Sections
+  - Faculty
+  - Students
+  - User accounts
+- Search, filtering, sorting, and pagination
+- Evaluation results and faculty summaries
+- Sentiment analysis for written comments
+- Activity logs for important changes
+- Profile management and profile image uploads
 
-- [Highlights](#highlights)
-- [User roles](#user-roles)
-- [Core features](#core-features)
-- [Application flow](#application-flow)
-- [Technology stack](#technology-stack)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Running the application](#running-the-application)
-- [Sentiment-analysis service](#sentiment-analysis-service)
-- [Deployment](#deployment)
-- [Project structure](#project-structure)
-- [Screenshots](#screenshots)
-- [Testing and code quality](#testing-and-code-quality)
-- [Troubleshooting](#troubleshooting)
-- [Security notes](#security-notes)
-- [Contributing](#contributing)
-- [License](#license)
+## User Roles
 
-## Highlights
-
-- Role-aware dashboards and navigation for students, faculty members, program
-  chairs, and administrators.
-- Course and faculty evaluation workflows with rating questions and optional
-  written comments.
-- Administration of departments, courses, programs, sections, faculty,
-  students, accounts, surveys, and survey questions.
-- Search, filtering, sorting, pagination, create/update/delete workflows, and
-  import support across management screens.
-- Evaluation result summaries with charts and written-feedback sentiment
-  counts.
-- Activity logging for important data changes and system events.
-- UUID-based links with middleware checks for protected records.
-- Responsive Blade/Tailwind interfaces enhanced with Alpine.js and Livewire.
-
-## User roles
-
-The seeded roles are defined in `database/seeders/RolesTableSeeder.php`.
-
-| Role | Typical capabilities |
+| Role | Main use |
 | --- | --- |
-| **Student** | View assigned evaluations and submit ratings and comments. |
-| **Faculty** | View faculty-oriented evaluation pages and relevant feedback. |
-| **Program chair** | Review evaluation results and program-level summaries. |
-| **Administrator** | Manage users, academic records, surveys, evaluation settings, logs, and system data. |
+| Student | Complete assigned faculty evaluations |
+| Faculty | View relevant evaluation information |
+| Program chair | Review program and faculty results |
+| Administrator | Manage users, academic data, surveys, and reports |
 
-Access is enforced by the `check_role` middleware. A user sees a dashboard
-appropriate to their role, and protected routes reject unauthenticated or
-unauthorized requests.
+## Technology
 
-## Core features
-
-### Evaluation management
-
-- Configure evaluation periods and surveys.
-- Manage survey questions and question criteria.
-- Assign evaluations to eligible users and course sections.
-- Present rating questions and optional comments to evaluators.
-- Prevent completed evaluations from being submitted again.
-- Record response timestamps and completion state.
-
-### Academic data management
-
-Administrators can maintain the records used by the evaluation process:
-
-- Departments
-- Courses
-- Programs
-- Sections and section-course assignments
-- Faculty and faculty-course assignments
-- Students and student-course assignments
-- Program chairs
-- User accounts and profiles
-
-Many of these screens support live search, filters, pagination, soft-delete or
-restore workflows, and activity logging.
-
-### Results and reporting
-
-- Browse faculty evaluation results.
-- Filter results by faculty search terms and department.
-- Open a faculty summary using a protected UUID route.
-- View rating breakdowns and summary metrics.
-- Display positive and negative written-feedback counts in a donut chart.
-- Review monitoring and ranking pages available to authorized roles.
-
-### Sentiment analysis
-
-Written comments can be sent to the optional Flask service at
-`/analyze_sentiment`. The service returns the original text, a
-`positive`/`negative`/`neutral` label, and an explanatory comment. The Laravel
-results summary consumes this response and logs connection or prediction
-errors rather than silently treating an unavailable service as a successful
-analysis.
-
-The service loads `sentiment_model.pkl` and `tfidf_vectorizer.pkl` from
-`python_api/`. If the model cannot be loaded or prediction fails, the current
-implementation falls back to keyword-based classification.
-
-### Auditing
-
-The application uses Spatie Activitylog to record significant changes,
-including successful operations and relevant validation or system errors. The
-administrator logs page exposes these records for review.
-
-## Application flow
-
-1. The root URL redirects to the login page.
-2. An authenticated user is routed to a role-specific dashboard.
-3. The user receives only the evaluation, administration, or reporting pages
-   permitted by their role.
-4. Students open assigned evaluations, select ratings, optionally add a
-   comment, and submit once.
-5. Authorized reviewers inspect aggregated results and faculty summaries.
-6. Written comments may be classified by the sentiment service and visualized
-   in the results summary.
-
-## Technology stack
-
-### Backend
-
-- PHP 8.2+
-- Laravel 11
-- Livewire 3
-- Laravel Eloquent ORM
-- MySQL
-- Laravel database sessions, cache, and queues
-- Spatie Laravel Activitylog
-- PhpSpreadsheet, Laravel Excel, and League CSV for data operations
-
-### Frontend
-
-- Blade templates
-- Tailwind CSS
-- Alpine.js
-- Vite
-- Axios
-- ApexCharts
-- Font Awesome
-
-### Sentiment service
-
-- Python 3
-- Flask
-- Joblib
-- A serialized model and TF-IDF vectorizer
+- **Backend:** PHP 8.2+, Laravel 11, Livewire 3
+- **Database:** MySQL
+- **Frontend:** Blade, Tailwind CSS, Alpine.js, Vite
+- **Charts:** ApexCharts
+- **Sentiment service:** Python, Flask, Joblib, scikit-learn
 
 ## Requirements
 
-Install the following before starting development:
+Install the following tools:
 
-- PHP 8.2 or later with the extensions required by Laravel
+- PHP 8.2 or newer
 - Composer
 - Node.js and npm
-- MySQL 8 or a compatible MySQL server
-- Python 3 and `pip` (only required for sentiment analysis)
-- Git
-
-The repository includes `vendor/` and `node_modules/` in some working copies,
-but fresh installations should use Composer and npm rather than relying on
-those directories.
+- MySQL
+- Python 3 and pip (only needed for sentiment analysis)
 
 ## Installation
 
-### 1. Clone the repository
+### 1. Clone the project
 
 ```bash
 git clone <repository-url>
 cd Orbits_v1.2
 ```
 
-### 2. Install PHP dependencies
+### 2. Install dependencies
 
 ```bash
 composer install
-```
-
-### 3. Install frontend dependencies
-
-```bash
 npm install
 ```
 
-### 4. Create the environment file
+### 3. Configure the environment
 
-```bash
-copy .env.example .env
+Create the environment file:
+
+```powershell
+Copy-Item .env.example .env
 php artisan key:generate
 ```
 
-On macOS or Linux, use `cp .env.example .env` instead of `copy`.
-
-### 5. Create and configure the database
-
-Create a MySQL database named `orbits_v1.2` (or choose another name) and set
-the matching values in `.env`:
+Set the database values in `.env`:
 
 ```dotenv
 DB_CONNECTION=mysql
@@ -221,72 +90,50 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-### 6. Migrate and seed
+Create the database in MySQL before continuing.
 
-For a normal local setup:
+### 4. Run migrations and seed data
 
 ```bash
 php artisan migrate --seed
 ```
 
-To rebuild the database from scratch with the development seed data:
+To reset the local database and reload all seed data:
 
 ```bash
 php artisan migrate:fresh --seed
 ```
 
-The seeders create the role catalog and representative academic records. The
-development admin seeder currently creates:
+The development seeder creates an administrator account:
 
 ```text
 Email:    appleadmin@gmail.com
 Password: admin123
-Role:     administrator
 ```
 
-Change or remove this development credential before using the application in a
-shared or production environment.
+Change this password before using the application outside local development.
 
-### 7. Link public storage
-
-If profile images or other public uploads are used, create Laravel's storage
-link:
+### 5. Link storage
 
 ```bash
 php artisan storage:link
 ```
 
-## Configuration
+## Running the Application
 
-The main application settings live in `.env`. At minimum, configure:
-
-- `APP_NAME`, `APP_URL`, and `APP_ENV`
-- `APP_KEY` (generated with `php artisan key:generate`)
-- `DB_*` database settings
-- `SESSION_DRIVER`, `CACHE_STORE`, and `QUEUE_CONNECTION`
-- Mail settings if welcome messages or password emails are enabled
-
-The sentiment endpoint is configurable through `config/services.php`:
-
-```dotenv
-SENTIMENT_API_URL=http://127.0.0.1:5003/analyze_sentiment
-```
-
-Keep `.env` out of version control. Do not place passwords, API keys, or
-production credentials in the repository.
-
-## Running the application
-
-### Development
-
-Start the Laravel server, queue listener, and Vite development server
-together:
+The easiest way to start the Laravel server, queue listener, and Vite is:
 
 ```bash
 composer run dev
 ```
 
-Alternatively, run the processes separately:
+The application is usually available at:
+
+```text
+http://127.0.0.1:8000
+```
+
+To run the processes separately:
 
 ```bash
 php artisan serve
@@ -294,180 +141,115 @@ php artisan queue:listen --tries=1
 npm run dev
 ```
 
-Open <http://127.0.0.1:8000> (or the URL printed by Artisan).
-
-### Production asset build
+For a production frontend build:
 
 ```bash
 npm run build
 ```
 
-For a production deployment, also cache the application configuration,
-routes, and views after setting the production environment values:
+## Sentiment Analysis
 
-```bash
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+The optional Flask service analyzes evaluation comments as `positive`,
+`negative`, or `neutral`.
+
+The service expects these files in `python_api/`:
+
+```text
+sentiment_analyzer_api.py
+sentiment_model.pkl
+tfidf_vectorizer.pkl
 ```
-
-## Sentiment-analysis service
-
-The Laravel application expects a separate Flask process when sentiment
-classification is enabled.
 
 ### Start the service
 
-From the repository root:
-
-```bash
-cd python_api
-python -m venv .venv
-```
-
-Activate the environment:
+From the project root:
 
 ```powershell
-# Windows PowerShell
+cd python_api
+python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-```
-
-```bash
-# macOS/Linux
-source .venv/bin/activate
-```
-
-Install the Python packages used by the service:
-
-```bash
 pip install flask joblib scikit-learn
 python sentiment_analyzer_api.py
 ```
 
-The service listens on `127.0.0.1:5003` by default. Verify it independently:
+The service runs on:
+
+```text
+http://127.0.0.1:5003
+```
+
+Laravel uses the following setting by default:
+
+```dotenv
+SENTIMENT_API_URL=http://127.0.0.1:5003/analyze_sentiment
+```
+
+You can test the service with:
 
 ```bash
-curl -X POST http://127.0.0.1:5003/analyze_sentiment \
-  -H "Content-Type: application/json" \
-  -d "{\"text\":\"The instructor was helpful and knowledgeable.\"}"
+curl -X POST http://127.0.0.1:5003/analyze_sentiment ^
+  -H "Content-Type: application/json" ^
+  -d "{\"text\":\"The instructor was helpful.\"}"
 ```
 
-Expected response shape:
+The Flask service currently runs in debug mode for development. Disable debug
+mode and use a production WSGI server before deployment.
 
-```json
-{
-  "text": "The instructor was helpful and knowledgeable.",
-  "sentiment": "positive",
-  "comment": "..."
-}
-```
-
-The Flask service currently runs with `debug=True` and binds to localhost.
-Use a production WSGI server and disable debug mode before exposing it beyond
-local development.
-
-## Deployment
-
-`railway.toml` defines a Railway/Nixpacks deployment flow:
-
-1. Install Composer dependencies.
-2. Install npm dependencies and build frontend assets.
-3. Run migrations and seeders.
-4. Cache configuration, routes, and views.
-5. Start the Laravel server on the assigned `$PORT`.
-
-Before deploying:
-
-- Set `APP_ENV=production` and `APP_DEBUG=false`.
-- Configure a managed MySQL database and all `DB_*` variables.
-- Configure a secure `APP_KEY`.
-- Replace development credentials and seed data.
-- Configure mail, queue, cache, and storage services for the target platform.
-- Review the deployment command before using `migrate:fresh --seed`; it
-  destroys existing database data and is appropriate only for a disposable
-  environment.
-- Provide the sentiment service separately if production results require it.
-
-## Project structure
+## Project Structure
 
 ```text
 app/
-├── Http/Controllers/       HTTP controllers and API endpoints
-├── Http/Middleware/        Role, UUID, and evaluation guards
-├── Livewire/               Stateful CRUD, evaluation, and results components
-├── Mail/                   Application mailables
-└── Models/                 Eloquent models and relationships
+├── Http/Controllers/       Controllers and API endpoints
+├── Http/Middleware/        Authentication and role checks
+├── Livewire/               Interactive pages and CRUD components
+└── Models/                 Database models
 
-config/                     Application and service configuration
 database/
-├── migrations/             Database schema history
-└── seeders/                Development roles and academic data
-python_api/                 Flask sentiment service and serialized models
-public/                     Public assets, logos, fonts, and compiled files
-resources/
-├── css/                    Tailwind/CSS entry points
-├── js/                     JavaScript entry points
-├── sass/                   Sass variables and styles
-└── views/                  Blade layouts, pages, and Livewire views
-routes/web.php              Web routes and role-protected pages
-storage/                    Logs, cache, compiled views, and uploads
+├── migrations/             Database schema
+└── seeders/                Development seed data
+
+python_api/                 Sentiment-analysis service
+public/                     Public assets and logos
+resources/views/            Blade pages and Livewire views
+routes/web.php              Application routes
 ```
 
 ## Screenshots
 
-Add screenshots to a directory such as `docs/screenshots/`, then replace the
-template paths below. Use descriptive filenames and capture the application at
-the same viewport size where possible.
+The following are screenshot templates. Replace the paths with the screenshots
+you provide.
 
-### Landing and authentication
+### Login
 
-<!-- Screenshot template: replace with the supplied image. -->
-![Orbits login screen](docs/screenshots/login.png)
+![Login screen](docs/screenshots/login.png)
 
-_Suggested capture: login screen showing the Orbits branding and form._
+### Dashboard
 
-### Role-based dashboard
+![Dashboard](docs/screenshots/dashboard.png)
 
-<!-- Screenshot template: replace with the supplied image. -->
-![Role-based dashboard](docs/screenshots/dashboard.png)
+### Evaluation Form
 
-_Suggested capture: dashboard cards and navigation for one representative
-role._
-
-### Student evaluation
-
-<!-- Screenshot template: replace with the supplied image. -->
-![Student evaluation form](docs/screenshots/evaluation-form.png)
-
-_Suggested capture: rating questions, comment field, and submission action._
+![Evaluation form](docs/screenshots/evaluation-form.png)
 
 ### Administration
 
-<!-- Screenshot template: replace with the supplied image. -->
-![Academic data administration](docs/screenshots/administration.png)
+![Administration screen](docs/screenshots/administration.png)
 
-_Suggested capture: a CRUD table with search, filters, pagination, and actions._
+### Results Summary
 
-### Results and reporting
+![Results summary](docs/screenshots/results-summary.png)
 
-<!-- Screenshot template: replace with the supplied image. -->
-![Evaluation results summary](docs/screenshots/results-summary.png)
+### Optional Screenshots
 
-_Suggested capture: faculty results, rating summaries, and sentiment chart._
+```text
+docs/screenshots/faculty-profile.png
+docs/screenshots/survey-builder.png
+docs/screenshots/activity-logs.png
+```
 
-### Optional gallery
+## Testing
 
-<!-- Add additional supplied screenshots here. -->
-
-| Screen | Image | Description |
-| --- | --- | --- |
-| Faculty profile | `docs/screenshots/faculty-profile.png` | Faculty details and evaluation summary |
-| Survey builder | `docs/screenshots/survey-builder.png` | Survey and question management |
-| Activity logs | `docs/screenshots/activity-logs.png` | Recorded user and system actions |
-
-## Testing and code quality
-
-Run the Laravel test suite with:
+Run the Laravel tests:
 
 ```bash
 php artisan test
@@ -479,85 +261,54 @@ Format PHP files with Laravel Pint:
 vendor/bin/pint
 ```
 
-Build frontend assets to catch Vite and asset compilation errors:
+Build the frontend:
 
 ```bash
 npm run build
 ```
 
-For the sentiment service, verify the endpoint manually with the `curl`
-request shown in [Sentiment-analysis service](#sentiment-analysis-service).
-
 ## Troubleshooting
 
-### Database connection errors
+### Database errors
 
-Confirm that MySQL is running, the database exists, and the `DB_*` values in
-`.env` match the local server. Clear cached configuration after changing
-environment variables:
+Check that MySQL is running and that the database values in `.env` are
+correct. Clear cached configuration after changing `.env`:
 
 ```bash
 php artisan config:clear
 ```
 
-### Missing application key
+### Missing assets
 
-Run:
-
-```bash
-php artisan key:generate
-```
-
-### Assets are not loading
-
-Start Vite for development:
+Run the Vite development server:
 
 ```bash
 npm run dev
 ```
 
-Or build production assets:
+Or create a production build:
 
 ```bash
 npm run build
 ```
 
-### Sentiment results are unavailable
+### Sentiment analysis is unavailable
 
-Confirm that the Flask service is running on port `5003`, that the model files
-exist in `python_api/`, and that `SENTIMENT_API_URL` points to the correct
-endpoint. Laravel logs the connection and response errors in
-`storage/logs/laravel.log`.
+Check that:
 
-### Stale cached routes or configuration
+1. The Flask service is running on port `5003`.
+2. The model and vectorizer files exist in `python_api/`.
+3. `SENTIMENT_API_URL` points to the correct endpoint.
+4. Laravel logs in `storage/logs/laravel.log` for connection errors.
 
-```bash
-php artisan optimize:clear
-```
+## Security Notes
 
-## Security notes
-
-- Never commit `.env`, credentials, serialized private data, or production
-  logs.
-- Replace the seeded admin password immediately outside local development.
-- Keep `APP_DEBUG=false` in production.
-- Run the sentiment service behind a production WSGI server and restrict its
-  network exposure.
-- Review authorization middleware whenever adding a route or Livewire action.
-- Avoid using `migrate:fresh` against a database that contains data that must
-  be preserved.
-
-## Contributing
-
-1. Create a feature branch.
-2. Make focused changes following the existing Laravel, Livewire, and Blade
-   conventions.
-3. Run the relevant tests, Pint, and frontend build.
-4. Update this README when setup, features, routes, or screenshots change.
-5. Open a pull request describing the behavior change and validation performed.
+- Do not commit `.env` or production credentials.
+- Change the seeded administrator password.
+- Set `APP_DEBUG=false` in production.
+- Do not run `migrate:fresh` on a database containing important data.
+- Protect the sentiment service before exposing it publicly.
 
 ## License
 
-This project does not currently declare a project-specific license. Add the
-appropriate license and copyright holder information before distributing or
-deploying the application publicly.
+No project-specific license has been declared yet.
