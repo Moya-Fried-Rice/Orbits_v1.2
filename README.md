@@ -9,23 +9,56 @@ for sentiment analysis of written feedback.
 
 ## Features
 
+### Authentication and dashboards
+
 - Role-based access for students, faculty, program chairs, and administrators
 - Separate dashboards for each user role
-- Faculty evaluation forms with ratings and comments
+
+![Login screen](docs/screenshots/login.png)
+
+![Dashboard](docs/screenshots/dashboard.png)
+
+### Faculty evaluations
+
+- Evaluation forms with ratings and written comments
 - Survey and question management
-- Management of:
-  - Departments
-  - Courses
-  - Programs
-  - Sections
-  - Faculty
-  - Students
-  - User accounts
-- Search, filtering, sorting, and pagination
+- Students can complete assigned evaluations
+
+![Evaluation form](docs/screenshots/evaluation-form.png)
+
+### Academic management
+
+Administrators can manage:
+
+- Departments
+- Courses
+- Programs
+- Sections
+- Faculty
+- Students
+- User accounts
+
+The management pages include search, filtering, sorting, pagination, and
+common create, edit, and delete actions.
+
+![Administration screen](docs/screenshots/administration.png)
+
+### Results and reporting
+
 - Evaluation results and faculty summaries
 - Sentiment analysis for written comments
 - Activity logs for important changes
 - Profile management and profile image uploads
+
+![Results summary](docs/screenshots/results-summary.png)
+
+Additional screenshot templates:
+
+```text
+docs/screenshots/faculty-profile.png
+docs/screenshots/survey-builder.png
+docs/screenshots/activity-logs.png
+```
 
 ## User Roles
 
@@ -212,39 +245,6 @@ python_api/                 Sentiment-analysis service
 public/                     Public assets and logos
 resources/views/            Blade pages and Livewire views
 routes/web.php              Application routes
-```
-
-## Screenshots
-
-The following are screenshot templates. Replace the paths with the screenshots
-you provide.
-
-### Login
-
-![Login screen](docs/screenshots/login.png)
-
-### Dashboard
-
-![Dashboard](docs/screenshots/dashboard.png)
-
-### Evaluation Form
-
-![Evaluation form](docs/screenshots/evaluation-form.png)
-
-### Administration
-
-![Administration screen](docs/screenshots/administration.png)
-
-### Results Summary
-
-![Results summary](docs/screenshots/results-summary.png)
-
-### Optional Screenshots
-
-```text
-docs/screenshots/faculty-profile.png
-docs/screenshots/survey-builder.png
-docs/screenshots/activity-logs.png
 ```
 
 ## Testing
