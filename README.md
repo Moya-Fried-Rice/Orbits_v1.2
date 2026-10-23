@@ -7,14 +7,14 @@ administrators can view the information and results relevant to their roles.
 The project is built with Laravel, Livewire, MySQL, and a small Flask service
 for sentiment analysis of written feedback.
 
+![Orbits login screen](docs/screenshots/login.jpeg)
+
 ## Features
 
 ### Authentication and dashboards
 
 - Role-based access for students, faculty, program chairs, and administrators
 - Separate dashboards for each user role
-
-![Login screen](docs/screenshots/login.png)
 
 ![Dashboard](docs/screenshots/dashboard.png)
 
