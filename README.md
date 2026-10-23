@@ -128,14 +128,21 @@ To reset the local database and reload all seed data:
 php artisan migrate:fresh --seed
 ```
 
-The development seeder creates an administrator account:
+### Sample credentials
 
-```text
-Email:    appleadmin@gmail.com
-Password: admin123
-```
+The development seeders create the following fixed accounts:
 
-Change this password before using the application outside local development.
+| Role | Email | Password |
+| --- | --- | --- |
+| Administrator | `appleadmin@gmail.com` | `admin123` |
+| Student | `student@gmail.com` | `student123` |
+
+Generated faculty, program chair, and additional student accounts use Faker
+email addresses. Their seeded passwords are `faculty123`, `chair123`, and
+`student123`, respectively.
+
+These are development-only credentials. Change or remove them before using the
+application outside local development.
 
 ### 5. Link storage
 
