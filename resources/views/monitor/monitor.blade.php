@@ -297,8 +297,8 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
                                     <div class="flex-shrink-0 h-9 w-9 bg-gray-100 rounded-full flex items-center justify-center">
-                                        @if($faculty->user && $faculty->user->profile_image)
-                                            <img src="{{ asset('storage/' . $faculty->user->profile_image) }}" alt="Profile" class="h-9 w-9 rounded-full object-cover">
+                                        @if($faculty->user)
+                                            <img src="{{ $faculty->user->profile_image_url }}" alt="Profile" class="h-9 w-9 rounded-full object-cover">
                                         @else
                                             <i class="fa-solid fa-user text-gray-500"></i>
                                         @endif

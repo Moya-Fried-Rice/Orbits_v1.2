@@ -13,52 +13,43 @@ for sentiment analysis of written feedback.
 
 ### Authentication and dashboards
 
-- Role-based access for students, faculty, program chairs, and administrators
-- Separate dashboards for each user role
+Orbits provides role-based access for students, faculty members, program
+chairs, and administrators. Each role receives a dashboard and navigation
+options suited to its responsibilities.
 
-![Dashboard](docs/screenshots/dashboard.png)
+![Orbits dashboard](docs/screenshots/dashboard.jpeg)
 
 ### Faculty evaluations
 
-- Evaluation forms with ratings and written comments
-- Survey and question management
-- Students can complete assigned evaluations
+Students can complete assigned faculty evaluations by answering rating
+questions and adding written feedback. Administrators can manage surveys and
+their questions, while the evaluation workflow records completed submissions.
 
-![Evaluation form](docs/screenshots/evaluation-form.png)
+![Faculty evaluation form](docs/screenshots/evaluation.jpeg)
+
+![Faculty evaluation details](docs/screenshots/evaluation_2.jpeg)
 
 ### Academic management
 
-Administrators can manage:
+Administrators can manage departments, courses, programs, sections, faculty,
+students, and user accounts. These pages support search, filtering, sorting,
+pagination, and common create, edit, and delete actions.
 
-- Departments
-- Courses
-- Programs
-- Sections
-- Faculty
-- Students
-- User accounts
+![Academic data management](docs/screenshots/data_management.jpeg)
 
-The management pages include search, filtering, sorting, pagination, and
-common create, edit, and delete actions.
-
-![Administration screen](docs/screenshots/administration.png)
+![Academic data management details](docs/screenshots/data_management_2.jpeg)
 
 ### Results and reporting
 
-- Evaluation results and faculty summaries
-- Sentiment analysis for written comments
-- Activity logs for important changes
-- Profile management and profile image uploads
+Authorized users can view evaluation results, faculty summaries, progress
+metrics, and written-feedback sentiment analysis. The system also supports
+activity logs, profile management, and profile image uploads.
 
-![Results summary](docs/screenshots/results-summary.png)
+![Evaluation progress](docs/screenshots/progress.jpeg)
 
-Additional screenshot templates:
+![Evaluation progress details](docs/screenshots/progress_2.jpeg)
 
-```text
-docs/screenshots/faculty-profile.png
-docs/screenshots/survey-builder.png
-docs/screenshots/activity-logs.png
-```
+![Evaluation results](docs/screenshots/results.jpeg)
 
 ## User Roles
 

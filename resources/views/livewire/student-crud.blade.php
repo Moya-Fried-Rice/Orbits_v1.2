@@ -88,7 +88,7 @@
                 @foreach ($students as $student)
                 <tr class="font-normal border border-[#DDD] text-[#666]-100 hover:bg-[#F8F8F8] transition-colors duration-100">
                     <td class="py-2 whitespace-nowrap px-4">
-                        <img src="{{ asset('storage/' . $student->user->profile_image) }}" class="object-cover w-8 h-8 rounded-full" alt="Profile">                      
+                        <img src="{{ $student->user->profile_image_url }}" class="object-cover w-8 h-8 rounded-full" alt="Profile">
                     </td>                
                     <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $student->user->first_name }}</td>
                     <td class="py-2 whitespace-nowrap px-4 truncate max-w-xs">{{ $student->user->last_name }}</td>

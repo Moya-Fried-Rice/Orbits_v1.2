@@ -63,7 +63,7 @@
             <div class="space-y-4 md:space-y-6 flex flex-col items-center text-center p-5">
                 <div class="relative w-40 h-40 md:w-60 md:h-60 md:mx-0 group flex items-center justify-center ">
                     <img 
-                        src="{{ asset('storage/' . $user->profile_image) }}"
+                        src="{{ $user->profile_image_url }}"
                         alt="Profile picture"
                         class="rounded-full w-full h-full object-cover ring-1 ring-[#DDD] border-8 border-[#F8F8F8]"
                     />

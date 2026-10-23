@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -50,6 +51,15 @@ class User extends Authenticatable
     public function getUserNameAttribute()
     {
         return $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function getProfileImageUrlAttribute(): string
+    {
+        if ($this->profile_image && Storage::disk('public')->exists($this->profile_image)) {
+            return asset('storage/' . $this->profile_image);
+        }
+
+        return asset('storage/profile_images/default.jpg');
     }
 
     public function faculty()

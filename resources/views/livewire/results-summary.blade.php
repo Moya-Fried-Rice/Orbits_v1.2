@@ -15,7 +15,7 @@
         <div class="flex flex-col md:flex-row w-full p-4 md:p-6 gap-4 md:gap-8">
             {{-- Left Column: Profile Image --}}
             <div class="flex justify-center md:justify-start items-center">
-                <img src="{{ asset('storage/' . $faculty->user->profile_image) }}" alt="Profile Image" class="
+                <img src="{{ $faculty->user->profile_image_url }}" alt="Profile Image" class="
                 ring-2 md:ring-4 ring-[#923534]/20 object-cover rounded-full w-32 h-32 md:w-48 md:h-48 shadow-sm md:shadow-md hover:shadow-lg transition-all duration-300">
             </div>
             
@@ -200,9 +200,6 @@
                         @foreach($positiveCommentsForView as $index => $comment)
                             <div class="break-words p-3 md:p-4 mb-2 md:mb-3 rounded-lg font-TT {{ $index % 2 === 0 ? 'bg-gray-50 md:bg-white shadow-sm' : 'bg-white md:bg-gray-50' }}">
                                 <p>{{ $comment }}</p>
-                                @if(!empty($positiveCommentAnalysis[$index] ?? ''))
-                                    <p class="mt-2 text-sm text-green-600 italic border-t border-gray-200 pt-2">{{ $positiveCommentAnalysis[$index] }}</p>
-                                @endif
                             </div>
                         @endforeach
                     @else
@@ -214,9 +211,6 @@
                         @foreach($negativeCommentsForView as $index => $comment)
                             <div class="break-words p-3 md:p-4 mb-2 md:mb-3 rounded-lg font-TT {{ $index % 2 === 0 ? 'bg-gray-50 md:bg-white shadow-sm' : 'bg-white md:bg-gray-50' }}">
                                 <p>{{ $comment }}</p>
-                                @if(!empty($negativeCommentAnalysis[$index] ?? ''))
-                                    <p class="mt-2 text-sm text-red-600 italic border-t border-gray-200 pt-2">{{ $negativeCommentAnalysis[$index] }}</p>
-                                @endif
                             </div>
                         @endforeach
                     @else

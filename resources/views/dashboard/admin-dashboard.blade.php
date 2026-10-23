@@ -150,7 +150,7 @@
                 Evaluation Trends Over Time
             </h2>
             <div class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#923534]/10 text-[#923534] font-TT">
-                Monthly Progress
+                Weekly Progress
             </div>
         </div>
         <div id="lineChart" class="w-full h-80"></div>
@@ -258,14 +258,28 @@
     };
     new ApexCharts(document.querySelector("#progressChart"), optionsProgress).render();
 
-    // Monthly Growth Line Chart
-    var currentYear = new Date().getFullYear();
-    // Get hourly data for today
-    var hours = Array.from({length: 24}, (_, i) => {
-        let d = new Date();
-        d.setHours(i, 0, 0, 0);
-        return d;
-    });
+    @php
+        $completedEvaluations = \App\Models\UserEvaluation::where('is_completed', true)
+            ->whereNotNull('evaluated_at')
+            ->orderBy('evaluated_at')
+            ->get(['evaluated_at']);
+
+        $dailyEvaluationGrowth = $completedEvaluations
+            ->groupBy(fn ($evaluation) => $evaluation->evaluated_at->format('Y-m-d'))
+            ->map->count();
+
+        $weeklyEvaluationTrends = $completedEvaluations
+            ->groupBy(fn ($evaluation) => $evaluation->evaluated_at->copy()->startOfWeek()->format('Y-m-d'))
+            ->map->count();
+
+        $weeklyTrendCategories = $weeklyEvaluationTrends->keys()
+            ->map(fn ($week) => \Carbon\Carbon::parse($week)->format('M d'))
+            ->values();
+    @endphp
+
+    // Daily Evaluation Growth Chart
+    var dailyGrowthCategories = @json($dailyEvaluationGrowth->keys()->values());
+    var dailyGrowthData = @json($dailyEvaluationGrowth->values());
 
     var optionsLine2 = {
         ...theme,
@@ -290,26 +304,18 @@
         },
         series: [{
             name: 'Evaluations',
-            data: [
-                @for($i = 0; $i < 24; $i++)
-                    {{ \App\Models\UserEvaluation::whereDate('evaluated_at', now())
-                        ->whereRaw('HOUR(evaluated_at) = ?', [$i])
-                        ->count() }}{{ $i < 23 ? ',' : '' }}
-                @endfor
-            ]
+            data: dailyGrowthData
         }],
+        dataLabels: {
+            enabled: false
+        },
         xaxis: {
             type: 'category',
-            categories: hours.map(hour => hour.getHours() + ':00'),
+            categories: dailyGrowthCategories,
             labels: {
                 style: {
                     fontSize: '12px',
                     fontFamily: theme.fontFamily.body
-                },
-                formatter: function(val) {
-                    // Convert 24-hour format to 12-hour format
-                    let hour = parseInt(val);
-                    return (hour % 12 || 12) + (hour < 12 ? ' AM' : ' PM');
                 }
             }
         },
@@ -322,7 +328,7 @@
         },
         colors: [theme.primaryColor],
         title: {
-            text: 'Today\'s Hourly Evaluation Activity',
+            text: 'Completed Evaluations by Day',
             align: 'left',
             style: {
                 fontSize: '14px',
@@ -332,11 +338,9 @@
         },
         tooltip: {
             theme: 'light',
-            x: {
+            y: {
                 formatter: function(val) {
-                    // Convert 24-hour format to 12-hour format
-                    let hour = parseInt(val);
-                    return (hour % 12 || 12) + (hour < 12 ? ' AM' : ' PM');
+                    return val + ' evaluations';
                 }
             }
         }
@@ -428,7 +432,10 @@
     };
     new ApexCharts(document.querySelector("#barChart"), optionsBar).render();
 
-    // Evaluation Trends Line Chart - Current Year
+    // Evaluation Trends Line Chart
+    var trendCategories = @json($weeklyTrendCategories);
+    var trendData = @json($weeklyEvaluationTrends->values());
+
     var optionsLine = {
         ...theme,
         chart: { 
@@ -452,27 +459,10 @@
         },
         series: [{
             name: 'Completed Evaluations',
-            data: [
-                @php
-                    $daysInMonth = \Carbon\Carbon::now()->daysInMonth;
-                    $currentMonth = \Carbon\Carbon::now()->month;
-                    $currentYear = \Carbon\Carbon::now()->year;
-                @endphp
-                @for($day = 1; $day <= $daysInMonth; $day++)
-                    {{ \App\Models\UserEvaluation::where('is_completed', true)
-                        ->whereYear('evaluated_at', $currentYear)
-                        ->whereMonth('evaluated_at', $currentMonth)
-                        ->whereDay('evaluated_at', $day)
-                        ->count() }}{{ $day < $daysInMonth ? ',' : '' }}
-                @endfor
-            ]
+            data: trendData
         }],
         xaxis: {
-            categories: [
-                @for($day = 1; $day <= $daysInMonth; $day++)
-                    '{{ $day }}'{{ $day < $daysInMonth ? ',' : '' }}
-                @endfor
-            ],
+            categories: trendCategories,
             labels: {
                 style: {
                     fontSize: '12px',
@@ -503,7 +493,7 @@
         },
         colors: [theme.primaryColor],
         title: {
-            text: '{{ \Carbon\Carbon::now()->format("F Y") }} Daily Completed Evaluations',
+            text: 'Completed Evaluations by Week',
             align: 'left',
             style: {
                 fontSize: '14px',

@@ -50,14 +50,29 @@ class ResultsSummary extends Component
         $tempNegativeComments = [];
         $tempPositiveAnalysis = []; // New array to store positive comment analysis
         $tempNegativeAnalysis = []; // New array to store negative comment analysis
+        $apiAvailable = true;
 
         foreach ($allComments as $comment) {
             if (empty(trim($comment))) {
                 continue; 
             }
 
+            if (!$apiAvailable) {
+                [$sentiment, $analysis] = $this->fallbackSentimentAnalysis($comment);
+                $this->storeSentimentResult(
+                    $sentiment,
+                    $comment,
+                    $analysis,
+                    $tempPositiveComments,
+                    $tempNegativeComments,
+                    $tempPositiveAnalysis,
+                    $tempNegativeAnalysis
+                );
+                continue;
+            }
+
             try {
-                $response = Http::timeout(15)->post($apiUrl, [ // Increased timeout slightly
+                $response = Http::connectTimeout(1)->timeout(3)->post($apiUrl, [
                     'text' => $comment,
                 ]);
 
@@ -87,16 +102,49 @@ class ResultsSummary extends Component
                         'status' => $response->status(),
                         'body' => $response->body(),
                     ]);
+
+                    [$sentiment, $analysis] = $this->fallbackSentimentAnalysis($comment);
+                    $this->storeSentimentResult(
+                        $sentiment,
+                        $comment,
+                        $analysis,
+                        $tempPositiveComments,
+                        $tempNegativeComments,
+                        $tempPositiveAnalysis,
+                        $tempNegativeAnalysis
+                    );
                 }
             } catch (\Illuminate\Http\Client\ConnectionException $e) {
-                Log::critical('Could not connect to Sentiment API: ' . $apiUrl . ' - ' . $e->getMessage());
-                // Optionally, you could set a flag to show an error in the UI
-                // For now, we'll stop processing further comments for this request if API is down
-                $this->resetSentimentData(); // Reset to avoid showing partial/stale data
-                // You might want to add a user-facing error message here if desired
-                return; // Stop processing if API is down
-            }  catch (\Exception $e) {
+                Log::warning('Could not connect to Sentiment API; using local fallback analysis.', [
+                    'url' => $apiUrl,
+                    'comment_start' => substr($comment, 0, 50),
+                    'error' => $e->getMessage(),
+                ]);
+                $apiAvailable = false;
+
+                [$sentiment, $analysis] = $this->fallbackSentimentAnalysis($comment);
+                $this->storeSentimentResult(
+                    $sentiment,
+                    $comment,
+                    $analysis,
+                    $tempPositiveComments,
+                    $tempNegativeComments,
+                    $tempPositiveAnalysis,
+                    $tempNegativeAnalysis
+                );
+            } catch (\Exception $e) {
                 Log::error('An unexpected error occurred during sentiment analysis.', ['comment_start' => substr($comment, 0, 50), 'error' => $e->getMessage()]);
+
+                [$sentiment, $analysis] = $this->fallbackSentimentAnalysis($comment);
+                $this->storeSentimentResult(
+                    $sentiment,
+                    $comment,
+                    $analysis,
+                    $tempPositiveComments,
+                    $tempNegativeComments,
+                    $tempPositiveAnalysis,
+                    $tempNegativeAnalysis
+                );
             }
         }
 
@@ -106,6 +154,63 @@ class ResultsSummary extends Component
         $this->negativeCommentAnalysis = $tempNegativeAnalysis; // Store negative comment analysis
         $this->positiveCommentCount = count($tempPositiveComments);
         $this->negativeCommentCount = count($tempNegativeComments);
+
+        $this->positiveCommentsForView = array_values(array_unique($this->positiveCommentsForView));
+        $this->negativeCommentsForView = array_values(array_unique($this->negativeCommentsForView));
+    }
+
+    private function fallbackSentimentAnalysis(string $comment): array
+    {
+        $positiveWords = [
+            'good', 'great', 'excellent', 'happy', 'helpful', 'effective',
+            'knowledgeable', 'nice', 'awesome', 'fantastic', 'satisfied',
+            'impressed', 'best', 'love', 'supportive', 'approachable',
+        ];
+        $negativeWords = [
+            'bad', 'terrible', 'poor', 'sad', 'unhelpful', 'confusing',
+            'difficult', 'boring', 'unclear', 'disappointed', 'frustrated',
+            'worst', 'awful', 'improvement', 'unprepared',
+        ];
+
+        $text = strtolower($comment);
+        $positiveScore = 0;
+        $negativeScore = 0;
+
+        foreach ($positiveWords as $word) {
+            $positiveScore += preg_match('/\b' . preg_quote($word, '/') . '\b/', $text);
+        }
+
+        foreach ($negativeWords as $word) {
+            $negativeScore += preg_match('/\b' . preg_quote($word, '/') . '\b/', $text);
+        }
+
+        if ($positiveScore > $negativeScore) {
+            return ['positive', 'Based on keyword analysis, the feedback appears positive.'];
+        }
+
+        if ($negativeScore > $positiveScore) {
+            return ['negative', 'Based on keyword analysis, the feedback appears to contain concerns.'];
+        }
+
+        return ['neutral', 'The feedback appears to be neutral or balanced.'];
+    }
+
+    private function storeSentimentResult(
+        string $sentiment,
+        string $comment,
+        string $analysis,
+        array &$positiveComments,
+        array &$negativeComments,
+        array &$positiveAnalysis,
+        array &$negativeAnalysis
+    ): void {
+        if ($sentiment === 'positive') {
+            $positiveComments[] = $comment;
+            $positiveAnalysis[] = $analysis;
+        } elseif ($sentiment === 'negative') {
+            $negativeComments[] = $comment;
+            $negativeAnalysis[] = $analysis;
+        }
     }
 
     private function resetSentimentData()

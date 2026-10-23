@@ -4,7 +4,7 @@
 
     <div class="p-5 pb-0 gap-2 flex flex-wrap items-center md:justify-start justify-center relative">
 
-        <img src="{{ asset('storage/' . $student->user->profile_image) }}" alt="Profile Image" class="
+        <img src="{{ $student->user->profile_image_url }}" alt="Profile Image" class="
         ring-1 ring-[#DDD] border-8 border-[#F8F8F8]
         object-cover rounded-full w-40 h-40">
 

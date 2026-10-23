@@ -69,7 +69,7 @@
                 <button @click="open = !open" class="flex items-center justify-center mr-2 relative">
                     <!-- Profile Image -->
                     <img 
-                        src="{{ asset('storage/' . Auth::user()->profile_image) }}" 
+                        src="{{ Auth::user()->profile_image_url }}"
                         alt="Profile Image" 
                         class="ring-2 ring-offset-2 ring-[#F8F8F8] w-8 h-8 rounded-full mr-2 object-cover"
                     >
