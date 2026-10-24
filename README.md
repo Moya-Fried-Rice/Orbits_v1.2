@@ -1,6 +1,6 @@
 # Orbits
 
-Orbits is a web-based faculty evaluation and academic management system.
+Orbits is a web and mobile-based faculty evaluation and academic management system.
 Students can evaluate faculty members, while faculty, program chairs, and
 administrators can view the information and results relevant to their roles.
 
